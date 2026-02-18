@@ -1,0 +1,48 @@
+E:\Addinn\Dossier Addinn\Dossier de Stage\Clean Architecteur 1\Clean Architecteur\Domain\bin\Debug\net8.0\Domain.deps.json
+E:\Addinn\Dossier Addinn\Dossier de Stage\Clean Architecteur 1\Clean Architecteur\Domain\bin\Debug\net8.0\Domain.dll
+E:\Addinn\Dossier Addinn\Dossier de Stage\Clean Architecteur 1\Clean Architecteur\Domain\bin\Debug\net8.0\Domain.pdb
+E:\Addinn\Dossier Addinn\Dossier de Stage\Clean Architecteur 1\Clean Architecteur\Domain\obj\Debug\net8.0\Domain.csproj.AssemblyReference.cache
+E:\Addinn\Dossier Addinn\Dossier de Stage\Clean Architecteur 1\Clean Architecteur\Domain\obj\Debug\net8.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+E:\Addinn\Dossier Addinn\Dossier de Stage\Clean Architecteur 1\Clean Architecteur\Domain\obj\Debug\net8.0\Domain.AssemblyInfoInputs.cache
+E:\Addinn\Dossier Addinn\Dossier de Stage\Clean Architecteur 1\Clean Architecteur\Domain\obj\Debug\net8.0\Domain.AssemblyInfo.cs
+E:\Addinn\Dossier Addinn\Dossier de Stage\Clean Architecteur 1\Clean Architecteur\Domain\obj\Debug\net8.0\Domain.csproj.CoreCompileInputs.cache
+E:\Addinn\Dossier Addinn\Dossier de Stage\Clean Architecteur 1\Clean Architecteur\Domain\obj\Debug\net8.0\Domain.dll
+E:\Addinn\Dossier Addinn\Dossier de Stage\Clean Architecteur 1\Clean Architecteur\Domain\obj\Debug\net8.0\refint\Domain.dll
+E:\Addinn\Dossier Addinn\Dossier de Stage\Clean Architecteur 1\Clean Architecteur\Domain\obj\Debug\net8.0\Domain.pdb
+E:\Addinn\Dossier Addinn\Dossier de Stage\Clean Architecteur 1\Clean Architecteur\Domain\obj\Debug\net8.0\ref\Domain.dll
+D:\PFE REQUIRMENTS\Projet\Domain\bin\Debug\net8.0\Domain.deps.json
+D:\PFE REQUIRMENTS\Projet\Domain\bin\Debug\net8.0\Domain.dll
+D:\PFE REQUIRMENTS\Projet\Domain\bin\Debug\net8.0\Domain.pdb
+D:\PFE REQUIRMENTS\Projet\Domain\obj\Debug\net8.0\Domain.csproj.AssemblyReference.cache
+D:\PFE REQUIRMENTS\Projet\Domain\obj\Debug\net8.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\PFE REQUIRMENTS\Projet\Domain\obj\Debug\net8.0\Domain.AssemblyInfoInputs.cache
+D:\PFE REQUIRMENTS\Projet\Domain\obj\Debug\net8.0\Domain.AssemblyInfo.cs
+D:\PFE REQUIRMENTS\Projet\Domain\obj\Debug\net8.0\Domain.csproj.CoreCompileInputs.cache
+D:\PFE REQUIRMENTS\Projet\Domain\obj\Debug\net8.0\Domain.dll
+D:\PFE REQUIRMENTS\Projet\Domain\obj\Debug\net8.0\refint\Domain.dll
+D:\PFE REQUIRMENTS\Projet\Domain\obj\Debug\net8.0\Domain.pdb
+D:\PFE REQUIRMENTS\Projet\Domain\obj\Debug\net8.0\ref\Domain.dll
+D:\PFE REQUIRMENTS\Projet\Projet\Domain\bin\Debug\net8.0\Domain.deps.json
+D:\PFE REQUIRMENTS\Projet\Projet\Domain\bin\Debug\net8.0\Domain.dll
+D:\PFE REQUIRMENTS\Projet\Projet\Domain\bin\Debug\net8.0\Domain.pdb
+D:\PFE REQUIRMENTS\Projet\Projet\Domain\obj\Debug\net8.0\Domain.csproj.AssemblyReference.cache
+D:\PFE REQUIRMENTS\Projet\Projet\Domain\obj\Debug\net8.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\PFE REQUIRMENTS\Projet\Projet\Domain\obj\Debug\net8.0\Domain.AssemblyInfoInputs.cache
+D:\PFE REQUIRMENTS\Projet\Projet\Domain\obj\Debug\net8.0\Domain.AssemblyInfo.cs
+D:\PFE REQUIRMENTS\Projet\Projet\Domain\obj\Debug\net8.0\Domain.csproj.CoreCompileInputs.cache
+D:\PFE REQUIRMENTS\Projet\Projet\Domain\obj\Debug\net8.0\Domain.dll
+D:\PFE REQUIRMENTS\Projet\Projet\Domain\obj\Debug\net8.0\refint\Domain.dll
+D:\PFE REQUIRMENTS\Projet\Projet\Domain\obj\Debug\net8.0\Domain.pdb
+D:\PFE REQUIRMENTS\Projet\Projet\Domain\obj\Debug\net8.0\ref\Domain.dll
+C:\Users\LENOVO_ADDINN\Downloads\Project_Tarification-main\Project_Tarification-main\Domain\bin\Debug\net8.0\Domain.deps.json
+C:\Users\LENOVO_ADDINN\Downloads\Project_Tarification-main\Project_Tarification-main\Domain\bin\Debug\net8.0\Domain.dll
+C:\Users\LENOVO_ADDINN\Downloads\Project_Tarification-main\Project_Tarification-main\Domain\bin\Debug\net8.0\Domain.pdb
+C:\Users\LENOVO_ADDINN\Downloads\Project_Tarification-main\Project_Tarification-main\Domain\obj\Debug\net8.0\Domain.csproj.AssemblyReference.cache
+C:\Users\LENOVO_ADDINN\Downloads\Project_Tarification-main\Project_Tarification-main\Domain\obj\Debug\net8.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\LENOVO_ADDINN\Downloads\Project_Tarification-main\Project_Tarification-main\Domain\obj\Debug\net8.0\Domain.AssemblyInfoInputs.cache
+C:\Users\LENOVO_ADDINN\Downloads\Project_Tarification-main\Project_Tarification-main\Domain\obj\Debug\net8.0\Domain.AssemblyInfo.cs
+C:\Users\LENOVO_ADDINN\Downloads\Project_Tarification-main\Project_Tarification-main\Domain\obj\Debug\net8.0\Domain.csproj.CoreCompileInputs.cache
+C:\Users\LENOVO_ADDINN\Downloads\Project_Tarification-main\Project_Tarification-main\Domain\obj\Debug\net8.0\Domain.dll
+C:\Users\LENOVO_ADDINN\Downloads\Project_Tarification-main\Project_Tarification-main\Domain\obj\Debug\net8.0\refint\Domain.dll
+C:\Users\LENOVO_ADDINN\Downloads\Project_Tarification-main\Project_Tarification-main\Domain\obj\Debug\net8.0\Domain.pdb
+C:\Users\LENOVO_ADDINN\Downloads\Project_Tarification-main\Project_Tarification-main\Domain\obj\Debug\net8.0\ref\Domain.dll

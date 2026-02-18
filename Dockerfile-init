@@ -1,0 +1,13 @@
+FROM mcr.microsoft.com/dotnet/nightly/sdk:6.0 AS build-env
+WORKDIR /app
+
+COPY . ./
+
+RUN dotnet tool install --global dotnet-ef --version 6.0.10
+ENV PATH="$PATH:/root/.dotnet/tools"
+
+WORKDIR /app/API
+COPY script.sh /scripts/script.sh
+RUN ["chmod", "+x", "/scripts/script.sh"]
+ENTRYPOINT ["/scripts/script.sh"]
+

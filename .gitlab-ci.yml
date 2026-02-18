@@ -1,0 +1,47 @@
+stages:
+  - sonar
+  - build
+  - deploy
+
+sonarscan:
+  extends: .sonarscan
+
+build:
+  extends: .build
+  
+build-init:
+  extends: .build
+  stage: build
+  variables:
+    CONTAINER_IMAGE: ${REGISTRY}/addinn/${CI_PROJECT_PATH_SLUG}-init
+    DOCKERFILE: Dockerfile-init
+
+k8s-deploy:develop:
+  extends: .deploy
+  variables:
+     HELM_OPTS: "--set ingress.host=backend-tracking-freightsure.${DEVELOP_DOMAIN} --set initContainers[0].name=init-database --set initContainers[0].image=${CONTAINER_IMAGE}-init:${HELM_IMAGE_TAG}"
+
+include:
+  - project: 'library/stages'
+    ref: master
+    file: 'gitlab/helm/deploy_hidden_qualif.yaml'
+  - project: 'library/stages'
+    ref: master
+    file: 'gitlab/sonar/sonarscan_hidden_dotnet.yaml'
+  - project: 'library/stages'
+    ref: master
+    file: 'gitlab/migration/migration_hidden.yaml'
+  - project: 'library/stages'
+    ref: master
+    file: 'gitlab/helm/deploy_hidden.yaml'
+  - project: 'library/stages'
+    ref: master
+    file: 'gitlab/kaniko/build2.yaml'
+  - project: 'library/stages'
+    ref: master
+    file: 'gitlab/helm/staging_hidden.yaml'
+  - project: 'library/stages'
+    ref: master
+    file: '/gitlab/footer.yaml'
+
+
