@@ -1,5 +1,4 @@
-﻿// Application/Features/AuthFeature/Queries/GetCurrentUserQuery.cs
-using Application.Features.AuthFeature.Dtos;
+﻿using Application.Features.AuthFeature.Dtos;
 using Application.Interfaces;
 using Application.Setting;
 using AutoMapper;

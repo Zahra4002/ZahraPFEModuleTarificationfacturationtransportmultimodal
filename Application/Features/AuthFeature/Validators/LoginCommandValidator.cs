@@ -1,5 +1,4 @@
-﻿// Application/Features/AuthFeature/Validators/LoginCommandValidator.cs
-using Application.Common.Validator;
+﻿using Application.Common.Validator;
 using Application.Features.AuthFeature.Commands;
 using FluentValidation;
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-// Application/Features/AuthFeature/Dtos/AuthDTOs.cs
-namespace Application.Features.AuthFeature.Dtos
+﻿namespace Application.Features.AuthFeature.Dtos
 {
     public class LoginRequestDTO
     {
@@ -12,7 +6,7 @@ namespace Application.Features.AuthFeature.Dtos
         public string Password { get; set; } = string.Empty;
     }
 
-  
+
 
     public class RefreshTokenRequestDTO
     {
