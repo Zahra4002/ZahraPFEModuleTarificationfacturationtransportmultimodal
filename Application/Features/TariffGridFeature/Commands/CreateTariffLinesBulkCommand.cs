@@ -1,5 +1,4 @@
-﻿// Application/Features/TariffGridFeature/Commands/CreateTariffLinesBulkCommand.cs
-using Application.Features.TariffGridFeature.Dtos;
+﻿using Application.Features.TariffGridFeature.Dtos;
 using Application.Interfaces;
 using Application.Setting;
 using AutoMapper;

@@ -1,5 +1,4 @@
-﻿// Application/Features/TariffGridFeature/Commands/DeleteTariffLineCommand.cs
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Application.Setting;
 using MediatR;
 using Microsoft.AspNetCore.Http;
