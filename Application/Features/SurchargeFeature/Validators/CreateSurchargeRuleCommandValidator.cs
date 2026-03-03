@@ -1,5 +1,4 @@
-﻿// Application/Features/SurchargeFeature/Validators/CreateSurchargeRuleCommandValidator.cs
-using Application.Common.Validator;
+﻿using Application.Common.Validator;
 using Application.Features.SurchargeFeature.Commands;
 using FluentValidation;
 
