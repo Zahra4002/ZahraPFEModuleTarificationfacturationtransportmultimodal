@@ -1,5 +1,4 @@
-﻿// Application/Features/UserFeature/Queries/GetAllUsersQuery.cs
-using Application.Features.UserFeature.Dtos;
+﻿using Application.Features.UserFeature.Dtos;
 using Application.Interfaces;
 using Application.Setting;
 using AutoMapper;

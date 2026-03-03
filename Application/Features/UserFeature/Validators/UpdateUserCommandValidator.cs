@@ -1,5 +1,4 @@
-﻿// Application/Features/UserFeature/Validators/UpdateUserCommandValidator.cs
-using Application.Common.Validator;
+﻿using Application.Common.Validator;
 using Application.Features.UserFeature.Commands;
 using FluentValidation;
 
