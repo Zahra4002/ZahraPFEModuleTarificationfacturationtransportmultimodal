@@ -1,4 +1,3 @@
-// Application/Features/UserFeature/Dtos/UserDTO.cs
 namespace Application.Features.UserFeature.Dtos
 {
     public class UserDTO

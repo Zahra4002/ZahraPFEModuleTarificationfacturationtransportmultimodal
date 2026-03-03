@@ -1,9 +1,7 @@
-﻿// Application/Features/UserFeature/Commands/ResetUserPasswordCommand.cs
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Application.Setting;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using BCrypt.Net;
 
 namespace Application.Features.UserFeature.Commands
 {

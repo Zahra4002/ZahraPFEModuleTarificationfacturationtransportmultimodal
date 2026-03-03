@@ -1,5 +1,4 @@
-﻿
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Application.Setting;
 using Domain.Enums;
 using MediatR;

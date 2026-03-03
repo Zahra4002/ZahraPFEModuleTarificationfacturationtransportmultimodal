@@ -1,5 +1,4 @@
-﻿// Application/Features/UserFeature/Commands/AddUserCommand.cs
-using Application.Features.UserFeature.Dtos;
+﻿using Application.Features.UserFeature.Dtos;
 using Application.Interfaces;
 using Application.Setting;
 using AutoMapper;
@@ -7,7 +6,6 @@ using Domain.Entities;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using BCrypt.Net;
 
 namespace Application.Features.UserFeature.Commands
 {
