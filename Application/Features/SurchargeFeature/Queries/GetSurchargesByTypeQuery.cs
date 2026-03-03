@@ -1,5 +1,4 @@
-﻿// Application/Features/SurchargeFeature/Queries/GetSurchargesByTypeQuery.cs
-using Application.Features.SurchargeFeature.Dtos;
+﻿using Application.Features.SurchargeFeature.Dtos;
 using Application.Interfaces;
 using Application.Setting;
 using AutoMapper;
