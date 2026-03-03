@@ -26,12 +26,12 @@ namespace Domain.Enums
         Container40ftHC = 3,
 
         /// <summary>
-        /// Conteneur réfrigéré 20 pieds
+        /// Conteneur rï¿½frigï¿½rï¿½ 20 pieds
         /// </summary>
         Reefer20ft = 4,
 
         /// <summary>
-        /// Conteneur réfrigéré 40 pieds
+        /// Conteneur rï¿½frigï¿½rï¿½ 40 pieds
         /// </summary>
         Reefer40ft = 5
     }

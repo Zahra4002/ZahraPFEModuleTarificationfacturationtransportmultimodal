@@ -13,11 +13,11 @@ namespace Domain.Entities
         public Guid? ClientId { get; set; }
         public Guid? SupplierId { get; set; }
 
-        // Période de validité
+        // Pï¿½riode de validitï¿½
         public DateTime ValidFrom { get; set; }
         public DateTime ValidTo { get; set; }
 
-        // Conditions générales
+        // Conditions gï¿½nï¿½rales
         public string? Terms { get; set; }
         public bool TermsAccepted { get; set; } = false;
         public DateTime? TermsAcceptedAt { get; set; }
@@ -25,7 +25,7 @@ namespace Domain.Entities
         // Remise globale
         public decimal GlobalDiscountPercent { get; set; } = 0;
 
-        // Volume minimum engagé
+        // Volume minimum engagï¿½
         public decimal? MinimumVolume { get; set; }
         public string? MinimumVolumeUnit { get; set; } // ex: "TEU/an", "tonnes/mois"
 

@@ -46,3 +46,39 @@ C:\Users\LENOVO_ADDINN\Downloads\Project_Tarification-main\Project_Tarification-
 C:\Users\LENOVO_ADDINN\Downloads\Project_Tarification-main\Project_Tarification-main\Domain\obj\Debug\net8.0\refint\Domain.dll
 C:\Users\LENOVO_ADDINN\Downloads\Project_Tarification-main\Project_Tarification-main\Domain\obj\Debug\net8.0\Domain.pdb
 C:\Users\LENOVO_ADDINN\Downloads\Project_Tarification-main\Project_Tarification-main\Domain\obj\Debug\net8.0\ref\Domain.dll
+C:\Users\riyem\Downloads\test1\Domain\bin\Debug\net8.0\Domain.deps.json
+C:\Users\riyem\Downloads\test1\Domain\bin\Debug\net8.0\Domain.dll
+C:\Users\riyem\Downloads\test1\Domain\bin\Debug\net8.0\Domain.pdb
+C:\Users\riyem\Downloads\test1\Domain\obj\Debug\net8.0\Domain.csproj.AssemblyReference.cache
+C:\Users\riyem\Downloads\test1\Domain\obj\Debug\net8.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\riyem\Downloads\test1\Domain\obj\Debug\net8.0\Domain.AssemblyInfoInputs.cache
+C:\Users\riyem\Downloads\test1\Domain\obj\Debug\net8.0\Domain.AssemblyInfo.cs
+C:\Users\riyem\Downloads\test1\Domain\obj\Debug\net8.0\Domain.csproj.CoreCompileInputs.cache
+C:\Users\riyem\Downloads\test1\Domain\obj\Debug\net8.0\Domain.dll
+C:\Users\riyem\Downloads\test1\Domain\obj\Debug\net8.0\refint\Domain.dll
+C:\Users\riyem\Downloads\test1\Domain\obj\Debug\net8.0\Domain.pdb
+C:\Users\riyem\Downloads\test1\Domain\obj\Debug\net8.0\ref\Domain.dll
+C:\Users\LENOVO_ADDINN\Downloads\zahrawork\test1\Domain\bin\Debug\net8.0\Domain.deps.json
+C:\Users\LENOVO_ADDINN\Downloads\zahrawork\test1\Domain\bin\Debug\net8.0\Domain.dll
+C:\Users\LENOVO_ADDINN\Downloads\zahrawork\test1\Domain\bin\Debug\net8.0\Domain.pdb
+C:\Users\LENOVO_ADDINN\Downloads\zahrawork\test1\Domain\obj\Debug\net8.0\Domain.csproj.AssemblyReference.cache
+C:\Users\LENOVO_ADDINN\Downloads\zahrawork\test1\Domain\obj\Debug\net8.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\LENOVO_ADDINN\Downloads\zahrawork\test1\Domain\obj\Debug\net8.0\Domain.AssemblyInfoInputs.cache
+C:\Users\LENOVO_ADDINN\Downloads\zahrawork\test1\Domain\obj\Debug\net8.0\Domain.AssemblyInfo.cs
+C:\Users\LENOVO_ADDINN\Downloads\zahrawork\test1\Domain\obj\Debug\net8.0\Domain.csproj.CoreCompileInputs.cache
+C:\Users\LENOVO_ADDINN\Downloads\zahrawork\test1\Domain\obj\Debug\net8.0\Domain.dll
+C:\Users\LENOVO_ADDINN\Downloads\zahrawork\test1\Domain\obj\Debug\net8.0\refint\Domain.dll
+C:\Users\LENOVO_ADDINN\Downloads\zahrawork\test1\Domain\obj\Debug\net8.0\Domain.pdb
+C:\Users\LENOVO_ADDINN\Downloads\zahrawork\test1\Domain\obj\Debug\net8.0\ref\Domain.dll
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2025\Projet 3 TarificationFacturation\Domain\bin\Debug\net8.0\Domain.deps.json
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2025\Projet 3 TarificationFacturation\Domain\bin\Debug\net8.0\Domain.dll
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2025\Projet 3 TarificationFacturation\Domain\bin\Debug\net8.0\Domain.pdb
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2025\Projet 3 TarificationFacturation\Domain\obj\Debug\net8.0\Domain.csproj.AssemblyReference.cache
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2025\Projet 3 TarificationFacturation\Domain\obj\Debug\net8.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2025\Projet 3 TarificationFacturation\Domain\obj\Debug\net8.0\Domain.AssemblyInfoInputs.cache
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2025\Projet 3 TarificationFacturation\Domain\obj\Debug\net8.0\Domain.AssemblyInfo.cs
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2025\Projet 3 TarificationFacturation\Domain\obj\Debug\net8.0\Domain.csproj.CoreCompileInputs.cache
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2025\Projet 3 TarificationFacturation\Domain\obj\Debug\net8.0\Domain.dll
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2025\Projet 3 TarificationFacturation\Domain\obj\Debug\net8.0\refint\Domain.dll
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2025\Projet 3 TarificationFacturation\Domain\obj\Debug\net8.0\Domain.pdb
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2025\Projet 3 TarificationFacturation\Domain\obj\Debug\net8.0\ref\Domain.dll

@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Persistance.Configurations;
 
 namespace Persistance.Data
 {
@@ -27,6 +28,11 @@ namespace Persistance.Data
         public DbSet<TransportSegment> TransportSegments { get; set; }
         public DbSet<Currency> Currencies { get; set; }
 
+
+        public DbSet<Surcharge> Surcharges { get; set; }
+        public DbSet<SurchargeRule> SurchargeRules { get; set; }
+
+
         public DbSet<ApiKey> ApiKeys { get; set; }
         public DbSet<WebhookConfig> WebhookConfigs { get; set; }
         public DbSet<WebhookLog> WebhookLogs { get; set; }
@@ -35,6 +41,13 @@ namespace Persistance.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+
+
+           // modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new SurchargeConfiguration());
+            modelBuilder.ApplyConfiguration(new SurchargeRuleConfiguration());
+
 
             modelBuilder.Entity<ExchangeRate>()
                 .HasOne(er => er.FromCurrency)

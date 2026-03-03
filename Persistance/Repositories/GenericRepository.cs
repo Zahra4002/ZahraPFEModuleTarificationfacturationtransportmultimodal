@@ -84,6 +84,35 @@ namespace Persistance.Repositories
             return true;
         }
 
+        public async Task<bool> Restore(Guid id)
+        {
+            T? entity = await _context.Set<T>().FindAsync(id);
+
+            if (entity == null)
+            {
+                return false;
+            }
+
+            // Mark the entity as restored (undo soft delete).
+            if (entity is ISoftDeleteable softDeletableEntity)
+            {
+                softDeletableEntity.IsDeleted = false; // Remet à false
+                softDeletableEntity.DeletedDate = null; // Efface la date
+                _context.Entry(entity).State = EntityState.Modified;
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<T?> GetByIdIncludingDeletedAsync(Guid id, CancellationToken cancellationToken)
+        {
+            T? entity = await _context.Set<T>()
+                .FirstOrDefaultAsync(e => e.Id == id, cancellationToken); // Sans filtre IsDeleted !
+            return entity ?? null;
+        }
+
+
         public async Task<bool> Exists(Guid id)
         {
             T? output = await _context.Set<T>().FindAsync(id);

@@ -1001,6 +1001,155 @@ namespace Persistance.Migrations
                     b.ToTable("Suppliers");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Surcharge", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("CalculationType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTimeOffset?>("DeletedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Value")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("Surcharges");
+                });
+
+            modelBuilder.Entity("Domain.Entities.SurchargeRule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ApplicableTransportModes")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ConditionsJson")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTimeOffset?>("DeletedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<decimal?>("OverrideValue")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<int>("Priority")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
+                    b.Property<Guid?>("SurchargeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ValidFrom")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("ValidTo")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid?>("ZoneFromId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ZoneToId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SurchargeId");
+
+                    b.HasIndex("ZoneFromId");
+
+                    b.HasIndex("ZoneToId");
+
+                    b.ToTable("SurchargeRules");
+                });
+
             modelBuilder.Entity("Domain.Entities.TariffGrid", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1291,6 +1440,9 @@ namespace Persistance.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
 
@@ -1354,6 +1506,9 @@ namespace Persistance.Migrations
 
                     b.Property<int>("Role")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -1972,6 +2127,30 @@ namespace Persistance.Migrations
                     b.Navigation("Quote");
                 });
 
+            modelBuilder.Entity("Domain.Entities.SurchargeRule", b =>
+                {
+                    b.HasOne("Domain.Entities.Surcharge", "Surcharge")
+                        .WithMany("Rules")
+                        .HasForeignKey("SurchargeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Domain.Entities.Zone", "ZoneFrom")
+                        .WithMany()
+                        .HasForeignKey("ZoneFromId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.Entities.Zone", "ZoneTo")
+                        .WithMany()
+                        .HasForeignKey("ZoneToId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Surcharge");
+
+                    b.Navigation("ZoneFrom");
+
+                    b.Navigation("ZoneTo");
+                });
+
             modelBuilder.Entity("Domain.Entities.TariffLine", b =>
                 {
                     b.HasOne("Domain.Entities.TariffGrid", "TariffGrid")
@@ -2080,6 +2259,11 @@ namespace Persistance.Migrations
                     b.Navigation("Contracts");
 
                     b.Navigation("TransportSegments");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Surcharge", b =>
+                {
+                    b.Navigation("Rules");
                 });
 
             modelBuilder.Entity("Domain.Entities.TariffGrid", b =>
