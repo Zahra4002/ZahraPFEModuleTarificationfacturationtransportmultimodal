@@ -1,10 +1,9 @@
-﻿// Application/Features/AuthFeature/Commands/RefreshTokenCommand.cs
-using System.Security.Claims;
-using Application.Features.AuthFeature.Dtos;
+﻿using Application.Features.AuthFeature.Dtos;
 using Application.Interfaces;
 using Application.Setting;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace Application.Features.AuthFeature.Commands
 {

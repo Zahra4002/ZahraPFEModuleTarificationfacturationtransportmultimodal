@@ -1,5 +1,4 @@
-﻿// Application/Features/AuthFeature/Commands/LogoutCommand.cs
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Application.Setting;
 using MediatR;
 using Microsoft.AspNetCore.Http;
