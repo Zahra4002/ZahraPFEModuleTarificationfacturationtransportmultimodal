@@ -1,5 +1,4 @@
-﻿// Application/Features/TariffGridFeature/Queries/GetTariffGridsByModeQuery.cs
-using Application.Features.TariffGridFeature.Dtos;
+﻿using Application.Features.TariffGridFeature.Dtos;
 using Application.Interfaces;
 using Application.Setting;
 using AutoMapper;
