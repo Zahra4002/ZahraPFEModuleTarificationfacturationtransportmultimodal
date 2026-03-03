@@ -14,7 +14,7 @@ namespace Application.Interfaces
         public DbSet<Client> Clients { get; set; }
 
 
-        public DbSet<Quote> Quotes { get; set; }          // ✅ AJOUTE ÇA
+        public DbSet<Quote> Quotes { get; set; }   
         public DbSet<Domain.Entities.Invoice> Invoices { get; set; }
         public DbSet<InvoiceLine> InvoiceLines { get; set; }
         public DbSet<Payment> Payments { get; set; }
