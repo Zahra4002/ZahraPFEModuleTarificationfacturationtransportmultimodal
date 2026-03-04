@@ -1,5 +1,4 @@
-﻿// Application/Interfaces/ITariffGridRepository.cs
-using Domain.Common;
+﻿using Domain.Common;
 using Domain.Entities;
 
 namespace Application.Interfaces
