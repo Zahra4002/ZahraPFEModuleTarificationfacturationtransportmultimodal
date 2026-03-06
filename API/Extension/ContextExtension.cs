@@ -16,6 +16,17 @@ namespace API.Extension
             // Register Data Access Layer
             services.AddScoped<ICleanArchitecturContext,CleanArchitecturContext>();
             services.AddScoped<ITestRepository, TestRepository>();
+            services.AddScoped<ITariffGridRepository, TariffGridRepository>();
+            services.AddScoped<ISurchargeRepository, SurchargeRepository>();
+            services.AddScoped<IUserRepository,UserRepository>();
+            services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+            services.AddScoped<IShipmentRepository, ShipmentRepository>();
+            services.AddScoped<IZoneRepository, ZoneRepository>();
+            services.AddScoped<IInvoiceLineRepository, InvoiceLineRepository>();
+            services.AddScoped<IQuoteRepository, QuoteRepository>();
+            services.AddScoped<ISupplierRepository, SupplierRepository>();
+            services.AddScoped<IContractRepository, ContractRepository>();
+            services.AddScoped<ITransportSegmentRepository, TransportSegmentRepository>();
         }
 
         private static DbConnectionInfo GetConnectionInfo(IConfiguration configuration)
