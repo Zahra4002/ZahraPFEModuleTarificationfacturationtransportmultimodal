@@ -3,10 +3,6 @@ using Domain.Common;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistance.Data;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Persistance.Repositories
 {
