@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Application.Features.DashboardFeature.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
