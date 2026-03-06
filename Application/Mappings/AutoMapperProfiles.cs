@@ -96,7 +96,7 @@ namespace Application.Mappings
                         src.Client != null ? src.Client.Name : null))
                 .ForMember(dest => dest.SupplierName,
                     opt => opt.MapFrom(src =>
-                        src.Supplier != null ? src.Supplier.Name : null))
+                        src.Supplier != null ? src.Supplier.name : null))
                 .ForMember(dest => dest.ShipmentNumber,
                     opt => opt.MapFrom(src =>
                         src.Shipment != null ? src.Shipment.ShipmentNumber : null))
@@ -159,7 +159,7 @@ namespace Application.Mappings
                 .ForMember(dest => dest.ClientName,
                     opt => opt.MapFrom(src => src.Client != null ? src.Client.Name : null))
                 .ForMember(dest => dest.SupplierName,
-                    opt => opt.MapFrom(src => src.Supplier != null ? src.Supplier.Name : null))
+                    opt => opt.MapFrom(src => src.Supplier != null ? src.Supplier.name : null))
                 .ForMember(dest => dest.ShipmentNumber,
                     opt => opt.MapFrom(src => src.Shipment != null ? src.Shipment.ShipmentNumber : null))
                 .ForMember(dest => dest.CurrencyCode,
@@ -237,7 +237,7 @@ namespace Application.Mappings
                 .ForMember(dest => dest.ClientName,
                     opt => opt.MapFrom(src => src.Client != null ? src.Client.Name : null))
                 .ForMember(dest => dest.SupplierName,
-                    opt => opt.MapFrom(src => src.Supplier != null ? src.Supplier.Name : null))
+                    opt => opt.MapFrom(src => src.Supplier != null ? src.Supplier.name : null))
                 .ForMember(dest => dest.IsValid,
                     opt => opt.MapFrom(src => src.IsValidAt(DateTime.UtcNow)))
                 .ForMember(dest => dest.IsExpiringSoon,
