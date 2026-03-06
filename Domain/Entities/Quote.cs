@@ -6,7 +6,7 @@ namespace Domain.Entities
     public class Quote : Entity
     {
         public string QuoteNumber { get; set; } = string.Empty;
-        public Guid ClientId { get; set; }
+        public Guid? ClientId { get; set; }
 
         // Copie des données d'expédition potentielle
         public Address OriginAddress { get; set; } = new();
