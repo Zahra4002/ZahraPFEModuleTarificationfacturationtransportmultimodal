@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "P1HcBjlV6CQ=",
+  "dgSpecHash": "9IZYLG6SIDE=",
   "success": true,
-  "projectFilePath": "E:\\Addinn\\Dossier Addinn\\Dossier de Stage\\Stage_PFE_2025\\Projet 3 TarificationFacturation\\API\\API.csproj",
+  "projectFilePath": "E:\\Addinn\\Dossier Addinn\\Dossier de Stage\\Stage_PFE_2026\\Projet 3 TarificationFacturation\\API\\API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\LENOVO_ADDINN\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\LENOVO_ADDINN\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
