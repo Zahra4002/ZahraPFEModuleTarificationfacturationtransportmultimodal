@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Application.Features.InvoiceFeature.Dtos
+﻿namespace Application.Features.InvoiceFeature.Dtos
 {
     public class CreateInvoiceFromShipmentDto
     {
