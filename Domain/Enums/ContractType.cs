@@ -18,6 +18,12 @@
         /// <summary>
         /// Accord spécifique client/partenaire
         /// </summary>
-        AccordSpecifique = 3
+        AccordSpecifique = 3,
+
+
+        /// <summary>
+        /// Standard spécifique client/partenaire
+        /// </summary>
+        Standard = 4
     }
 }
