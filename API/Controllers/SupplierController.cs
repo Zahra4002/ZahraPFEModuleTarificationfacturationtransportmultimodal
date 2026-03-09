@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    /// <summary>
+    /// API pour la gestion des fournisseurs.
+    /// </summary>
     [Route("api/supplier")]
     [ApiController]
     public class SupplierController : ControllerBase
@@ -18,9 +21,13 @@ namespace API.Controllers
             _mediator = mediator;
         }
 
-        // ================================
-        // CREATE SUPPLIER
-        // ================================
+        /// <summary>
+        /// Crée un nouveau fournisseur.
+        /// </summary>
+        /// <param name="dto">Données du fournisseur à créer.</param>
+        /// <returns>Résultat de la création avec l'ID du fournisseur.</returns>
+        /// <response code="201">Fournisseur créé avec succès.</response>
+        /// <response code="400">Requête invalide.</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -50,9 +57,15 @@ namespace API.Controllers
             return BadRequest(result);
         }
 
-        // ================================
-        // UPDATE SUPPLIER
-        // ================================
+        /// <summary>
+        /// Met à jour un fournisseur existant.
+        /// </summary>
+        /// <param name="id">ID du fournisseur à mettre à jour.</param>
+        /// <param name="dto">Données mises à jour du fournisseur.</param>
+        /// <returns>Résultat de la mise à jour.</returns>
+        /// <response code="200">Mise à jour réussie.</response>
+        /// <response code="400">Requête invalide.</response>
+        /// <response code="404">Fournisseur non trouvé.</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -83,9 +96,11 @@ namespace API.Controllers
             };
         }
 
-        // ================================
-        // DELETE SUPPLIER
-        // ================================
+        /// <summary>
+        /// Supprime un fournisseur par ID.
+        /// </summary>
+        /// <param name="id">ID du fournisseur à supprimer.</param>
+        /// <returns>204 si supprimé, sinon message d'erreur.</returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -103,9 +118,12 @@ namespace API.Controllers
             };
         }
 
-        // ================================
-        // GET ALL SUPPLIERS
-        // ================================
+        /// <summary>
+        /// Récupère tous les fournisseurs avec pagination optionnelle.
+        /// </summary>
+        /// <param name="pageNumber">Numéro de page (optionnel).</param>
+        /// <param name="pageSize">Taille de page (optionnel).</param>
+        /// <returns>Liste des fournisseurs.</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -117,9 +135,11 @@ namespace API.Controllers
             return result.Status == 200 ? Ok(result) : NotFound(result);
         }
 
-        // ================================
-        // GET SUPPLIER BY ID
-        // ================================
+        /// <summary>
+        /// Récupère un fournisseur par ID.
+        /// </summary>
+        /// <param name="id">ID du fournisseur.</param>
+        /// <returns>Détails du fournisseur.</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -131,15 +151,11 @@ namespace API.Controllers
             return result.Status == 200 ? Ok(result) : NotFound(result);
         }
 
-        // Helper pour extraire l'ID du résultat
-        private Guid GetIdFromResult(ResponseHttp result)
-        {
-            return result.Resultat?.GetType().GetProperty("Id")?.GetValue(result.Resultat) as Guid? ?? Guid.Empty;
-        }
-
-        // ================================
-        // GET SUPPLIER BY CODE
-        // ================================
+        /// <summary>
+        /// Récupère un fournisseur par son code.
+        /// </summary>
+        /// <param name="code">Code du fournisseur.</param>
+        /// <returns>Détails du fournisseur.</returns>
         [HttpGet("code/{code}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -155,6 +171,14 @@ namespace API.Controllers
                 404 => NotFound(result),
                 _ => BadRequest(result)
             };
+        }
+
+        /// <summary>
+        /// Helper pour extraire l'ID du résultat.
+        /// </summary>
+        private Guid GetIdFromResult(ResponseHttp result)
+        {
+            return result.Resultat?.GetType().GetProperty("Id")?.GetValue(result.Resultat) as Guid? ?? Guid.Empty;
         }
     }
 }
