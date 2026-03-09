@@ -28,7 +28,8 @@ namespace Persistance.Data
         public DbSet<TransportSegment> TransportSegments { get; set; }
         public DbSet<Currency> Currencies { get; set; }
 
-
+        public DbSet<ExchangeRate> ExchangeRates { get; set; }
+        public DbSet<TaxRule> TaxRules { get; set; }
         public DbSet<Surcharge> Surcharges { get; set; }
         public DbSet<SurchargeRule> SurchargeRules { get; set; }
 

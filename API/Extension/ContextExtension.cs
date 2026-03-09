@@ -27,6 +27,10 @@ namespace API.Extension
             services.AddScoped<ISupplierRepository, SupplierRepository>();
             services.AddScoped<IContractRepository, ContractRepository>();
             services.AddScoped<ITransportSegmentRepository, TransportSegmentRepository>();
+            services.AddScoped<Application.Interfaces.IZoneRepository, Persistance.Repositories.ZoneRepository>();
+            services.AddScoped<Application.Interfaces.ICurrencyRepository, Persistance.Repositories.CurrencyRepository>();
+            services.AddScoped<Application.Interfaces.IShipmentRepository, Persistance.Repositories.ShipmentRepository>();
+            services.AddScoped<Application.Interfaces.ITransportSegmentRepository, Persistance.Repositories.TransportSegmentRepository>();
         }
 
         private static DbConnectionInfo GetConnectionInfo(IConfiguration configuration)

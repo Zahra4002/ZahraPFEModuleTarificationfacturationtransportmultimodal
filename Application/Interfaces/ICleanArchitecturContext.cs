@@ -26,8 +26,8 @@ namespace Application.Interfaces
         public DbSet<Domain.Entities.Currency> Currencies { get; set; }
 
 
-
-
+        public DbSet<ExchangeRate> ExchangeRates { get; set; }
+        public DbSet<TaxRule> TaxRules { get; set; }
         public DbSet<Surcharge> Surcharges { get; set; }
         public DbSet<SurchargeRule> SurchargeRules { get; set; }
         // Intégration / audit / sécurité
