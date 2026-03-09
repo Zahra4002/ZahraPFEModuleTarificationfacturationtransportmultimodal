@@ -1,16 +1,11 @@
 ﻿using Application.Interfaces;
 using Application.Setting;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.ZoneFeature.Queries
 {
     public record GetZoneByCode(string zoneCode)
-    :IRequest<ResponseHttp>
+    : IRequest<ResponseHttp>
     {
         public class GetZoneByCodeHandler : IRequestHandler<GetZoneByCode, ResponseHttp>
         {
@@ -27,7 +22,8 @@ namespace Application.Features.ZoneFeature.Queries
                     var zone = await _zoneRepository.SelectOneAsync(z => z.Code == request.zoneCode);
                     if (zone == null)
                     {
-                        return new ResponseHttp                         {
+                        return new ResponseHttp
+                        {
                             Resultat = null,
                             Status = 404,
                             Fail_Messages = "Zone not found"
@@ -41,8 +37,8 @@ namespace Application.Features.ZoneFeature.Queries
                             Status = 200,
                             Fail_Messages = null
                         };
-                    } 
-                    
+                    }
+
 
                 }
                 catch (Exception ex)
@@ -54,7 +50,7 @@ namespace Application.Features.ZoneFeature.Queries
                         Fail_Messages = ex.Message
                     };
                 }
-                
+
             }
         }
     }

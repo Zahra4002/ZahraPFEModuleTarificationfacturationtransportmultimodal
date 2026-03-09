@@ -5,11 +5,6 @@ using AutoMapper;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.ZoneFeature.Commands
 {
@@ -47,12 +42,12 @@ namespace Application.Features.ZoneFeature.Commands
                         Description = request.Description,
                         IsActive = request.IsActive
                     };
-                    
+
                     /*var zone = _mapper.Map<Zone>(request);*/
                     await _zoneRepository.Post(zone);
                     await _zoneRepository.SaveChange(cancellationToken);
 
-                    var zoneDto = new ZoneDto(zone); 
+                    var zoneDto = new ZoneDto(zone);
 
                     return new ResponseHttp
                     {
