@@ -1,13 +1,7 @@
 ﻿using Application.Features.ShipmentFeature.Dtos;
 using Application.Interfaces;
 using Application.Setting;
-using Domain.Entities;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.ShipmentFeature.Queries
 {
@@ -16,8 +10,8 @@ namespace Application.Features.ShipmentFeature.Queries
     int? PageSize,
     string? SortBy,
     bool SortDescending = false,
-    string? SearchTerm=null
-     
+    string? SearchTerm = null
+
 ) : IRequest<ResponseHttp>
     {
         public class GetAllShipmentsQueryHandler : IRequestHandler<GetAllShipmentsQuery, ResponseHttp>

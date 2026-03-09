@@ -1,11 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Setting;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.ShipmentFeature.Queries
 {
@@ -53,7 +48,7 @@ namespace Application.Features.ShipmentFeature.Queries
                     Status = 200,
                     Fail_Messages = "Shipments retrieved successfully.",
                     Resultat = shipments
-                };  
+                };
             }
         }
 

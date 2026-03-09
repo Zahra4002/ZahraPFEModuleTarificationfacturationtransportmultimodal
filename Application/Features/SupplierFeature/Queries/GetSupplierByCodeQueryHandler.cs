@@ -4,12 +4,10 @@ using Application.Setting;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Application.Features.SupplierFeature.Queries
 {
+    public record GetSupplierByCodeQuery(string Code) : IRequest<ResponseHttp>;
     public class GetSupplierByCodeQueryHandler : IRequestHandler<GetSupplierByCodeQuery, ResponseHttp>
     {
         private readonly ISupplierRepository _supplierRepository;

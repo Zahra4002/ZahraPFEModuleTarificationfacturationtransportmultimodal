@@ -5,13 +5,10 @@ using AutoMapper;
 using Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Application.Features.SupplierFeature.Queries
 {
+    public record GetAllSuppliersQuery(int? PageNumber, int? PageSize) : IRequest<ResponseHttp>;
     public class GetAllSuppliersQueryHandler : IRequestHandler<GetAllSuppliersQuery, ResponseHttp>
     {
         private readonly ISupplierRepository _supplierRepository;

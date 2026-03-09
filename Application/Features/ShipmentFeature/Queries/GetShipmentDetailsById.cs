@@ -1,18 +1,13 @@
 ﻿using Application.Interfaces;
 using Application.Setting;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.ShipmentFeature.Queries
 {
-    public record GetShipmentDetailsById(Guid ShipmentId): IRequest<ResponseHttp>
+    public record GetShipmentDetailsById(Guid ShipmentId) : IRequest<ResponseHttp>
     {
 
-       public class GetShipementDetailsByIdHandler : IRequestHandler<GetShipmentDetailsById, ResponseHttp>
+        public class GetShipementDetailsByIdHandler : IRequestHandler<GetShipmentDetailsById, ResponseHttp>
         {
             private readonly IShipmentRepository _shipmentRepository;
             public GetShipementDetailsByIdHandler(IShipmentRepository shipmentRepository)
@@ -23,7 +18,7 @@ namespace Application.Features.ShipmentFeature.Queries
             {
                 try
                 {
-                    var shipmentDetails = await _shipmentRepository.GetByIdAsync(request.ShipmentId,cancellationToken);
+                    var shipmentDetails = await _shipmentRepository.GetByIdAsync(request.ShipmentId, cancellationToken);
                     if (shipmentDetails != null)
                     {
                         return new ResponseHttp

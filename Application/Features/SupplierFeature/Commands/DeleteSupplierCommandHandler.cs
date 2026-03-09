@@ -2,12 +2,10 @@
 using Application.Setting;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Application.Features.SupplierFeature.Commands
 {
+    public record DeleteSupplierCommand(Guid Id) : IRequest<ResponseHttp>;
     public class DeleteSupplierCommandHandler : IRequestHandler<DeleteSupplierCommand, ResponseHttp>
     {
         private readonly ISupplierRepository _supplierRepository;
