@@ -2,24 +2,21 @@
 using Application.Interfaces;
 using Application.Setting;
 using MediatR;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Application.Features.ShipmentFeature.Commands
 {
-    public record RecalculateShipmentCommandcs(Guid ShipmentId) : IRequest<ResponseHttp>
+    public record RecalculateShipmentCommands(Guid ShipmentId) : IRequest<ResponseHttp>
     {
-        public class RecalculateShipmentCommandcsHandler : IRequestHandler<RecalculateShipmentCommandcs, ResponseHttp>
+        public class RecalculateShipmentCommandsHandler : IRequestHandler<RecalculateShipmentCommands, ResponseHttp>
         {
             private readonly IShipmentRepository _shipmentRepository;
 
-            public RecalculateShipmentCommandcsHandler(IShipmentRepository shipmentRepository)
+            public RecalculateShipmentCommandsHandler(IShipmentRepository shipmentRepository)
             {
                 _shipmentRepository = shipmentRepository;
             }
 
-            public async Task<ResponseHttp> Handle(RecalculateShipmentCommandcs request, CancellationToken cancellationToken)
+            public async Task<ResponseHttp> Handle(RecalculateShipmentCommands request, CancellationToken cancellationToken)
             {
                 try
                 {

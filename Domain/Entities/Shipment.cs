@@ -33,6 +33,44 @@ namespace Domain.Entities
 
         public virtual ICollection<TransportSegment> Segments { get; set; }
         public virtual ICollection<Invoice> Invoices { get; set; }
+         public decimal CalculateTotalCostHT()
+        {
+            if (Segments == null || !Segments.Any())
+                return 0m;
+
+            return Segments.Sum(s => s.BaseCost);
+        }
+
+        public decimal CalculateTotalSurcharges()
+        {
+            if (Segments == null || !Segments.Any())
+                return 0m;
+
+            return Segments.Sum(s => s.SurchargesTotal);
+        }
+
+        public decimal CalculateTotalTaxes()
+        {
+            if (Invoices == null || !Invoices.Any())
+                return 0m;
+
+            return Invoices.Sum(i => i.TotalVAT);
+        }
+
+        public decimal CalculateTotalCostTTC()
+        {
+            return CalculateTotalCostHT()
+                 + CalculateTotalSurcharges()
+                 + CalculateTotalTaxes();
+        }
+
+        public void RecalculateTotals()
+        {
+            TotalCostHT = CalculateTotalCostHT();
+            TotalSurcharges = CalculateTotalSurcharges();
+            TotalTaxes = CalculateTotalTaxes();
+            TotalCostTTC = CalculateTotalCostTTC();
+        }
     }
 
    

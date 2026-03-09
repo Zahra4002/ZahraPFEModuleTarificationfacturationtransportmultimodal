@@ -5,11 +5,6 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.ValueObjects;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.ShipmentFeature.Commands
 {
@@ -79,7 +74,7 @@ namespace Application.Features.ShipmentFeature.Commands
                             PostalCode = request.OriginAddress.PostalCode,
                             Country = request.OriginAddress.Country
                         },
-                        DestinationAddress =  new Address
+                        DestinationAddress = new Address
                         {
                             Street = request.DestinationAddress.Street,
                             City = request.DestinationAddress.City,
@@ -109,13 +104,13 @@ namespace Application.Features.ShipmentFeature.Commands
                 }
                 catch (Exception ex)
                 {
-                   
-                        return new ResponseHttp
-                        {
-                            Resultat = null,
-                            Status = 500,
-                            Fail_Messages = $"An error occurred while adding the shipment: {ex.Message}"
-                        };
+
+                    return new ResponseHttp
+                    {
+                        Resultat = null,
+                        Status = 500,
+                        Fail_Messages = $"An error occurred while adding the shipment: {ex.Message}"
+                    };
 
                 }
             }

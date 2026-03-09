@@ -13,6 +13,7 @@ namespace Application.Interfaces
         public DbSet<TariffLine> TariffLines { get; set; }
         public DbSet<Client> Clients { get; set; }
 
+        public DbSet<MerchandiseType> MerchandiseTypes { get; set; }
 
         public DbSet<Quote> Quotes { get; set; }   
         public DbSet<Domain.Entities.Invoice> Invoices { get; set; }

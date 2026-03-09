@@ -33,6 +33,7 @@ namespace Persistance.Data
         public DbSet<Surcharge> Surcharges { get; set; }
         public DbSet<SurchargeRule> SurchargeRules { get; set; }
 
+        public DbSet<MerchandiseType> MerchandiseTypes { get; set; }
 
         public DbSet<ApiKey> ApiKeys { get; set; }
         public DbSet<WebhookConfig> WebhookConfigs { get; set; }

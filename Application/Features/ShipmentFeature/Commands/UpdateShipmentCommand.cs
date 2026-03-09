@@ -3,12 +3,6 @@ using Application.Interfaces;
 using Application.Setting;
 using Domain.ValueObjects;
 using MediatR;
-using RabbitMQ.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.ShipmentFeature.Commands
 {
@@ -38,11 +32,11 @@ namespace Application.Features.ShipmentFeature.Commands
             }
             public async Task<ResponseHttp> Handle(UpdateShipmentCommand request, CancellationToken cancellationToken)
             {
-                 
+
                 try
                 {
 
-                    var shipmentToUpdate = await _shipmentRepository.GetByIdAsync(request.ShipmentId,cancellationToken);
+                    var shipmentToUpdate = await _shipmentRepository.GetByIdAsync(request.ShipmentId, cancellationToken);
                     if (shipmentToUpdate != null)
                     {
                         shipmentToUpdate.ShipmentNumber = request.ShipmentNumber ?? shipmentToUpdate.ShipmentNumber;
@@ -61,16 +55,16 @@ namespace Application.Features.ShipmentFeature.Commands
                         return new ResponseHttp
                         {
                             Status = 200,
-                            Resultat = new ShipmentDto( shipmentToUpdate),
+                            Resultat = new ShipmentDto(shipmentToUpdate),
                             Fail_Messages = null
                         };
                     }
-                        return new ResponseHttp
-                        {
-                            Status = 404,
-                            Resultat = null,
-                            Fail_Messages = $"Shipment with {request.ShipmentId} not found."
-                        };
+                    return new ResponseHttp
+                    {
+                        Status = 404,
+                        Resultat = null,
+                        Fail_Messages = $"Shipment with {request.ShipmentId} not found."
+                    };
                 }
                 catch (Exception ex)
                 {

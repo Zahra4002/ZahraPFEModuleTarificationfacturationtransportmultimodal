@@ -3,11 +3,6 @@ using Application.Interfaces;
 using Application.Setting;
 using Domain.Enums;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.ShipmentFeature.Commands
 {
@@ -54,7 +49,7 @@ namespace Application.Features.ShipmentFeature.Commands
                         };
                     }
 
-                    var updateSegment = await _transportSegmentRepository.GetByIdAsync(request.SegmentId,cancellationToken);
+                    var updateSegment = await _transportSegmentRepository.GetByIdAsync(request.SegmentId, cancellationToken);
 
                     updateSegment.Sequence = request.Sequence ?? updateSegment.Sequence;
                     updateSegment.TransportMode = request.TransportMode ?? updateSegment.TransportMode;
@@ -72,8 +67,8 @@ namespace Application.Features.ShipmentFeature.Commands
 
                     await _transportSegmentRepository.Update(updateSegment);
                     await _transportSegmentRepository.SaveChange(cancellationToken);
-                    
-                     return new ResponseHttp
+
+                    return new ResponseHttp
                     {
                         Resultat = new TransportSegmentDto(updateSegment),
                         Status = 200,

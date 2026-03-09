@@ -1,14 +1,6 @@
-﻿using Application.Features.PriceCalculationFeature.Dtos;
-using Application.Interfaces;
-using Application.Setting;
-using Domain.Entities;
+﻿using Application.Setting;
 using Domain.Enums;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.PriceCalculationFeature.Commands
 {
@@ -28,15 +20,15 @@ namespace Application.Features.PriceCalculationFeature.Commands
     {
         public class CalculateCommandHandler : IRequestHandler<CalculateCommand, ResponseHttp>
         {
-           
 
-           
+
+
 
             public async Task<ResponseHttp> Handle(CalculateCommand request, CancellationToken cancellationToken)
             {
                 return new ResponseHttp
                 {
-                    Resultat = new 
+                    Resultat = new
                     {
                         TotalPrice = 1000m, // Placeholder for actual calculation logic
                         Currency = "USD"
