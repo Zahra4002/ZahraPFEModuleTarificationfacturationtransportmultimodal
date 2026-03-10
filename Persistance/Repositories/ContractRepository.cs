@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Domain.Common;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistance.Data;
@@ -15,7 +16,63 @@ namespace Persistance.Repositories
         {
             _context = context;
         }
+        public async Task<PagedList<Contract>> GetAllWithTypesAsync(int? pageNumber, int? pageSize, CancellationToken cancellationToken)
+        {
+            var query = await _context.Contracts
+                                        .AsQueryable()
+                                        .AsNoTracking()
+                                        .Where(e => e.IsDeleted == false)
+                                        .ToListAsync(cancellationToken);
+            int totalRows = query.AsEnumerable().Count();
+            var customer = query
+           .Skip(pageNumber.HasValue ? (pageNumber.Value - 1) * pageSize.GetValueOrDefault(1) : 0)
+           .Take(pageSize.GetValueOrDefault(int.MaxValue)).ToList();
 
+            return new PagedList<Contract>(customer, totalRows, pageNumber, pageSize);
+        }
+        public async Task<IReadOnlyList<Contract>> GetContractsByClientIdAsync(
+          Guid clientId,
+          CancellationToken cancellationToken = default)
+        {
+            return await _context.Contracts
+                .AsNoTracking()
+                .Where(c => c.ClientId == clientId)
+
+                .OrderByDescending(c => c.ValidFrom)
+                .ToListAsync(cancellationToken);
+        }
+        public async Task<List<Contract>> GetByClientIdAsync(Guid clientId, CancellationToken ct = default)
+        {
+            return await _context.Contracts
+                .AsNoTracking()
+                .Where(c => c.ClientId == clientId)
+                .OrderByDescending(c => c.ValidFrom)
+                .ToListAsync(ct);
+        }
+        public async Task<List<Contract>> GetExpiringAsync(int days, CancellationToken ct = default)
+        {
+            return await _context.Contracts
+                .Where(c => c.IsActive && c.ValidTo <= DateTime.UtcNow.AddDays(days))
+                .OrderBy(c => c.ValidTo)
+                .ToListAsync(ct);
+        }
+        public async Task<Contract?> GetByIdWithDetailsAsync(Guid id, CancellationToken ct = default)
+        {
+            return await _context.Contracts
+                .Include(c => c.ContractPricings)
+                .Include(c => c.Client)
+                .Include(c => c.Supplier)
+                .FirstOrDefaultAsync(c => c.Id == id, ct);
+        }
+        public async Task UpdateAsync(Contract contract, CancellationToken ct)
+        {
+            _context.Contracts.Update(contract);
+            await _context.SaveChangesAsync(ct);
+        }
+        public async Task SaveChangesAsync(CancellationToken ct)
+        {
+            await _context.SaveChangesAsync(ct);
+        }
         public async Task<Contract?> GetByNumberAsync(string contractNumber)
         {
             return await _context.Contracts
