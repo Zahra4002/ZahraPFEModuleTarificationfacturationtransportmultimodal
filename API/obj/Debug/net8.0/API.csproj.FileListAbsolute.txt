@@ -1389,3 +1389,4 @@ E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2026\Projet 3 TarificationFa
 E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2026\Projet 3 TarificationFacturation\API\bin\Debug\net8.0\runtimes\win-x86\native\libstdc++-6.dll
 E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2026\Projet 3 TarificationFacturation\API\bin\Debug\net8.0\runtimes\win-x86\native\libwinpthread-1.dll
 E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2026\Projet 3 TarificationFacturation\API\bin\Debug\net8.0\runtimes\win-x86\native\qpdf.dll
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2026\Projet 3 TarificationFacturation\API\obj\Debug\net8.0\API.MvcApplicationPartsAssemblyInfo.cs
