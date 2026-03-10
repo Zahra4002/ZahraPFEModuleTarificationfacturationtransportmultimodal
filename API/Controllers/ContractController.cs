@@ -192,7 +192,6 @@ namespace API.Controllers
             return StatusCode(result.Status, result);
         }
 
-        // POST /api/Contracts/{contractId}/pricings
         [HttpPost("{contractId}/pricings")]
         [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status400BadRequest)]
@@ -234,7 +233,6 @@ namespace API.Controllers
             }
         }
 
-        // PUT /api/Contracts/{contractId}/pricings/{pricingId}
         [HttpPut("{contractId}/pricings/{pricingId}")]
         [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status400BadRequest)]
@@ -277,7 +275,6 @@ namespace API.Controllers
             }
         }
 
-        // DELETE /api/Contracts/{contractId}/pricings/{pricingId}
         [HttpDelete("{contractId}/pricings/{pricingId}")]
         [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status404NotFound)]

@@ -174,10 +174,6 @@ namespace API.Controllers
 
             return Ok(result);
         }
-        // ... toutes tes actions existantes (Get by id, Get by code, Add, Update, etc.)
-       
-
-            // ... tes autres endpoints (GetByCode, etc.)
 
             /// <summary>
             /// Récupère tous les contrats associés à un client donné
