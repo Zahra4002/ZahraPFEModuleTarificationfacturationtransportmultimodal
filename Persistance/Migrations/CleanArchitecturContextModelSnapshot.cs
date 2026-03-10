@@ -400,6 +400,59 @@ namespace Persistance.Migrations
                     b.ToTable("ContractPricings");
                 });
 
+            modelBuilder.Entity("Domain.Entities.CreditNote", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("CreditNoteNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTimeOffset?>("DeletedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("InvoiceId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvoiceId");
+
+                    b.ToTable("CreditNote");
+                });
+
             modelBuilder.Entity("Domain.Entities.Currency", b =>
                 {
                     b.Property<Guid>("Id")
@@ -510,7 +563,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("ToCurrencyId");
 
-                    b.ToTable("ExchangeRate");
+                    b.ToTable("ExchangeRates");
                 });
 
             modelBuilder.Entity("Domain.Entities.Invoice", b =>
@@ -522,7 +575,10 @@ namespace Persistance.Migrations
                     b.Property<decimal>("AmountPaid")
                         .HasColumnType("numeric");
 
-                    b.Property<Guid>("ClientId")
+                    b.Property<string>("ClientAddress")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("ClientId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -533,6 +589,9 @@ namespace Persistance.Migrations
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("CurrencyCode")
+                        .HasColumnType("text");
 
                     b.Property<Guid?>("CurrencyId")
                         .HasColumnType("uuid");
@@ -546,11 +605,17 @@ namespace Persistance.Migrations
                     b.Property<decimal>("ExchangeRate")
                         .HasColumnType("numeric");
 
+                    b.Property<DateTime>("InvoiceDate")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("InvoiceNumber")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsSupplierInvoice")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime>("IssueDate")
@@ -571,8 +636,17 @@ namespace Persistance.Migrations
                     b.Property<Guid?>("ShipmentId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("ShipmentNumber")
+                        .HasColumnType("text");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
+
+                    b.Property<Guid?>("SupplierId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("SupplierName")
+                        .HasColumnType("text");
 
                     b.Property<decimal>("TotalHT")
                         .HasColumnType("numeric");
@@ -590,6 +664,8 @@ namespace Persistance.Migrations
                     b.HasIndex("CurrencyId");
 
                     b.HasIndex("ShipmentId");
+
+                    b.HasIndex("SupplierId");
 
                     b.ToTable("Invoices");
                 });
@@ -609,6 +685,9 @@ namespace Persistance.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<Guid?>("CreditNoteId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTimeOffset?>("DeletedDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -624,9 +703,6 @@ namespace Persistance.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("LineType")
-                        .HasColumnType("integer");
-
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("text");
 
@@ -636,11 +712,8 @@ namespace Persistance.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("numeric");
-
-                    b.Property<Guid?>("SurchargeId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
 
                     b.Property<Guid?>("TransportSegmentId")
                         .HasColumnType("uuid");
@@ -652,6 +725,8 @@ namespace Persistance.Migrations
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreditNoteId");
 
                     b.HasIndex("InvoiceId");
 
@@ -713,7 +788,7 @@ namespace Persistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MerchandiseType");
+                    b.ToTable("MerchandiseTypes");
                 });
 
             modelBuilder.Entity("Domain.Entities.Payment", b =>
@@ -780,7 +855,7 @@ namespace Persistance.Migrations
                     b.Property<DateTime?>("AcceptedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("ClientId")
+                    b.Property<Guid?>("ClientId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -948,6 +1023,10 @@ namespace Persistance.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
 
@@ -982,18 +1061,14 @@ namespace Persistance.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Phone")
                         .HasColumnType("text");
 
                     b.Property<string>("TaxId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("code")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("name")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -1296,6 +1371,83 @@ namespace Persistance.Migrations
                     b.HasIndex("ZoneToId");
 
                     b.ToTable("TariffLines");
+                });
+
+            modelBuilder.Entity("Domain.Entities.TaxRule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("AllowExemption")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTimeOffset?>("DeletedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ExemptionConditions")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal?>("ReducedRate")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Region")
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("StandardRate")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("SuperReducedRate")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("ValidFrom")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("ValidTo")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<decimal?>("ZeroRate")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TaxRules");
                 });
 
             modelBuilder.Entity("Domain.Entities.Test", b =>
@@ -1863,6 +2015,17 @@ namespace Persistance.Migrations
                     b.Navigation("ZoneTo");
                 });
 
+            modelBuilder.Entity("Domain.Entities.CreditNote", b =>
+                {
+                    b.HasOne("Domain.Entities.Invoice", "Invoice")
+                        .WithMany("CreditNotes")
+                        .HasForeignKey("InvoiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Invoice");
+                });
+
             modelBuilder.Entity("Domain.Entities.ExchangeRate", b =>
                 {
                     b.HasOne("Domain.Entities.Currency", "FromCurrency")
@@ -1886,25 +2049,35 @@ namespace Persistance.Migrations
                 {
                     b.HasOne("Domain.Entities.Client", "Client")
                         .WithMany("invoices")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ClientId");
 
                     b.HasOne("Domain.Entities.Currency", "Currency")
                         .WithMany("Invoices")
                         .HasForeignKey("CurrencyId");
 
-                    b.HasOne("Domain.Entities.Shipment", null)
+                    b.HasOne("Domain.Entities.Shipment", "Shipment")
                         .WithMany("Invoices")
                         .HasForeignKey("ShipmentId");
+
+                    b.HasOne("Domain.Entities.Supplier", "Supplier")
+                        .WithMany()
+                        .HasForeignKey("SupplierId");
 
                     b.Navigation("Client");
 
                     b.Navigation("Currency");
+
+                    b.Navigation("Shipment");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("Domain.Entities.InvoiceLine", b =>
                 {
+                    b.HasOne("Domain.Entities.CreditNote", null)
+                        .WithMany("Lines")
+                        .HasForeignKey("CreditNoteId");
+
                     b.HasOne("Domain.Entities.Invoice", "Invoice")
                         .WithMany("Lines")
                         .HasForeignKey("InvoiceId")
@@ -1927,9 +2100,7 @@ namespace Persistance.Migrations
                 {
                     b.HasOne("Domain.Entities.Client", "Client")
                         .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ClientId");
 
                     b.HasOne("Domain.Entities.MerchandiseType", "MerchandiseType")
                         .WithMany()
@@ -2226,6 +2397,11 @@ namespace Persistance.Migrations
                     b.Navigation("ContractPricings");
                 });
 
+            modelBuilder.Entity("Domain.Entities.CreditNote", b =>
+                {
+                    b.Navigation("Lines");
+                });
+
             modelBuilder.Entity("Domain.Entities.Currency", b =>
                 {
                     b.Navigation("ExchangeRatesFrom");
@@ -2237,6 +2413,8 @@ namespace Persistance.Migrations
 
             modelBuilder.Entity("Domain.Entities.Invoice", b =>
                 {
+                    b.Navigation("CreditNotes");
+
                     b.Navigation("Lines");
 
                     b.Navigation("Payements");

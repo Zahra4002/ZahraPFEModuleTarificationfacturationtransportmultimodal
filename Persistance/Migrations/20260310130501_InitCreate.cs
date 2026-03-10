@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persistance.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -80,7 +80,7 @@ namespace Persistance.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MerchandiseType",
+                name: "MerchandiseTypes",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -102,7 +102,7 @@ namespace Persistance.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MerchandiseType", x => x.Id);
+                    table.PrimaryKey("PK_MerchandiseTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -110,8 +110,8 @@ namespace Persistance.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    code = table.Column<string>(type: "text", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false),
+                    Code = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     TaxId = table.Column<string>(type: "text", nullable: true),
                     Email = table.Column<string>(type: "text", nullable: true),
                     Phone = table.Column<string>(type: "text", nullable: true),
@@ -130,6 +130,32 @@ namespace Persistance.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Suppliers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Surcharges",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    CalculationType = table.Column<int>(type: "integer", nullable: false),
+                    Value = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedById = table.Column<string>(type: "text", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    ModifiedById = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Surcharges", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -158,6 +184,38 @@ namespace Persistance.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TariffGrid", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TaxRules",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Code = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Country = table.Column<string>(type: "text", nullable: false),
+                    Region = table.Column<string>(type: "text", nullable: true),
+                    StandardRate = table.Column<decimal>(type: "numeric", nullable: false),
+                    ReducedRate = table.Column<decimal>(type: "numeric", nullable: true),
+                    SuperReducedRate = table.Column<decimal>(type: "numeric", nullable: true),
+                    ZeroRate = table.Column<decimal>(type: "numeric", nullable: true),
+                    AllowExemption = table.Column<bool>(type: "boolean", nullable: false),
+                    ExemptionConditions = table.Column<string>(type: "text", nullable: true),
+                    ValidFrom = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ValidTo = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedById = table.Column<string>(type: "text", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    ModifiedById = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TaxRules", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -199,6 +257,8 @@ namespace Persistance.Migrations
                     LockoutEnd = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     RefreshToken = table.Column<string>(type: "text", nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     CreatedById = table.Column<string>(type: "text", nullable: true),
@@ -271,7 +331,7 @@ namespace Persistance.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ExchangeRate",
+                name: "ExchangeRates",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -292,15 +352,15 @@ namespace Persistance.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExchangeRate", x => x.Id);
+                    table.PrimaryKey("PK_ExchangeRates", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ExchangeRate_Currencies_FromCurrencyId",
+                        name: "FK_ExchangeRates_Currencies_FromCurrencyId",
                         column: x => x.FromCurrencyId,
                         principalTable: "Currencies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ExchangeRate_Currencies_ToCurrencyId",
+                        name: "FK_ExchangeRates_Currencies_ToCurrencyId",
                         column: x => x.ToCurrencyId,
                         principalTable: "Currencies",
                         principalColumn: "Id",
@@ -313,7 +373,7 @@ namespace Persistance.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     QuoteNumber = table.Column<string>(type: "text", nullable: false),
-                    ClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ClientId = table.Column<Guid>(type: "uuid", nullable: true),
                     Quote_Origin_Street = table.Column<string>(type: "text", nullable: false),
                     Quote_Origin_City = table.Column<string>(type: "text", nullable: false),
                     OriginAddress_PostalCode = table.Column<string>(type: "text", nullable: false),
@@ -355,12 +415,11 @@ namespace Persistance.Migrations
                         name: "FK_Quotes_Clients_ClientId",
                         column: x => x.ClientId,
                         principalTable: "Clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Quotes_MerchandiseType_MerchandiseTypeId",
+                        name: "FK_Quotes_MerchandiseTypes_MerchandiseTypeId",
                         column: x => x.MerchandiseTypeId,
-                        principalTable: "MerchandiseType",
+                        principalTable: "MerchandiseTypes",
                         principalColumn: "Id");
                 });
 
@@ -512,6 +571,54 @@ namespace Persistance.Migrations
                         principalTable: "WebhookConfigs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SurchargeRules",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    SurchargeId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    ConditionsJson = table.Column<string>(type: "text", nullable: false),
+                    ValidFrom = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    ValidTo = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    ZoneFromId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ZoneToId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ApplicableTransportModes = table.Column<string>(type: "text", nullable: true),
+                    OverrideValue = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: true),
+                    Priority = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedById = table.Column<string>(type: "text", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    ModifiedById = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SurchargeRules", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SurchargeRules_Surcharges_SurchargeId",
+                        column: x => x.SurchargeId,
+                        principalTable: "Surcharges",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SurchargeRules_Zones_ZoneFromId",
+                        column: x => x.ZoneFromId,
+                        principalTable: "Zones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_SurchargeRules_Zones_ZoneToId",
+                        column: x => x.ZoneToId,
+                        principalTable: "Zones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -674,8 +781,14 @@ namespace Persistance.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     InvoiceNumber = table.Column<string>(type: "text", nullable: false),
-                    ClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ClientId = table.Column<Guid>(type: "uuid", nullable: true),
+                    InvoiceDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsSupplierInvoice = table.Column<bool>(type: "boolean", nullable: false),
+                    ClientAddress = table.Column<string>(type: "text", nullable: true),
+                    SupplierId = table.Column<Guid>(type: "uuid", nullable: true),
                     ShipmentId = table.Column<Guid>(type: "uuid", nullable: true),
+                    SupplierName = table.Column<string>(type: "text", nullable: true),
+                    ShipmentNumber = table.Column<string>(type: "text", nullable: true),
                     IssueDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DueDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
@@ -686,6 +799,7 @@ namespace Persistance.Migrations
                     CurrencyId = table.Column<Guid>(type: "uuid", nullable: true),
                     ExchangeRate = table.Column<decimal>(type: "numeric", nullable: false),
                     Notes = table.Column<string>(type: "text", nullable: true),
+                    CurrencyCode = table.Column<string>(type: "text", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     CreatedById = table.Column<string>(type: "text", nullable: true),
@@ -702,8 +816,7 @@ namespace Persistance.Migrations
                         name: "FK_Invoices_Clients_ClientId",
                         column: x => x.ClientId,
                         principalTable: "Clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Invoices_Currencies_CurrencyId",
                         column: x => x.CurrencyId,
@@ -713,6 +826,11 @@ namespace Persistance.Migrations
                         name: "FK_Invoices_Shipments_ShipmentId",
                         column: x => x.ShipmentId,
                         principalTable: "Shipments",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Invoices_Suppliers_SupplierId",
+                        column: x => x.SupplierId,
+                        principalTable: "Suppliers",
                         principalColumn: "Id");
                 });
 
@@ -772,19 +890,15 @@ namespace Persistance.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "InvoiceLines",
+                name: "CreditNote",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreditNoteNumber = table.Column<string>(type: "text", nullable: false),
                     InvoiceId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    Quantity = table.Column<decimal>(type: "numeric", nullable: false),
-                    UnitPriceHT = table.Column<decimal>(type: "numeric", nullable: false),
-                    DiscountPercent = table.Column<decimal>(type: "numeric", nullable: false),
-                    VATRate = table.Column<decimal>(type: "numeric", nullable: false),
-                    LineType = table.Column<int>(type: "integer", nullable: false),
-                    TransportSegmentId = table.Column<Guid>(type: "uuid", nullable: true),
-                    SurchargeId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Reason = table.Column<string>(type: "text", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     CreatedById = table.Column<string>(type: "text", nullable: true),
@@ -796,9 +910,9 @@ namespace Persistance.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_InvoiceLines", x => x.Id);
+                    table.PrimaryKey("PK_CreditNote", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_InvoiceLines_Invoices_InvoiceId",
+                        name: "FK_CreditNote_Invoices_InvoiceId",
                         column: x => x.InvoiceId,
                         principalTable: "Invoices",
                         principalColumn: "Id",
@@ -833,6 +947,44 @@ namespace Persistance.Migrations
                         column: x => x.InvoiceId,
                         principalTable: "Invoices",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InvoiceLines",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    InvoiceId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    UnitPriceHT = table.Column<decimal>(type: "numeric", nullable: false),
+                    VATRate = table.Column<decimal>(type: "numeric", nullable: false),
+                    DiscountPercent = table.Column<decimal>(type: "numeric", nullable: false),
+                    TransportSegmentId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreditNoteId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedById = table.Column<string>(type: "text", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    ModifiedById = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InvoiceLines", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InvoiceLines_CreditNote_CreditNoteId",
+                        column: x => x.CreditNoteId,
+                        principalTable: "CreditNote",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_InvoiceLines_Invoices_InvoiceId",
+                        column: x => x.InvoiceId,
+                        principalTable: "Invoices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -871,14 +1023,24 @@ namespace Persistance.Migrations
                 column: "SupplierId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExchangeRate_FromCurrencyId",
-                table: "ExchangeRate",
+                name: "IX_CreditNote_InvoiceId",
+                table: "CreditNote",
+                column: "InvoiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExchangeRates_FromCurrencyId",
+                table: "ExchangeRates",
                 column: "FromCurrencyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExchangeRate_ToCurrencyId",
-                table: "ExchangeRate",
+                name: "IX_ExchangeRates_ToCurrencyId",
+                table: "ExchangeRates",
                 column: "ToCurrencyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InvoiceLines_CreditNoteId",
+                table: "InvoiceLines",
+                column: "CreditNoteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_InvoiceLines_InvoiceId",
@@ -899,6 +1061,11 @@ namespace Persistance.Migrations
                 name: "IX_Invoices_ShipmentId",
                 table: "Invoices",
                 column: "ShipmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invoices_SupplierId",
+                table: "Invoices",
+                column: "SupplierId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_InvoiceId",
@@ -924,6 +1091,27 @@ namespace Persistance.Migrations
                 name: "IX_Shipments_QuoteId",
                 table: "Shipments",
                 column: "QuoteId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SurchargeRules_SurchargeId",
+                table: "SurchargeRules",
+                column: "SurchargeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SurchargeRules_ZoneFromId",
+                table: "SurchargeRules",
+                column: "ZoneFromId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SurchargeRules_ZoneToId",
+                table: "SurchargeRules",
+                column: "ZoneToId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Surcharges_Code",
+                table: "Surcharges",
+                column: "Code",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -980,7 +1168,7 @@ namespace Persistance.Migrations
                 name: "ContractPricings");
 
             migrationBuilder.DropTable(
-                name: "ExchangeRate");
+                name: "ExchangeRates");
 
             migrationBuilder.DropTable(
                 name: "InvoiceLines");
@@ -989,7 +1177,13 @@ namespace Persistance.Migrations
                 name: "Payments");
 
             migrationBuilder.DropTable(
+                name: "SurchargeRules");
+
+            migrationBuilder.DropTable(
                 name: "TariffLines");
+
+            migrationBuilder.DropTable(
+                name: "TaxRules");
 
             migrationBuilder.DropTable(
                 name: "Tests");
@@ -1007,7 +1201,10 @@ namespace Persistance.Migrations
                 name: "Contracts");
 
             migrationBuilder.DropTable(
-                name: "Invoices");
+                name: "CreditNote");
+
+            migrationBuilder.DropTable(
+                name: "Surcharges");
 
             migrationBuilder.DropTable(
                 name: "TariffGrid");
@@ -1019,7 +1216,7 @@ namespace Persistance.Migrations
                 name: "WebhookConfigs");
 
             migrationBuilder.DropTable(
-                name: "Suppliers");
+                name: "Invoices");
 
             migrationBuilder.DropTable(
                 name: "Currencies");
@@ -1028,13 +1225,16 @@ namespace Persistance.Migrations
                 name: "Shipments");
 
             migrationBuilder.DropTable(
+                name: "Suppliers");
+
+            migrationBuilder.DropTable(
                 name: "Quotes");
 
             migrationBuilder.DropTable(
                 name: "Clients");
 
             migrationBuilder.DropTable(
-                name: "MerchandiseType");
+                name: "MerchandiseTypes");
         }
     }
 }
