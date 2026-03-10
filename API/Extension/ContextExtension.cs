@@ -27,6 +27,10 @@ namespace API.Extension
             services.AddScoped<ISupplierRepository, SupplierRepository>();
             services.AddScoped<IContractRepository, ContractRepository>();
             services.AddScoped<ITransportSegmentRepository, TransportSegmentRepository>();
+
+            services.AddScoped<Application.Interfaces.IClientRepository, Persistance.Repositories.ClientRepository>();
+            services.AddScoped<Application.Interfaces.IPaymentRepository, Persistance.Repositories.PaymentRepository>();
+            services.AddScoped<Application.Interfaces.IContractRepository, Persistance.Repositories.ContractRepository>();
             services.AddScoped<Application.Interfaces.IZoneRepository, Persistance.Repositories.ZoneRepository>();
             services.AddScoped<Application.Interfaces.ICurrencyRepository, Persistance.Repositories.CurrencyRepository>();
             services.AddScoped<Application.Interfaces.IShipmentRepository, Persistance.Repositories.ShipmentRepository>();
