@@ -2,10 +2,6 @@
 using Application.Features.ContractFeature.Queries;
 using Application.Features.ContractFeature.Validators;
 using Application.Features.ContractFeature.Validators.Application.Features.ContractFeature.Validators;
-using Application.Features.CustomerFeatures.Validators;
-using Application.Features.TestFeature.Commands;
-using Application.Features.TestFeature.Queries;
-using Application.Features.TestFeature.Validators;
 using Application.Setting;
 using FluentValidation;
 using MediatR;
@@ -13,104 +9,109 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    /// <summary>
+    /// API de gestion des contrats.
+    /// </summary>
+    /// <remarks>
+    /// Cette API permet de :
+    /// - créer un contrat
+    /// - modifier un contrat
+    /// - supprimer un contrat
+    /// - récupérer les contrats
+    /// - gérer les prix associés aux contrats
+    /// - renouveler un contrat
+    /// </remarks>
     [Route("api/contract")]
     [ApiController]
     public class ContractControllerNew : ControllerBase
     {
         private readonly IMediator _mediator;
 
+        /// <summary>
+        /// Initialise une nouvelle instance du contrôleur ContractControllerNew.
+        /// </summary>
+        /// <param name="mediator">Service MediatR pour envoyer les commandes et requêtes.</param>
         public ContractControllerNew(IMediator mediator)
         {
             _mediator = mediator;
         }
+
         /// <summary>
-        /// Handles the addition of a new test entity based on the provided command.
+        /// Créer un nouveau contrat.
         /// </summary>
-        /// <remarks>This method validates the input command before processing it. If the validation
-        /// fails,  a 400 Bad Request response is returned. Otherwise, the command is sent to the mediator  for further
-        /// processing.</remarks>
-        /// <param name="cmd">The command containing the details of the test entity to be added.</param>
-        /// <returns>An <see cref="ActionResult"/> containing the result of the operation.  Returns <see
-        /// cref="BadRequestObjectResult"/> if the validation fails or an exception occurs.  Returns <see
-        /// cref="OkObjectResult"/> with the operation result if the addition is successful.</returns>
+        /// <param name="cmd">Informations du contrat à créer.</param>
+        /// <returns>Résultat de la création du contrat.</returns>
+        /// <response code="200">Contrat créé avec succès.</response>
+        /// <response code="400">Erreur de validation.</response>
+        /// <response code="500">Erreur interne du serveur.</response>
         [HttpPost("")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Add(AddContractCommandNew cmd)
         {
             try
             {
-                ResponseHttp AddCustomerResult;
+                ResponseHttp result;
                 AddContractCommandNewValidator validator = new();
 
-                AddCustomerResult = validator.Validate(new ValidationContext<AddContractCommandNew>(cmd));
+                result = validator.Validate(new ValidationContext<AddContractCommandNew>(cmd));
 
-                if (AddCustomerResult.Status == StatusCodes.Status400BadRequest)
+                if (result.Status == StatusCodes.Status400BadRequest)
                 {
-                    return BadRequest(AddCustomerResult);
+                    return BadRequest(result);
                 }
 
-                AddCustomerResult = await _mediator.Send(cmd);
-
-                return Ok(AddCustomerResult);
+                result = await _mediator.Send(cmd);
+                return Ok(result);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
+
         /// <summary>
-        /// Updates an existing resource based on the provided command.
+        /// Mettre à jour un contrat existant.
         /// </summary>
-        /// <remarks>This method validates the input command before processing the update. If validation
-        /// fails, a  <see cref="BadRequestObjectResult"/> is returned with the validation details. If the update is
-        /// successful,  the result of the operation is returned in an <see cref="OkObjectResult"/>.</remarks>
-        /// <param name="cmd">The command containing the data required to update the resource. This must include all necessary fields for
-        /// validation and processing.</param>
-        /// <returns>An <see cref="ActionResult"/> representing the result of the operation. Returns: <list type="bullet"> <item>
-        /// <description><see cref="BadRequestObjectResult"/> if the validation fails or an exception
-        /// occurs.</description> </item> <item> <description><see cref="OkObjectResult"/> if the update operation
-        /// completes successfully.</description> </item> </list></returns>
+        /// <param name="cmd">Données du contrat à mettre à jour.</param>
+        /// <returns>Résultat de la mise à jour.</returns>
+        /// <response code="200">Contrat mis à jour.</response>
+        /// <response code="400">Erreur de validation.</response>
         [HttpPut("")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Update([FromBody] UpdateContractCommandNew cmd)
         {
             try
             {
-                ResponseHttp updateCustomerResult;
+                ResponseHttp result;
                 UpdateContractCommandNewValidator validator = new();
 
-                updateCustomerResult = validator.Validate(new ValidationContext<UpdateContractCommandNew>(cmd));
+                result = validator.Validate(new ValidationContext<UpdateContractCommandNew>(cmd));
 
-                if (updateCustomerResult.Status == StatusCodes.Status400BadRequest)
+                if (result.Status == StatusCodes.Status400BadRequest)
                 {
-                    return BadRequest(updateCustomerResult);
+                    return BadRequest(result);
                 }
 
-                updateCustomerResult = await _mediator.Send(cmd);
-
-                return Ok(updateCustomerResult);
+                result = await _mediator.Send(cmd);
+                return Ok(result);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-
         }
 
         /// <summary>
-        /// Deletes the resource identified by the specified ID.
+        /// Supprimer un contrat.
         /// </summary>
-        /// <param name="id">The unique identifier of the resource to delete.</param>
-        /// <returns>A task that represents the asynchronous operation. The task result contains  <see langword="true"/> if the
-        /// resource was successfully deleted; otherwise,  <see langword="false"/>.</returns>
+        /// <param name="id">Identifiant du contrat.</param>
+        /// <returns>Résultat de suppression.</returns>
+        /// <response code="200">Contrat supprimé.</response>
+        /// <response code="404">Contrat non trouvé.</response>
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         public async Task<ActionResult<bool>> Delete(Guid id)
         {
             var result = await _mediator.Send(new DeleteContractCommandNew(id));
@@ -118,184 +119,132 @@ namespace API.Controllers
         }
 
         /// <summary>
-        /// Retrieves a resource by its unique identifier.
+        /// Récupérer un contrat par son identifiant.
         /// </summary>
-        /// <remarks>This method sends a query to retrieve the resource associated with the specified
-        /// <paramref name="id"/>. If the resource is found, it is returned with an HTTP 200 OK status. Otherwise, an
-        /// appropriate HTTP error status is returned.</remarks>
-        /// <param name="id">The unique identifier of the resource to retrieve.</param>
-        /// <returns>An <see cref="ActionResult"/> containing the resource if found, or an appropriate HTTP response if not.</returns>
+        /// <param name="id">Identifiant du contrat.</param>
+        /// <returns>Détails du contrat.</returns>
+        /// <response code="200">Contrat trouvé.</response>
+        /// <response code="404">Contrat non trouvé.</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status200OK)]
         public async Task<ActionResult> Get(Guid id)
         {
-            GetContByIdNewQuery qr = new(id);
-            var result = await _mediator.Send(qr);
-
+            var result = await _mediator.Send(new GetContByIdNewQuery(id));
             return Ok(result);
         }
 
         /// <summary>
-        /// Retrieves a paginated list of test items.
+        /// Récupérer la liste paginée des contrats.
         /// </summary>
-        /// <remarks>The pagination parameters allow the caller to specify which subset of the data to
-        /// retrieve. If both <paramref name="pageNumber"/> and <paramref name="pageSize"/> are null, default values are
-        /// applied.</remarks>
-        /// <param name="pageNumber">The page number to retrieve. If null, the default page is returned.</param>
-        /// <param name="pageSize">The number of items per page. If null, the default page size is used.</param>
-        /// <returns>An <see cref="ActionResult"/> containing the paginated list of test items.</returns>
+        /// <param name="pageNumber">Numéro de page.</param>
+        /// <param name="pageSize">Nombre d’éléments par page.</param>
+        /// <returns>Liste paginée des contrats.</returns>
         [HttpGet("")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status200OK)]
         public async Task<ActionResult> Get(int? pageNumber, int? pageSize)
         {
             var result = await _mediator.Send(new GetAllContractNewQuery(pageNumber, pageSize));
-
             return Ok(result);
         }
-        // GET /api/Contracts/client/{clientId}
+
+        /// <summary>
+        /// Récupérer les contrats d’un client spécifique.
+        /// </summary>
+        /// <param name="clientId">Identifiant du client.</param>
+        /// <returns>Liste des contrats du client.</returns>
         [HttpGet("client/{clientId}")]
+        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status200OK)]
         public async Task<ActionResult<ResponseHttp>> GetByClient(Guid clientId)
         {
-            var query = new GetContractsByClientQuery(clientId);
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(new GetContractsByClientQuery(clientId));
             return StatusCode(result.Status, result);
         }
 
-        // GET /api/Contracts/expiring
+        /// <summary>
+        /// Récupérer les contrats qui expirent bientôt.
+        /// </summary>
+        /// <param name="days">Nombre de jours avant expiration.</param>
+        /// <returns>Liste des contrats proches de l’expiration.</returns>
         [HttpGet("expiring")]
+        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status200OK)]
         public async Task<ActionResult<ResponseHttp>> GetExpiring([FromQuery] int days = 30)
         {
-            var query = new GetExpiringContractsQuery(days);
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(new GetExpiringContractsQuery(days));
             return StatusCode(result.Status, result);
         }
 
-        // GET /api/Contracts/{id}/details (avec pricings + client/supplier)
+        /// <summary>
+        /// Récupérer les détails complets d’un contrat.
+        /// </summary>
+        /// <param name="id">Identifiant du contrat.</param>
+        /// <returns>Détails complets du contrat.</returns>
         [HttpGet("{id}/details")]
+        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status200OK)]
         public async Task<ActionResult<ResponseHttp>> GetDetails(Guid id)
         {
-            var query = new GetContractDetailsQuery(id);
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(new GetContractDetailsQuery(id));
             return StatusCode(result.Status, result);
         }
 
-        // POST /api/Contracts/{id}/renew
+        /// <summary>
+        /// Renouveler un contrat existant.
+        /// </summary>
+        /// <param name="id">Identifiant du contrat.</param>
+        /// <returns>Résultat du renouvellement.</returns>
         [HttpPost("{id}/renew")]
+        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status200OK)]
         public async Task<ActionResult<ResponseHttp>> Renew(Guid id)
         {
-            var command = new RenewContractCommand(id);
+            var result = await _mediator.Send(new RenewContractCommand(id));
+            return StatusCode(result.Status, result);
+        }
+
+        /// <summary>
+        /// Ajouter une tarification à un contrat.
+        /// </summary>
+        /// <param name="contractId">Identifiant du contrat.</param>
+        /// <param name="command">Informations de la tarification.</param>
+        /// <returns>Résultat de l'ajout.</returns>
+        [HttpPost("{contractId}/pricings")]
+        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status201Created)]
+        public async Task<ActionResult<ResponseHttp>> AddPricing(Guid contractId, [FromBody] AddContractPricingCommand command)
+        {
+            command = command with { ContractId = contractId };
             var result = await _mediator.Send(command);
             return StatusCode(result.Status, result);
         }
 
-        [HttpPost("{contractId}/pricings")]
-        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ResponseHttp>> AddPricing(
-            Guid contractId,
-            [FromBody] AddContractPricingCommand command)
-        {
-            try
-            {
-                // Validation manuelle (comme dans tes autres controllers)
-                var validator = new AddContractPricingCommandValidator(); // ← crée ce validator si besoin
-                var validationResult = validator.Validate(new ValidationContext<AddContractPricingCommand>(command));
-
-                if (!validationResult.IsValid)
-                {
-                    var errors = string.Join(" ; ", validationResult.Errors.Select(e => e.ErrorMessage));
-                    return BadRequest(new ResponseHttp
-                    {
-                        Status = StatusCodes.Status400BadRequest,
-                        Fail_Messages = $"Erreurs de validation : {errors}"
-                    });
-                }
-
-                // Assigner l'ID du contrat depuis l'URL
-                command = command with { ContractId = contractId };
-
-                var result = await _mediator.Send(command);
-                return StatusCode(result.Status, result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHttp
-                {
-                    Status = StatusCodes.Status500InternalServerError,
-                    Fail_Messages = ex.Message
-                });
-            }
-        }
-
+        /// <summary>
+        /// Modifier une tarification d’un contrat.
+        /// </summary>
+        /// <param name="contractId">Identifiant du contrat.</param>
+        /// <param name="pricingId">Identifiant de la tarification.</param>
+        /// <param name="command">Nouvelles informations de la tarification.</param>
+        /// <returns>Résultat de la modification.</returns>
         [HttpPut("{contractId}/pricings/{pricingId}")]
         [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ResponseHttp>> UpdatePricing(
-             Guid contractId,
-             Guid pricingId,
-             [FromBody] UpdateContractPricingCommand command)
+            Guid contractId,
+            Guid pricingId,
+            [FromBody] UpdateContractPricingCommand command)
         {
-            try
-            {
-                // Validation manuelle
-                var validator = new UpdateContractPricingCommandValidator(); // ← crée ce validator si besoin
-                var validationResult = validator.Validate(new ValidationContext<UpdateContractPricingCommand>(command));
-
-                if (!validationResult.IsValid)
-                {
-                    var errors = string.Join(" ; ", validationResult.Errors.Select(e => e.ErrorMessage));
-                    return BadRequest(new ResponseHttp
-                    {
-                        Status = StatusCodes.Status400BadRequest,
-                        Fail_Messages = $"Erreurs de validation : {errors}"
-                    });
-                }
-
-                // Assigner les IDs depuis l'URL
-                command = command with { ContractId = contractId, PricingId = pricingId };
-
-                var result = await _mediator.Send(command);
-                return StatusCode(result.Status, result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHttp
-                {
-                    Status = StatusCodes.Status500InternalServerError,
-                    Fail_Messages = ex.Message
-                });
-            }
+            command = command with { ContractId = contractId, PricingId = pricingId };
+            var result = await _mediator.Send(command);
+            return StatusCode(result.Status, result);
         }
 
+        /// <summary>
+        /// Supprimer une tarification d’un contrat.
+        /// </summary>
+        /// <param name="contractId">Identifiant du contrat.</param>
+        /// <param name="pricingId">Identifiant de la tarification.</param>
+        /// <returns>Résultat de la suppression.</returns>
         [HttpDelete("{contractId}/pricings/{pricingId}")]
         [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ResponseHttp>> DeletePricing(Guid contractId, Guid pricingId)
         {
-            try
-            {
-                var command = new DeleteContractPricingCommand(contractId, pricingId);
-                var result = await _mediator.Send(command);
-                return StatusCode(result.Status, result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHttp
-                {
-                    Status = StatusCodes.Status500InternalServerError,
-                    Fail_Messages = ex.Message
-                });
-            }
+            var result = await _mediator.Send(new DeleteContractPricingCommand(contractId, pricingId));
+            return StatusCode(result.Status, result);
         }
-
     }
 }
