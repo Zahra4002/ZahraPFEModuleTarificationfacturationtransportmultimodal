@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.Interfaces;
 using Application.Setting;
+using AutoMapper;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -29,18 +30,20 @@ namespace Application.Features.ContractFeature.Commands
     public class UpdateContractPricingCommandHandler : IRequestHandler<UpdateContractPricingCommand, ResponseHttp>
     {
         private readonly IContractRepository _repository;
+        private readonly IMapper _mapper;
 
-        public UpdateContractPricingCommandHandler(IContractRepository repository)
+        public UpdateContractPricingCommandHandler(IContractRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         public async Task<ResponseHttp> Handle(UpdateContractPricingCommand request, CancellationToken ct)
         {
             try
             {
+                // Vérifier que le contrat existe
                 var contract = await _repository.GetByIdAsync(request.ContractId, ct);
-
                 if (contract == null)
                 {
                     return new ResponseHttp
@@ -50,47 +53,37 @@ namespace Application.Features.ContractFeature.Commands
                     };
                 }
 
-                var pricing = contract.ContractPricings.FirstOrDefault(p => p.Id == request.PricingId);
-
+                // Récupérer la tarification à mettre à jour
+                var pricing = await _repository.GetContractPricingByIdAsync(request.ContractId, request.PricingId, ct);
                 if (pricing == null)
                 {
                     return new ResponseHttp
                     {
                         Status = StatusCodes.Status404NotFound,
-                        Fail_Messages = "Tarification non trouvée"
+                        Fail_Messages = "Tarification non trouvée pour ce contrat"
                     };
                 }
 
-                // تحديث الحقول الموجودة فقط (اللي في ContractPricing)
-                pricing.ZoneFromId = request.ZoneFromId;
-                pricing.ZoneToId = request.ZoneToId;
-                pricing.TransportMode = request.TransportMode;
+                // Mapper les nouvelles valeurs vers l'entité existante
+                _mapper.Map(request, pricing);
 
-                pricing.UseFixedPrice = request.UseFixedPrice;
-                pricing.FixedPrice = request.FixedPrice;
-                pricing.DiscountPercent = request.DiscountPercent;
+                _repository.Update(contract);
 
-                pricing.VolumeThreshold = request.VolumeThreshold;
-                pricing.VolumeDiscountPercent = request.VolumeDiscountPercent;
-
-                pricing.CurrencyCode = request.CurrencyCode ?? "EUR";
-                pricing.IsActive = request.IsActive;
-
-                await _repository.UpdateAsync(contract, ct);
-                await _repository.SaveChangesAsync(ct);
+                // Mettre à jour la tarification
+                _repository.SaveChange(ct);
 
                 return new ResponseHttp
                 {
                     Status = StatusCodes.Status200OK,
-                    Resultat = "Tarification mise à jour avec succès"
+                    Fail_Messages = null
                 };
             }
             catch (Exception ex)
             {
                 return new ResponseHttp
                 {
-                    Fail_Messages = ex.Message,
-                    Status = StatusCodes.Status400BadRequest
+                    Status = StatusCodes.Status500InternalServerError,
+                    Fail_Messages = $"Erreur lors de la mise à jour de la tarification : {ex.Message}"
                 };
             }
         }

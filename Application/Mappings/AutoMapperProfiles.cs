@@ -1,4 +1,7 @@
-﻿using Application.Features.InvoiceFeature.Commands;
+﻿using Application.Features.ClientFeature.Commands;
+using Application.Features.ContractFeature.Commands;
+using Application.Features.ContractFeature.Dtos;
+using Application.Features.InvoiceFeature.Commands;
 using Application.Features.InvoiceFeature.Dtos;
 using Application.Features.QuoteFeature.Commands;
 using Application.Features.QuoteFeature.Dtos;
@@ -9,11 +12,13 @@ using Application.Features.TariffGridFeature.Dtos;
 using Application.Features.TestFeature.Commands;
 using Application.Features.TestFeature.Dtos;
 using Application.Features.UserFeature.Dtos;
+using Application.Features.ZoneFeature.Commands;
 using AutoMapper;
 using Domain.Common;
 using Domain.Entities;
 using Domain.Enums;
 using System.Text.Json;
+
 
 namespace Application.Mappings
 {
@@ -21,6 +26,35 @@ namespace Application.Mappings
     {
         public AutoMapperProfiles()
         {
+            // ============================
+            // ZONE MAPPINGS
+            // ============================
+            CreateMap<AddZoneCommand, Zone>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.TariffLinesFrom, opt => opt.Ignore())
+                .ForMember(dest => dest.TariffLinesTo, opt => opt.Ignore());
+            // Ajouter ce mapping pour UpdateZoneCommand
+            CreateMap<UpdateZoneCommand, Zone>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.TariffLinesFrom, opt => opt.Ignore())
+                .ForMember(dest => dest.TariffLinesTo, opt => opt.Ignore());
+
             // ============================
             // INVOICE LINE
             // ============================
@@ -230,18 +264,7 @@ namespace Application.Mappings
                         src.CurrentPage,
                         src.PageSize);
                 });
-            // ============================
-            // CONTRACT DTO
-            // ============================
-            CreateMap<Contract, ContractDto>()
-                .ForMember(dest => dest.ClientName,
-                    opt => opt.MapFrom(src => src.Client != null ? src.Client.Name : null))
-                .ForMember(dest => dest.SupplierName,
-                    opt => opt.MapFrom(src => src.Supplier != null ? src.Supplier.Name : null))
-                .ForMember(dest => dest.IsValid,
-                    opt => opt.MapFrom(src => src.IsValidAt(DateTime.UtcNow)))
-                .ForMember(dest => dest.IsExpiringSoon,
-                    opt => opt.MapFrom(src => src.IsExpiringSoon(30)));
+            
 
             // ============================
             // TRANSPORT SEGMENT DTO
@@ -354,7 +377,226 @@ namespace Application.Mappings
                 .ForMember(dest => dest.ZoneFromName, opt => opt.MapFrom(src => src.ZoneFrom != null ? src.ZoneFrom.Name : null))
                 .ForMember(dest => dest.ZoneToName, opt => opt.MapFrom(src => src.ZoneTo != null ? src.ZoneTo.Name : null))
                 .ForMember(dest => dest.ApplicableTransportModes, opt => opt.MapFrom(src => ConvertTransportModes(src.ApplicableTransportModes)));
+
+            // ============================
+            // CLIENT MAPPINGS
+            // ============================
+
+
+
+            // Command -> Entity (for update)
+            CreateMap<UpdateClientCommandNew, Client>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.ClientId))
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.userRole))
+                .ForMember(dest => dest.BullingAddress, opt => opt.MapFrom(src => src.bullingAddress))
+                .ForMember(dest => dest.ShippingAddress, opt => opt.MapFrom(src => src.shippingAddress))
+                .ForMember(dest => dest.DefaultCurrencyCode, opt => opt.MapFrom(src => src.defaultCurrencyCode))
+                .ForMember(dest => dest.CreditLimit, opt => opt.MapFrom(src => src.creditLimit))
+                .ForMember(dest => dest.PaymentTermDays, opt => opt.MapFrom(src => src.paymenttermDays))
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.isActive))
+                .ForMember(dest => dest.Contracts, opt => opt.Ignore())
+                .ForMember(dest => dest.invoices, opt => opt.Ignore())
+                .ForMember(dest => dest.shipments, opt => opt.Ignore());
+
+            // Entity -> DTO (for responses)
+            CreateMap<Client, ClientDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.TaxId, opt => opt.MapFrom(src => src.TaxId))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role))
+                .ForMember(dest => dest.BullingAddress, opt => opt.MapFrom(src => src.BullingAddress))
+                .ForMember(dest => dest.ShippingAddress, opt => opt.MapFrom(src => src.ShippingAddress))
+                .ForMember(dest => dest.DefaultCurrencyCode, opt => opt.MapFrom(src => src.DefaultCurrencyCode))
+                .ForMember(dest => dest.CreditLimit, opt => opt.MapFrom(src => src.CreditLimit))
+                .ForMember(dest => dest.PaymentTermDays, opt => opt.MapFrom(src => src.PaymentTermDays))
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive));
+
+
+            // ============================
+            // CONTRACT MAPPINGS
+            // ============================
+
+// Command → Entity (pour la création)
+CreateMap<AddContractCommandNew, Contract>()
+    .ForMember(dest => dest.Id, opt => opt.Ignore())
+    .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+    .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+    .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+    .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+    .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+    .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+    .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+    .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+    .ForMember(dest => dest.GlobalDiscountPercent, opt => opt.Ignore())
+    .ForMember(dest => dest.Client, opt => opt.Ignore())
+    .ForMember(dest => dest.Supplier, opt => opt.Ignore())
+    .ForMember(dest => dest.ContractPricings, opt => opt.Ignore())
+    // Mapping spécifique pour les noms différents
+    .ForMember(dest => dest.ContractNumber, opt => opt.MapFrom(src => src.contractNumber))
+    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.name))
+    .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
+    .ForMember(dest => dest.ValidFrom, opt => opt.MapFrom(src => src.validForm))
+    .ForMember(dest => dest.ValidTo, opt => opt.MapFrom(src => src.validTo))
+    .ForMember(dest => dest.ClientId, opt => opt.MapFrom(src => src.ClientId))
+    .ForMember(dest => dest.SupplierId, opt => opt.MapFrom(src => src.SupplierId))
+    .ForMember(dest => dest.Terms, opt => opt.MapFrom(src => src.terms))
+    .ForMember(dest => dest.TermsAccepted, opt => opt.MapFrom(src => src.termsAccepted))
+    .ForMember(dest => dest.TermsAcceptedAt, opt => opt.MapFrom(src => src.termsAccptedAt))
+    .ForMember(dest => dest.MinimumVolume, opt => opt.MapFrom(src => src.minimumVolume))
+    .ForMember(dest => dest.MinimumVolumeUnit, opt => opt.MapFrom(src => src.minimumVolumeUnit))
+    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
+    .ForMember(dest => dest.AutoRenew, opt => opt.MapFrom(src => src.AutoRenew))
+    .ForMember(dest => dest.RenewalNoticeDays, opt => opt.MapFrom(src => src.RenewalNoticeDays));
+
+// Entity → DTO (pour les réponses)
+CreateMap<Contract, ContractDTO>()
+    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+    .ForMember(dest => dest.ContractNumber, opt => opt.MapFrom(src => src.ContractNumber))
+    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+    .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
+    .ForMember(dest => dest.ClientId, opt => opt.MapFrom(src => src.ClientId))
+    .ForMember(dest => dest.SupplierId, opt => opt.MapFrom(src => src.SupplierId))
+    .ForMember(dest => dest.ValidFrom, opt => opt.MapFrom(src => src.ValidFrom))
+    .ForMember(dest => dest.ValidTo, opt => opt.MapFrom(src => src.ValidTo))
+    .ForMember(dest => dest.Terms, opt => opt.MapFrom(src => src.Terms))
+    .ForMember(dest => dest.TermsAccepted, opt => opt.MapFrom(src => src.TermsAccepted))
+    .ForMember(dest => dest.TermsAcceptedAt, opt => opt.MapFrom(src => src.TermsAcceptedAt))
+    .ForMember(dest => dest.GlobalDiscountPercent, opt => opt.MapFrom(src => src.GlobalDiscountPercent))
+    .ForMember(dest => dest.MinimumVolume, opt => opt.MapFrom(src => src.MinimumVolume))
+    .ForMember(dest => dest.MinimumVolumeUnit, opt => opt.MapFrom(src => src.MinimumVolumeUnit))
+    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
+    .ForMember(dest => dest.AutoRenew, opt => opt.MapFrom(src => src.AutoRenew))
+    .ForMember(dest => dest.RenewalNoticeDays, opt => opt.MapFrom(src => src.RenewalNoticeDays));
+
+// PagedList support pour Contract
+CreateMap<PagedList<Contract>, PagedList<ContractDTO>>()
+    .ConvertUsing((src, dest, context) =>
+    {
+        var items = context.Mapper.Map<List<ContractDTO>>(src.Items);
+        return new PagedList<ContractDTO>(
+            items,
+            src.TotalCount,
+            src.CurrentPage,
+            src.PageSize);
+    });
+
+            //Command -> Entity (pour mise à jour) 
+            CreateMap<UpdateContractPricingCommand, ContractPricing>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PricingId))
+                .ForMember(dest => dest.Contract, opt => opt.Ignore())
+                .ForMember(dest => dest.ZoneFrom, opt => opt.Ignore())
+                .ForMember(dest => dest.ZoneTo, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ContractId, opt => opt.MapFrom(src => src.ContractId))
+                .ForMember(dest => dest.ZoneFromId, opt => opt.MapFrom(src => src.ZoneFromId))
+                .ForMember(dest => dest.ZoneToId, opt => opt.MapFrom(src => src.ZoneToId))
+                .ForMember(dest => dest.TransportMode, opt => opt.MapFrom(src => src.TransportMode))
+                .ForMember(dest => dest.UseFixedPrice, opt => opt.MapFrom(src => src.UseFixedPrice))
+                .ForMember(dest => dest.FixedPrice, opt => opt.MapFrom(src => src.FixedPrice))
+                .ForMember(dest => dest.DiscountPercent, opt => opt.MapFrom(src => src.DiscountPercent))
+                .ForMember(dest => dest.VolumeThreshold, opt => opt.MapFrom(src => src.VolumeThreshold))
+                .ForMember(dest => dest.VolumeDiscountPercent, opt => opt.MapFrom(src => src.VolumeDiscountPercent))
+                .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.CurrencyCode))
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
+                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
+
+
+
+
+
+
+            // Command → Entity (pour la mise à jour)
+            CreateMap<UpdateContractCommandNew, Contract>()
+    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.ContractId))
+    .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+    .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+    .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+    .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+    .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+    .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+    .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+    .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+    .ForMember(dest => dest.GlobalDiscountPercent, opt => opt.Ignore())
+    .ForMember(dest => dest.Client, opt => opt.Ignore())
+    .ForMember(dest => dest.Supplier, opt => opt.Ignore())
+    .ForMember(dest => dest.ContractPricings, opt => opt.Ignore())
+    // Mapping spécifique pour les noms différents
+    .ForMember(dest => dest.ContractNumber, opt => opt.MapFrom(src => src.contractNumber))
+    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.name))
+    .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
+    .ForMember(dest => dest.ValidFrom, opt => opt.MapFrom(src => src.validForm))
+    .ForMember(dest => dest.ValidTo, opt => opt.MapFrom(src => src.validTo))
+    .ForMember(dest => dest.ClientId, opt => opt.MapFrom(src => src.ClientId))
+    .ForMember(dest => dest.SupplierId, opt => opt.MapFrom(src => src.SupplierId))
+    .ForMember(dest => dest.Terms, opt => opt.MapFrom(src => src.terms))
+    .ForMember(dest => dest.TermsAccepted, opt => opt.MapFrom(src => src.termsAccepted))
+    .ForMember(dest => dest.TermsAcceptedAt, opt => opt.MapFrom(src => src.termsAccptedAt))
+    .ForMember(dest => dest.MinimumVolume, opt => opt.MapFrom(src => src.minimumVolume))
+    .ForMember(dest => dest.MinimumVolumeUnit, opt => opt.MapFrom(src => src.minimumVolumeUnit))
+    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
+    .ForMember(dest => dest.AutoRenew, opt => opt.MapFrom(src => src.AutoRenew))
+    .ForMember(dest => dest.RenewalNoticeDays, opt => opt.MapFrom(src => src.RenewalNoticeDays));
+
+            CreateMap<ContractPricing, ContractPricingDto>()
+    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+    .ForMember(dest => dest.ContractId, opt => opt.MapFrom(src => src.ContractId))
+    .ForMember(dest => dest.ZoneFromId, opt => opt.MapFrom(src => src.ZoneFromId))
+    .ForMember(dest => dest.ZoneToId, opt => opt.MapFrom(src => src.ZoneToId))
+    .ForMember(dest => dest.TransportMode, opt => opt.MapFrom(src => src.TransportMode))
+    .ForMember(dest => dest.UseFixedPrice, opt => opt.MapFrom(src => src.UseFixedPrice))
+    .ForMember(dest => dest.FixedPrice, opt => opt.MapFrom(src => src.FixedPrice))
+    .ForMember(dest => dest.DiscountPercent, opt => opt.MapFrom(src => src.DiscountPercent))
+    .ForMember(dest => dest.VolumeThreshold, opt => opt.MapFrom(src => src.VolumeThreshold))
+    .ForMember(dest => dest.VolumeDiscountPercent, opt => opt.MapFrom(src => src.VolumeDiscountPercent))
+    .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.CurrencyCode))
+    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
+    .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
+    .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.ModifiedDate))
+    .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
+    .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.ModifiedBy))
+
+    // Navigation properties avec null-safety
+    .ForMember(dest => dest.ZoneFromName,
+        opt => opt.MapFrom(src => src.ZoneFrom != null ? src.ZoneFrom.Name : null))
+    .ForMember(dest => dest.ZoneToName,
+        opt => opt.MapFrom(src => src.ZoneTo != null ? src.ZoneTo.Name : null))
+    .ForMember(dest => dest.TransportModeDisplayName,
+        opt => opt.MapFrom(src => src.TransportMode.HasValue ? src.TransportMode.ToString() : null));
+
+            // Mapping inverse (DTO -> Entity) si nécessaire
+            CreateMap<ContractPricingDto, ContractPricing>()
+                .ForMember(dest => dest.Contract, opt => opt.Ignore())
+                .ForMember(dest => dest.ZoneFrom, opt => opt.Ignore())
+                .ForMember(dest => dest.ZoneTo, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore());
+
+
+
         }
+
+
+     
+
+
+
+
 
         // Méthode helper pour convertir le JSON en liste
         private static List<string>? ConvertTransportModes(string? applicableTransportModes)

@@ -94,5 +94,30 @@ namespace Persistance.Repositories
             _context.Contracts.Remove(contract);
             await Task.CompletedTask;
         }
+
+        public async Task<bool> ExistsAsync(Guid contractId, CancellationToken ct = default)
+        {
+            return await _context.Contracts.AnyAsync(c => c.Id == contractId && !c.IsDeleted, ct);
+        }
+
+        public async Task AddContractPricingAsync(ContractPricing pricing, CancellationToken ct = default)
+        {
+            await _context.ContractPricings.AddAsync(pricing, ct);
+            await _context.SaveChangesAsync(ct);
+        }
+
+        public async Task<IReadOnlyList<ContractPricing>> GetContractPricingByContractIdAsync(Guid contractId, CancellationToken ct = default)
+        {
+            return await _context.ContractPricings
+                .Where(cp => cp.ContractId == contractId && !cp.IsDeleted)
+                .OrderBy(cp => cp.CreatedDate)
+                .ToListAsync(ct);
+        }
+
+        public async Task<ContractPricing?> GetContractPricingByIdAsync(Guid ContractId, Guid CpId, CancellationToken ct = default)
+        {
+            return await _context.ContractPricings
+                .FirstOrDefaultAsync(cp => cp.ContractId == ContractId && cp.Id == CpId && !cp.IsDeleted, ct);
+        }
     }
 }

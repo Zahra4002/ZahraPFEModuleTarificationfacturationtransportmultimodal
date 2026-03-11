@@ -214,6 +214,14 @@ namespace API.Controllers
             return StatusCode(result.Status, result);
         }
 
+        [HttpGet("{contractId}/pricings")]
+        [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status200OK)]
+        public async Task<ActionResult<ResponseHttp>> GetPricings(Guid contractId)
+        {
+            var result = await _mediator.Send(new GetContractPricingListByContractId(contractId));
+            return StatusCode(result.Status, result);
+        }
+
         /// <summary>
         /// Modifier une tarification d’un contrat.
         /// </summary>

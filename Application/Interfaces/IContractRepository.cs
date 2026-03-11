@@ -19,5 +19,12 @@ namespace Application.Interfaces
         Task UpdateAsync(Contract entity, CancellationToken ct = default);
         Task SaveChangesAsync(CancellationToken ct = default);
         Task<Contract?> GetByIdAsync(Guid id, CancellationToken ct = default);
+
+        Task<bool> ExistsAsync(Guid contractId, CancellationToken ct = default);
+        Task AddContractPricingAsync(ContractPricing pricing, CancellationToken ct = default);
+
+        Task<IReadOnlyList<ContractPricing>> GetContractPricingByContractIdAsync(Guid contractId, CancellationToken ct = default);
+
+        Task<ContractPricing?> GetContractPricingByIdAsync(Guid ContractId,Guid CpId, CancellationToken ct = default);
     }
 }
