@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Persistance.Data;
@@ -11,9 +12,11 @@ using Persistance.Data;
 namespace Persistance.Migrations
 {
     [DbContext(typeof(CleanArchitecturContext))]
-    partial class CleanArchitecturContextModelSnapshot : ModelSnapshot
+    [Migration("20260312120355_AddMerchandiseType")]
+    partial class AddMerchandiseType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2173,7 +2176,7 @@ namespace Persistance.Migrations
                         .HasForeignKey("ClientId");
 
                     b.HasOne("Domain.Entities.MerchandiseType", "MerchandiseType")
-                        .WithMany("Quotes")
+                        .WithMany()
                         .HasForeignKey("MerchandiseTypeId");
 
                     b.OwnsOne("Domain.ValueObjects.Address", "DestinationAddress", b1 =>
@@ -2488,11 +2491,6 @@ namespace Persistance.Migrations
                     b.Navigation("Lines");
 
                     b.Navigation("Payements");
-                });
-
-            modelBuilder.Entity("Domain.Entities.MerchandiseType", b =>
-                {
-                    b.Navigation("Quotes");
                 });
 
             modelBuilder.Entity("Domain.Entities.Quote", b =>

@@ -135,6 +135,42 @@ namespace Persistance.Data
                 });
                 entity.Navigation(q => q.DestinationAddress).IsRequired();
             });
+            // MerchandiseType 
+            modelBuilder.Entity<MerchandiseType>().HasData(
+                new MerchandiseType
+                {
+                    Id = Guid.Parse("88888888-8888-8888-8888-888888888888"),
+                    Code = "GEN001",
+                    Name = "General Cargo",
+                    Description = "Standard general cargo with no special requirements",
+                    HazardousLevel = 0,
+                    PriceMultiplier = 1.0m,
+                    RequiresSpecialHandling = false,
+                    IsActive = true
+                },
+                new MerchandiseType
+                {
+                    Id = Guid.Parse("99999999-9999-9999-9999-999999999999"),
+                    Code = "PER002",
+                    Name = "Perishable Goods",
+                    Description = "Temperature-sensitive goods requiring refrigeration or special handling",
+                    HazardousLevel = 0,
+                    PriceMultiplier = 1.5m,
+                    RequiresSpecialHandling = true,
+                    IsActive = true
+                },
+                new MerchandiseType
+                {
+                    Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    Code = "HAZ003",
+                    Name = "Hazardous Materials",
+                    Description = "Dangerous goods requiring special permits and handling procedures",
+                    HazardousLevel = 3,
+                    PriceMultiplier = 2.0m,
+                    RequiresSpecialHandling = true,
+                    IsActive = true
+                }
+            );
 
             // Shipment addresses
             modelBuilder.Entity<Shipment>(entity =>

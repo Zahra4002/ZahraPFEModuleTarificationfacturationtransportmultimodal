@@ -7,6 +7,8 @@ using Application.Features.InvoiceFeature.Commands;
 using Application.Features.InvoiceFeature.Dtos;
 using Application.Features.QuoteFeature.Commands;
 using Application.Features.QuoteFeature.Dtos;
+using Application.Features.ShipmentFeature.Commands;
+using Application.Features.ShipmentFeature.Dtos;
 using Application.Features.SupplierFeature.Commands;
 using Application.Features.SupplierFeature.Dtos;
 using Application.Features.SurchargeFeature.Dtos;
@@ -271,7 +273,7 @@ namespace Application.Mappings
             // ============================
             // TRANSPORT SEGMENT DTO
             // ============================
-            CreateMap<TransportSegment, TransportSegmentDto>()
+            CreateMap<TransportSegment, Application.Features.SupplierFeature.Dtos.TransportSegmentDto>()
                 .ForMember(dest => dest.ZoneFromName,
                     opt => opt.MapFrom(src => src.ZoneFromet != null ? src.ZoneFromet.Name : null))
                 .ForMember(dest => dest.ZoneToName,
@@ -691,6 +693,51 @@ CreateMap<PagedList<Contract>, PagedList<ContractDTO>>()
             // ============================
             // CONTRACT MAPPINGS
             // ============================
+
+            // =============================
+            // Shipment Mappings
+            // =============================
+            CreateMap<Shipment, ShipmentDto>();
+
+            // Mapping pour AddressDto <-> Address
+            CreateMap<AddressDto,Domain.ValueObjects. Address>();
+            CreateMap<Domain.ValueObjects.Address, AddressDto>();
+
+            // Command -> Entity mappings
+            CreateMap<AddShipmentCommand, Shipment>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.Status, opt => opt.Ignore()) // Status sera défini par défaut
+                .ForMember(dest => dest.TrackingNumber, opt => opt.Ignore()) // Se génère plus tard
+                .ForMember(dest => dest.Client, opt => opt.Ignore())
+                .ForMember(dest => dest.Quote, opt => opt.Ignore())
+                .ForMember(dest => dest.Segments, opt => opt.Ignore())
+                .ForMember(dest => dest.Invoices, opt => opt.Ignore());
+
+            CreateMap<UpdateShipmentCommand, Shipment>()
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.Client, opt => opt.Ignore())
+                .ForMember(dest => dest.Quote, opt => opt.Ignore())
+                .ForMember(dest => dest.Segments, opt => opt.Ignore())
+                .ForMember(dest => dest.Invoices, opt => opt.Ignore());
+
+
+
+
         }
 
 
@@ -700,7 +747,7 @@ CreateMap<PagedList<Contract>, PagedList<ContractDTO>>()
 
 
 
-            // Méthode helper pour convertir le JSON en liste
+        // Méthode helper pour convertir le JSON en liste
         private static List<string>? ConvertTransportModes(string? applicableTransportModes)
         {
             if (string.IsNullOrEmpty(applicableTransportModes))

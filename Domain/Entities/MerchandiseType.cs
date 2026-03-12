@@ -11,5 +11,10 @@ namespace Domain.Entities
         public decimal? PriceMultiplier { get; set; } = 1.0m;
         public bool RequiresSpecialHandling { get; set; } = false;
         public bool IsActive { get; set; } = true;
+
+        public virtual ICollection<Quote> Quotes { get; set; } = new List<Quote>();
+
+
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Application.Features.ShipmentFeature.Dtos;
 using Application.Interfaces;
 using Application.Setting;
+using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.ValueObjects;
@@ -34,11 +35,13 @@ namespace Application.Features.ShipmentFeature.Commands
         public class AddShipmentCommandHandler : IRequestHandler<AddShipmentCommand, ResponseHttp>
         {
             private readonly IShipmentRepository shipementRepository;
-            public AddShipmentCommandHandler(IShipmentRepository shipementRepository)
+            private readonly IMapper mapper;
+
+            public AddShipmentCommandHandler(IShipmentRepository shipementRepository, IMapper mapper)
             {
                 this.shipementRepository = shipementRepository;
+                this.mapper = mapper;
             }
-
 
             async Task<ResponseHttp> IRequestHandler<AddShipmentCommand, ResponseHttp>.Handle(AddShipmentCommand request, CancellationToken cancellationToken)
             {
@@ -61,57 +64,33 @@ namespace Application.Features.ShipmentFeature.Commands
                         };
                     }
 
-                    var shipment = new Shipment
-                    {
-                        ShipmentNumber = request.ShipmentNumber,
-                        ClientId = request.ClientId,
-                        QuoteId = request.QuoteId,
-                        OriginAddress = new Address
-                        {
-                            Street = request.OriginAddress.Street,
-                            City = request.OriginAddress.City,
-                            State = request.OriginAddress.State,
-                            PostalCode = request.OriginAddress.PostalCode,
-                            Country = request.OriginAddress.Country
-                        },
-                        DestinationAddress = new Address
-                        {
-                            Street = request.DestinationAddress.Street,
-                            City = request.DestinationAddress.City,
-                            State = request.DestinationAddress.State,
-                            PostalCode = request.DestinationAddress.PostalCode,
-                            Country = request.DestinationAddress.Country
-                        },
-                        MerchandiseTypeId = request.MerchandiseTypeId,
-                        WeightKg = request.WeightKg,
-                        VolumeM3 = request.VolumeM3,
-                        ContainerType = request.ContainerType,
-                        ContainerCount = request.ContainerCount,
-                        TotalCostHT = request.TotalCostHT,
-                        TotalSurcharges = request.TotalSurcharges,
-                        TotalTaxes = request.TotalTaxes,
-                        TotalCostTTC = request.TotalCostTTC,
-                        CurrencyCode = request.CurrencyCode
-                    };
+                    // Utilisation d'AutoMapper pour créer l'entité Shipment
+                    var shipment = mapper.Map<Shipment>(request);
+
+                    // Définir le statut par défaut (puisqu'il est ignoré dans le mapping)
+                    shipment.Status = ShipmentStatus.Draft; // ou le statut par défaut que vous souhaitez
+
                     shipementRepository.Post(shipment);
                     shipementRepository.SaveChange(cancellationToken);
+
+                    // Utilisation d'AutoMapper pour créer le DTO de réponse
+                    var shipmentDto = mapper.Map<ShipmentDto>(shipment);
+
                     return new ResponseHttp
                     {
-                        Resultat = new ShipmentDto(shipment),
+                        Resultat = shipmentDto,
                         Status = 200,
                         Fail_Messages = null
                     };
                 }
                 catch (Exception ex)
                 {
-
                     return new ResponseHttp
                     {
                         Resultat = null,
                         Status = 500,
                         Fail_Messages = $"An error occurred while adding the shipment: {ex.Message}"
                     };
-
                 }
             }
         }
