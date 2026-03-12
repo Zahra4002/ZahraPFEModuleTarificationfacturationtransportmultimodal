@@ -43,10 +43,37 @@ namespace Persistance.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            // Seed data pour Currencies avec GUID
+            modelBuilder.Entity<Currency>().HasData(
+                new Currency
+                {
+                    Id = Guid.Parse("55555555-5555-5555-5555-555555555555"),
+                    Code = "EUR",
+                    Name = "Euro",
+                    Symbol = "€",
+                    IsActive = true
+                },
+                new Currency
+                {
+                    Id = Guid.Parse("66666666-6666-6666-6666-666666666666"),
+                    Code = "USD",
+                    Name = "US Dollar",
+                    Symbol = "$",
+                    IsActive = true
+                },
+                new Currency
+                {
+                    Id = Guid.Parse("77777777-7777-7777-7777-777777777777"),
+                    Code = "MAD",
+                    Name = "Dirham Marocain",
+                    Symbol = "DH",
+                    IsActive = true
+                }
+            );
 
 
 
-           // modelBuilder.ApplyConfiguration(new UserConfiguration());
+            // modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new SurchargeConfiguration());
             modelBuilder.ApplyConfiguration(new SurchargeRuleConfiguration());
 
