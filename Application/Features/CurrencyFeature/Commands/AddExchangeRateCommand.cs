@@ -1,7 +1,9 @@
 ﻿using Application.Features.CurrencyFeature.Dtos;
 using Application.Interfaces;
 using Application.Setting;
+using Domain.Entities;
 using MediatR;
+using AutoMapper;
 
 namespace Application.Features.CurrencyFeature.Commands
 {
@@ -17,18 +19,18 @@ namespace Application.Features.CurrencyFeature.Commands
         public class AddExchangeRateCommandHandler : IRequestHandler<AddExchangeRateCommand, ResponseHttp>
         {
             private readonly ICurrencyRepository _currencyRepository;
+            private readonly IMapper _mapper;
 
-            public AddExchangeRateCommandHandler(ICurrencyRepository currencyRepository)
+            public AddExchangeRateCommandHandler(ICurrencyRepository currencyRepository, IMapper mapper)
             {
                 _currencyRepository = currencyRepository;
+                _mapper = mapper;
             }
-
 
             public async Task<ResponseHttp> Handle(AddExchangeRateCommand request, CancellationToken cancellationToken)
             {
-                var CurrencyFrom = await _currencyRepository.GetById(request.fromCurrencyId);
-
-                if (CurrencyFrom == null)
+                var currencyFrom = await _currencyRepository.GetById(request.fromCurrencyId);
+                if (currencyFrom == null)
                 {
                     return new ResponseHttp
                     {
@@ -38,8 +40,8 @@ namespace Application.Features.CurrencyFeature.Commands
                     };
                 }
 
-                var CurrencyTo = await _currencyRepository.GetById(request.toCurrencyId);
-                if (CurrencyTo == null)
+                var currencyTo = await _currencyRepository.GetById(request.toCurrencyId);
+                if (currencyTo == null)
                 {
                     return new ResponseHttp
                     {
@@ -49,28 +51,25 @@ namespace Application.Features.CurrencyFeature.Commands
                     };
                 }
 
-                var exchangeRate = new Domain.Entities.ExchangeRate
-                {
-                    FromCurrencyId = request.fromCurrencyId,
-                    ToCurrencyId = request.toCurrencyId,
-                    Rate = request.rate,
-                    EffectiveDate = request.effectiveDate,
-                    ExpiryDate = request.expiryDate,
-                    Source = request.source,
-                    FromCurrency = CurrencyFrom,
-                    ToCurrency = CurrencyTo
-                };
+                // Utilisation d'AutoMapper pour créer l'ExchangeRate
+                var exchangeRate = _mapper.Map<ExchangeRate>(request);
+                exchangeRate.Id = Guid.NewGuid();
+                exchangeRate.FromCurrency = currencyFrom;
+                exchangeRate.ToCurrency = currencyTo;
 
                 var result = await _currencyRepository.AddExchangeRate(exchangeRate);
                 await _currencyRepository.SaveChange(cancellationToken);
+
+                // Utilisation d'AutoMapper pour créer le DTO
+                var rateDto = _mapper.Map<RateDto>(exchangeRate);
+
                 return new ResponseHttp
                 {
-                    Resultat = new RateDto(exchangeRate),
+                    Resultat = rateDto,
                     Status = 201,
-                    Fail_Messages = "null"
+                    Fail_Messages = null
                 };
             }
-
         }
     }
 }

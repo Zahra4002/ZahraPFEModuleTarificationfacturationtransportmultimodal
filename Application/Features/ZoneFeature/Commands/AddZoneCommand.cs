@@ -33,17 +33,9 @@ namespace Application.Features.ZoneFeature.Commands
             {
                 try
                 {
-                    var zone = new Zone
-                    {
-                        Code = request.Code,
-                        Name = request.Name,
-                        Country = request.Country,
-                        Region = request.Region,
-                        Description = request.Description,
-                        IsActive = request.IsActive
-                    };
+                    
 
-                    /*var zone = _mapper.Map<Zone>(request);*/
+                    var zone = _mapper.Map<Zone>(request);
                     await _zoneRepository.Post(zone);
                     await _zoneRepository.SaveChange(cancellationToken);
 

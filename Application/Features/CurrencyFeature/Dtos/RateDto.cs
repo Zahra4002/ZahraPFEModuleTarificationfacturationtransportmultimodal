@@ -19,6 +19,11 @@ namespace Application.Features.CurrencyFeature.Dtos
         public DateTime? ExpiryDate { get; set; }
         public string? Source { get; set; }
 
+        // Constructeur sans paramètres pour AutoMapper
+        public RateDto()
+        {
+        }
+
         public RateDto(ExchangeRate rate )
         {
             Id = rate.Id;

@@ -1,6 +1,8 @@
 ﻿using Application.Features.ClientFeature.Commands;
 using Application.Features.ContractFeature.Commands;
 using Application.Features.ContractFeature.Dtos;
+using Application.Features.CurrencyFeature.Commands;
+using Application.Features.CurrencyFeature.Dtos;
 using Application.Features.InvoiceFeature.Commands;
 using Application.Features.InvoiceFeature.Dtos;
 using Application.Features.QuoteFeature.Commands;
@@ -569,6 +571,9 @@ CreateMap<PagedList<Contract>, PagedList<ContractDTO>>()
     .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
     .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.ModifiedBy))
 
+
+
+
     // Navigation properties avec null-safety
     .ForMember(dest => dest.ZoneFromName,
         opt => opt.MapFrom(src => src.ZoneFrom != null ? src.ZoneFrom.Name : null))
@@ -587,18 +592,81 @@ CreateMap<PagedList<Contract>, PagedList<ContractDTO>>()
                 .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
                 .ForMember(dest => dest.DeletedDate, opt => opt.Ignore());
 
+            // ============================
+            // CURRENCY MAPPINGS
+            // ============================
+            CreateMap<AddCurrencyCommand, Currency>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ExchangeRatesFrom, opt => opt.Ignore())
+                .ForMember(dest => dest.ExchangeRatesTo, opt => opt.Ignore())
+                .ForMember(dest => dest.Invoices, opt => opt.Ignore());
 
+            CreateMap<UpdateCurrencyCommand, Currency>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ExchangeRatesFrom, opt => opt.Ignore())
+                .ForMember(dest => dest.ExchangeRatesTo, opt => opt.Ignore())
+                .ForMember(dest => dest.Invoices, opt => opt.Ignore());
 
+            CreateMap<Currency, CurrencyDto>();
+
+            // ============================
+            // EXCHANGE RATE MAPPINGS
+            // ============================
+            CreateMap<AddExchangeRateCommand, ExchangeRate>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.FromCurrencyId, opt => opt.MapFrom(src => src.fromCurrencyId))
+                .ForMember(dest => dest.ToCurrencyId, opt => opt.MapFrom(src => src.toCurrencyId))
+                .ForMember(dest => dest.Rate, opt => opt.MapFrom(src => src.rate))
+                .ForMember(dest => dest.EffectiveDate, opt => opt.MapFrom(src => src.effectiveDate))
+                .ForMember(dest => dest.ExpiryDate, opt => opt.MapFrom(src => src.expiryDate))
+                .ForMember(dest => dest.Source, opt => opt.MapFrom(src => src.source))
+                .ForMember(dest => dest.FromCurrency, opt => opt.Ignore())
+                .ForMember(dest => dest.ToCurrency, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore());
+
+            CreateMap<ExchangeRate, RateDto>()
+    .ConstructUsing(src => new RateDto()) // Force l'utilisation du constructeur sans paramètres
+    .ForMember(dest => dest.FromCurrencyCode,
+        opt => opt.MapFrom(src => src.FromCurrency != null ? src.FromCurrency.Code : string.Empty))
+    .ForMember(dest => dest.ToCurrencyCode,
+        opt => opt.MapFrom(src => src.ToCurrency != null ? src.ToCurrency.Code : string.Empty));
+
+            // ============================
+            // CONTRACT MAPPINGS
+            // ============================
         }
 
 
-     
 
 
 
 
 
-        // Méthode helper pour convertir le JSON en liste
+
+            // Méthode helper pour convertir le JSON en liste
         private static List<string>? ConvertTransportModes(string? applicableTransportModes)
         {
             if (string.IsNullOrEmpty(applicableTransportModes))

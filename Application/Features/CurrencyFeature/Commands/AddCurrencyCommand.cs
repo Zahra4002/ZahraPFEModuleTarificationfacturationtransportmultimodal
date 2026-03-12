@@ -1,8 +1,17 @@
-﻿using Application.Features.CurrencyFeature.Dtos;
-using Application.Interfaces;
+﻿using Application.Common.Validator;
+using Application.Features.CurrencyFeature.Commands;
+using FluentValidation;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using AutoMapper;
 using Application.Setting;
-using Domain.Entities;
 using MediatR;
+using Application.Interfaces;
+using Domain.Entities;
+using Application.Features.CurrencyFeature.Dtos;
 
 namespace Application.Features.CurrencyFeature.Commands
 {
@@ -18,27 +27,24 @@ namespace Application.Features.CurrencyFeature.Commands
         public class AddCurrencyCommandHandler : IRequestHandler<AddCurrencyCommand, ResponseHttp>
         {
             private readonly ICurrencyRepository _currencyRepository;
-            public AddCurrencyCommandHandler(ICurrencyRepository currencyRepository)
+            private readonly IMapper _mapper;
+
+            public AddCurrencyCommandHandler(ICurrencyRepository currencyRepository, IMapper mapper)
             {
                 _currencyRepository = currencyRepository;
+                _mapper = mapper;
             }
+
             public async Task<ResponseHttp> Handle(AddCurrencyCommand request, CancellationToken cancellationToken)
             {
-
-                var newCurrency = new Currency
-                {
-                    Id = Guid.NewGuid(),
-                    Code = request.Code,
-                    Name = request.Name,
-                    Symbol = request.Symbol,
-                    DecimalPlaces = request.DecimalPlaces,
-                    IsActive = request.IsActive,
-                    IsDefault = request.IsDefault
-                };
+                var newCurrency = _mapper.Map<Currency>(request);
+                newCurrency.Id = Guid.NewGuid();
 
                 await _currencyRepository.Post(newCurrency);
                 await _currencyRepository.SaveChange(cancellationToken);
-                CurrencyDto currencyDto = new(newCurrency);
+                
+                var currencyDto = _mapper.Map<CurrencyDto>(newCurrency);
+                
                 return new ResponseHttp
                 {
                     Resultat = currencyDto, 

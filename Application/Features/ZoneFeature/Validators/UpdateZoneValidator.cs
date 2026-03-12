@@ -14,7 +14,7 @@ namespace Application.Features.ZoneFeature.Validators
    
             public UpdateZoneValidator()
         {
-            RuleFor(v => v.zoneId)
+            RuleFor(v => v.Id)
                 .NotEmpty()
                 .WithMessage("Zone ID must be provided.");
         }

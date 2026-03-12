@@ -17,6 +17,11 @@ namespace Application.Features.CurrencyFeature.Dtos
         public bool IsActive { get; set; } = true;
         public bool IsDefault { get; set; } = false;
 
+        // Constructeur sans paramètres pour AutoMapper
+        public CurrencyDto()
+        {
+        }
+
         public CurrencyDto(Currency currency) {
             
             Id = currency.Id;

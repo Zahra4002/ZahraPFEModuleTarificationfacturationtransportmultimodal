@@ -169,3 +169,41 @@ E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2026\Projet 3 TarificationFa
 E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2026\Projet 3 TarificationFacturation\Persistance\bin\Debug\net8.0\LatoFont\Lato-Thin.ttf
 E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2026\Projet 3 TarificationFacturation\Persistance\bin\Debug\net8.0\LatoFont\Lato-ThinItalic.ttf
 E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2026\Projet 3 TarificationFacturation\Persistance\bin\Debug\net8.0\LatoFont\OFL.txt
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-Black.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-BlackItalic.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-Bold.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-BoldItalic.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-ExtraBold.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-ExtraBoldItalic.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-ExtraLight.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-ExtraLightItalic.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-Italic.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-Light.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-LightItalic.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-Medium.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-MediumItalic.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-Regular.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-SemiBold.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-SemiBoldItalic.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-Thin.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\Lato-ThinItalic.ttf
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\LatoFont\OFL.txt
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\Persistance.deps.json
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\Persistance.runtimeconfig.json
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\Persistance.dll
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\Persistance.pdb
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\Application.dll
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\Domain.dll
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\Application.pdb
+D:\PFE REQUIRMENTS\backend1\Persistance\bin\Debug\net8.0\Domain.pdb
+D:\PFE REQUIRMENTS\backend1\Persistance\obj\Debug\net8.0\Persistance.csproj.AssemblyReference.cache
+D:\PFE REQUIRMENTS\backend1\Persistance\obj\Debug\net8.0\Persistance.GeneratedMSBuildEditorConfig.editorconfig
+D:\PFE REQUIRMENTS\backend1\Persistance\obj\Debug\net8.0\Persistance.AssemblyInfoInputs.cache
+D:\PFE REQUIRMENTS\backend1\Persistance\obj\Debug\net8.0\Persistance.AssemblyInfo.cs
+D:\PFE REQUIRMENTS\backend1\Persistance\obj\Debug\net8.0\Persistance.csproj.CoreCompileInputs.cache
+D:\PFE REQUIRMENTS\backend1\Persistance\obj\Debug\net8.0\Persista.3F568332.Up2Date
+D:\PFE REQUIRMENTS\backend1\Persistance\obj\Debug\net8.0\Persistance.dll
+D:\PFE REQUIRMENTS\backend1\Persistance\obj\Debug\net8.0\refint\Persistance.dll
+D:\PFE REQUIRMENTS\backend1\Persistance\obj\Debug\net8.0\Persistance.pdb
+D:\PFE REQUIRMENTS\backend1\Persistance\obj\Debug\net8.0\Persistance.genruntimeconfig.cache
+D:\PFE REQUIRMENTS\backend1\Persistance\obj\Debug\net8.0\ref\Persistance.dll

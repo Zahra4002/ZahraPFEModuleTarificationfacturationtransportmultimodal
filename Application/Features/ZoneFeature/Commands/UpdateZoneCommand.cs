@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 namespace Application.Features.ZoneFeature.Commands
 {
     public record UpdateZoneCommand(
-        Guid zoneId,
+         Guid Id,
         string Code,
         string Name,
         string Country,
@@ -31,7 +31,7 @@ namespace Application.Features.ZoneFeature.Commands
 
             public async Task<ResponseHttp> Handle(UpdateZoneCommand request, CancellationToken cancellationToken)
             {
-                Zone? zone = await _zoneRepository.GetById(request.zoneId);
+                Zone? zone = await _zoneRepository.GetById(request.Id);
                 if (zone == null)
                 {
                     return new ResponseHttp
@@ -42,14 +42,8 @@ namespace Application.Features.ZoneFeature.Commands
                     };
                 }
 
-                // Update properties
-                zone.Id = request.zoneId;
-                zone.Code = request.Code;
-                zone.Name = request.Name;
-                zone.Country = request.Country;
-                zone.Region = request.Region;
-                zone.Description = request.Description;
-                zone.IsActive = request.IsActive;
+                // Utiliser AutoMapper pour mapper les propriétés du command vers l'entité existante
+                _mapper.Map(request, zone);
 
                 await _zoneRepository.Update(zone);
                 await _zoneRepository.SaveChange(cancellationToken);
@@ -61,8 +55,6 @@ namespace Application.Features.ZoneFeature.Commands
                     Status = StatusCodes.Status200OK
                 };
             }
-
         }
-
     }
 }

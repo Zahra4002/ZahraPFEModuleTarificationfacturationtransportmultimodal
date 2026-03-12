@@ -12,6 +12,7 @@ namespace Persistance.Repositories
 
         public ZoneRepository(CleanArchitecturContext context) : base(context)
         {
+            _context = context; // Add this line to initialize the field
         }
 
         public async Task<Zone?> GetByIdAsync(Guid id)
@@ -20,6 +21,7 @@ namespace Persistance.Repositories
             // Adapte le nom du DbSet si nécessaire (ex: _context.Zones).
             return await _context.Set<Zone>().FindAsync(id);
         }
+
         public async Task<List<Zone>> GetAllWithTypesAsync(
             int? pageNumber = null,
             int? pageSize = null,
@@ -27,9 +29,9 @@ namespace Persistance.Repositories
             bool sortDescending = false,
             string? searchTerm = null,
             CancellationToken cancellationToken = default)
-                {
-                    var query = _context.Zones
-                        .AsNoTracking()
+        {
+            var query = _context.Zones
+                .AsNoTracking()
                 .AsQueryable();
 
             // Optional search filter
@@ -39,7 +41,7 @@ namespace Persistance.Repositories
                     z.Name.Contains(searchTerm) ||
                     z.Code.Contains(searchTerm) ||
                     z.Country.Contains(searchTerm));
-            }
+            }   
 
             // Optional dynamic sorting
             if (!string.IsNullOrWhiteSpace(sortedBy))
@@ -84,6 +86,5 @@ namespace Persistance.Repositories
         {
             return await _context.Zones.FirstOrDefaultAsync(predicate);
         }
-
     }
 }

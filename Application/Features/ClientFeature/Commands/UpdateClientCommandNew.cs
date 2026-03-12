@@ -51,37 +51,24 @@ namespace Application.Features.ClientFeature.Commands
                 {
                     return new ResponseHttp
                     {
-                        Resultat = this._mapper.Map<ClientDTO>(client),
+                        Resultat = null,
                         Fail_Messages = "Customer with this Id not found.",
                         Status = StatusCodes.Status400BadRequest,
                     };
                 }
-                else
+
+                // Utiliser AutoMapper pour mapper les propriétés du request vers l'entité existante
+                _mapper.Map(request, client);
+                
+                await clientRepository.Update(client);
+                await clientRepository.SaveChange(cancellationToken);
+
+                var customerToReturn = _mapper.Map<ClientDTO>(client);
+                return new ResponseHttp
                 {
-                    client.Id = request.ClientId;
-                    client.Code = request.code;
-                    client.Name = request.name;
-                    client.TaxId = request.taxId;
-                    client.Email = request.email;
-                    client.PhoneNumber = request.phoneNumber;
-                    client.Role = request.userRole;
-                    client.BullingAddress = request.bullingAddress;
-                    client.ShippingAddress = request.shippingAddress;
-                    client.DefaultCurrencyCode = request.defaultCurrencyCode;
-                    client.CreditLimit = request.creditLimit;
-                    client.PaymentTermDays = request.paymenttermDays;
-                    client.IsActive = request.isActive;
-                    await clientRepository.Update(client);
-                    await clientRepository.SaveChange(cancellationToken);
-
-                    var customerToReturn = _mapper.Map<ClientDTO>(client);
-                    return new ResponseHttp
-                    {
-                        Resultat = customerToReturn,
-                        Status = StatusCodes.Status200OK,
-                    };
-
-                }
+                    Resultat = customerToReturn,
+                    Status = StatusCodes.Status200OK,
+                };
 
             }
         }

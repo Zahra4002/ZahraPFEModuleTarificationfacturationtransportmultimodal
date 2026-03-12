@@ -25,7 +25,7 @@ namespace Application.Features.SupplierFeature.Commands
     {
         private readonly ISupplierRepository _supplierRepository;
         private readonly IZoneRepository _zoneRepository;
-        private readonly IMapper _mapper;
+        private readonly IMapper _mapper;   
 
         public CreateSupplierCommandHandler(
             ISupplierRepository supplierRepository,

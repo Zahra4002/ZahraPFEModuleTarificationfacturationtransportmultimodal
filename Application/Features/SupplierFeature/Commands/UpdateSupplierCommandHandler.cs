@@ -54,7 +54,7 @@ namespace Application.Features.SupplierFeature.Commands
                     };
                 }
 
-                // ✅ Vérifier unicité du code
+                // ✅ Vérifier unicité du code AVANT le mapping
                 if (!string.IsNullOrEmpty(request.Code) && request.Code != supplier.Code)
                 {
                     var existingSupplier = await _supplierRepository.GetByCodeAsync(request.Code);
@@ -66,26 +66,17 @@ namespace Application.Features.SupplierFeature.Commands
                             Fail_Messages = $"Un fournisseur avec le code {request.Code} existe déjà"
                         };
                     }
-
-                    supplier.Code = request.Code;
                 }
 
-                // ✅ Mise à jour des propriétés simples
-                supplier.Name = request.Name ?? supplier.Name;
-                supplier.TaxId = request.TaxId ?? supplier.TaxId;
-                supplier.Email = request.Email ?? supplier.Email;
-                supplier.Phone = request.Phone ?? supplier.Phone;
-                supplier.Address = request.Address ?? supplier.Address;
-                supplier.DefaultCurrencyCode = request.DefaultCurrencyCode ?? supplier.DefaultCurrencyCode;
+                // ✅ Utiliser AutoMapper pour les propriétés simples
+                _mapper.Map(request, supplier);
 
-                if (request.IsActive.HasValue)
-                    supplier.IsActive = request.IsActive.Value;
-
+                // ✅ Mettre à jour les métadonnées manuellement
                 supplier.ModifiedDate = DateTime.UtcNow;
                 supplier.ModifiedBy = "System";
 
                 // =====================================================
-                // ✅ Gestion des CONTRATS (SANS Delete manuel)
+                // ✅ Gestion des CONTRATS (inchangée)
                 // =====================================================
                 if (request.Contracts != null)
                 {
@@ -114,7 +105,7 @@ namespace Application.Features.SupplierFeature.Commands
                 }
 
                 // =====================================================
-                // ✅ Gestion des SEGMENTS (SANS Delete manuel)
+                // ✅ Gestion des SEGMENTS (inchangée)
                 // =====================================================
                 if (request.TransportSegments != null)
                 {
@@ -122,12 +113,10 @@ namespace Application.Features.SupplierFeature.Commands
 
                     foreach (var segmentDto in request.TransportSegments)
                     {
-                        // Vérifier existence zones
+                        // Vérifier existence zones (même code qu'avant)
                         if (segmentDto.ZoneFromId.HasValue)
                         {
-                            var zoneFrom = await _zoneRepository
-                                .GetByIdAsync(segmentDto.ZoneFromId.Value);
-
+                            var zoneFrom = await _zoneRepository.GetByIdAsync(segmentDto.ZoneFromId.Value);
                             if (zoneFrom == null)
                             {
                                 return new ResponseHttp
@@ -140,9 +129,7 @@ namespace Application.Features.SupplierFeature.Commands
 
                         if (segmentDto.ZoneToId.HasValue)
                         {
-                            var zoneTo = await _zoneRepository
-                                .GetByIdAsync(segmentDto.ZoneToId.Value);
-
+                            var zoneTo = await _zoneRepository.GetByIdAsync(segmentDto.ZoneToId.Value);
                             if (zoneTo == null)
                             {
                                 return new ResponseHttp
@@ -174,7 +161,6 @@ namespace Application.Features.SupplierFeature.Commands
                     }
                 }
 
-                // ✅ IMPORTANT : PAS de Update()
                 await _supplierRepository.SaveChangesAsync(cancellationToken);
 
                 var supplierDto = _mapper.Map<SupplierDto>(supplier);

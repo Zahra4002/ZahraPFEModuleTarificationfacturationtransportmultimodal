@@ -44,10 +44,10 @@ namespace Application.Features.ContractFeature.Commands
         {
             try
             {
-                // 1. Récupérer le contrat parent
-                var contract = await _contractRepository.GetByIdAsync(request.ContractId, ct);
+                // 1. Vérifier que le contrat existe (sans le tracker)
+                var contractExists = await _contractRepository.ExistsAsync(request.ContractId, ct);
 
-                if (contract == null)
+                if (!contractExists)
                 {
                     return new ResponseHttp
                     {
@@ -56,43 +56,36 @@ namespace Application.Features.ContractFeature.Commands
                     };
                 }
 
-                
+                // 2. Créer et ajouter directement le pricing
                 var pricing = new ContractPricing
                 {
                     Id = Guid.NewGuid(),
                     ContractId = request.ContractId,
-
                     ZoneFromId = request.ZoneFromId,
                     ZoneToId = request.ZoneToId,
                     TransportMode = request.TransportMode,
-
                     UseFixedPrice = request.UseFixedPrice,
                     FixedPrice = request.FixedPrice,
                     DiscountPercent = request.DiscountPercent,
-
                     VolumeThreshold = request.VolumeThreshold,
                     VolumeDiscountPercent = request.VolumeDiscountPercent,
-
                     CurrencyCode = request.CurrencyCode ?? "EUR",
                     IsActive = request.IsActive,
-
-                   
+                    CreatedDate = DateTime.UtcNow
                 };
 
-               
-                contract.ContractPricings.Add(pricing);
+                // 3. Ajouter directement au contexte
+                await _contractRepository.AddContractPricingAsync(pricing, ct);
 
-                // 4. Mettre à jour le contrat et sauvegarder
-                await _contractRepository.UpdateAsync(contract, ct);
-                await _contractRepository.SaveChangesAsync(ct);
-
-                // 5. Retourner le résultat (le contrat mis à jour)
+                // 4. Récupérer le contrat mis à jour
+                var contract = await _contractRepository.GetByIdWithDetailsAsync(request.ContractId, ct);
                 var resultDto = _mapper.Map<ContractDTO>(contract);
 
                 return new ResponseHttp
                 {
                     Resultat = resultDto,
                     Status = StatusCodes.Status201Created
+                    
                 };
             }
             catch (Exception ex)

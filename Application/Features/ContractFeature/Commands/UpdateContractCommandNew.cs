@@ -54,39 +54,35 @@ namespace Application.Features.ContractFeature.Commands
                 {
                     return new ResponseHttp
                     {
-                        Resultat = this._mapper.Map<ContractDTO>(contract),
-                        Fail_Messages = "Customer with this Id not found.",
-                        Status = StatusCodes.Status400BadRequest,
+                        Resultat = null,
+                        Fail_Messages = "Contract with this Id not found.",
+                        Status = StatusCodes.Status404NotFound,
                     };
                 }
-                else
+
+                try
                 {
-                    contract.Id = request.ContractId;
-                    contract.ContractNumber = request.contractNumber;
-                    contract.Name = request.name;
-                    contract.Type = request.Type;
-                    
-                    contract.ValidTo = request.validTo;
-                    contract.ClientId = request.ClientId;
-                    contract.SupplierId = request.SupplierId;
-                    contract.Terms = request.terms;
-                    contract.TermsAccepted = request.termsAccepted;
-                    
-                    contract.MinimumVolume = request.minimumVolume;
-                    contract.MinimumVolumeUnit = request.minimumVolumeUnit;
+                    // Utiliser AutoMapper pour mapper les propriétés de la commande vers l'entité existante
+                    _mapper.Map(request, contract);
 
                     await contractRepository.Update(contract);
                     await contractRepository.SaveChange(cancellationToken);
 
-                    var customerToReturn = _mapper.Map<ContractDTO>(contract);
+                    var contractToReturn = _mapper.Map<ContractDTO>(contract);
                     return new ResponseHttp
                     {
-                        Resultat = customerToReturn,
+                        Resultat = contractToReturn,
                         Status = StatusCodes.Status200OK,
                     };
-
                 }
-
+                catch (Exception ex)
+                {
+                    return new ResponseHttp
+                    {
+                        Fail_Messages = ex.Message,
+                        Status = StatusCodes.Status400BadRequest,
+                    };
+                }
             }
         }
     }

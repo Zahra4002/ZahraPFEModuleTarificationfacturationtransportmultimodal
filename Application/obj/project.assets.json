@@ -8228,23 +8228,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\LENOVO_ADDINN\\.nuget\\packages\\": {},
+    "C:\\Users\\Mega Pc\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Addinn\\Dossier Addinn\\Dossier de Stage\\Stage_PFE_2026\\Projet 3 TarificationFacturation\\Application\\Application.csproj",
+      "projectUniqueName": "D:\\PFE REQUIRMENTS\\backend1\\Application\\Application.csproj",
       "projectName": "Application",
-      "projectPath": "E:\\Addinn\\Dossier Addinn\\Dossier de Stage\\Stage_PFE_2026\\Projet 3 TarificationFacturation\\Application\\Application.csproj",
-      "packagesPath": "C:\\Users\\LENOVO_ADDINN\\.nuget\\packages\\",
-      "outputPath": "E:\\Addinn\\Dossier Addinn\\Dossier de Stage\\Stage_PFE_2026\\Projet 3 TarificationFacturation\\Application\\obj\\",
+      "projectPath": "D:\\PFE REQUIRMENTS\\backend1\\Application\\Application.csproj",
+      "packagesPath": "C:\\Users\\Mega Pc\\.nuget\\packages\\",
+      "outputPath": "D:\\PFE REQUIRMENTS\\backend1\\Application\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\LENOVO_ADDINN\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Mega Pc\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -8259,8 +8259,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "E:\\Addinn\\Dossier Addinn\\Dossier de Stage\\Stage_PFE_2026\\Projet 3 TarificationFacturation\\Domain\\Domain.csproj": {
-              "projectPath": "E:\\Addinn\\Dossier Addinn\\Dossier de Stage\\Stage_PFE_2026\\Projet 3 TarificationFacturation\\Domain\\Domain.csproj"
+            "D:\\PFE REQUIRMENTS\\backend1\\Domain\\Domain.csproj": {
+              "projectPath": "D:\\PFE REQUIRMENTS\\backend1\\Domain\\Domain.csproj"
             }
           }
         }
@@ -8275,7 +8275,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.300"
+      "SdkAnalysisLevel": "10.0.100"
     },
     "frameworks": {
       "net8.0": {
@@ -8346,7 +8346,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.311/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.104/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

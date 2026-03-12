@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Application.Setting;
 using Domain.Entities;
 using MediatR;
+using AutoMapper;
 
 namespace Application.Features.CurrencyFeature.Commands
 {
@@ -18,12 +19,13 @@ namespace Application.Features.CurrencyFeature.Commands
     {
         public class UpdateCurrencyCommandHandler : IRequestHandler<UpdateCurrencyCommand, ResponseHttp>
         {
-
             private readonly ICurrencyRepository _currencyRepository;
+            private readonly IMapper _mapper;
 
-            public UpdateCurrencyCommandHandler(ICurrencyRepository currencyRepository)
+            public UpdateCurrencyCommandHandler(ICurrencyRepository currencyRepository, IMapper mapper)
             {
                 _currencyRepository = currencyRepository;
+                _mapper = mapper;
             }
 
             public async Task<ResponseHttp> Handle(UpdateCurrencyCommand request, CancellationToken cancellationToken)
@@ -37,28 +39,23 @@ namespace Application.Features.CurrencyFeature.Commands
                         Status = 404,
                         Fail_Messages = "Currency not found"
                     };
-
                 }
-                else
+
+                // Utilisation d'AutoMapper pour mapper les données de la commande vers l'entité existante
+                _mapper.Map(request, currency);
+                
+                await _currencyRepository.Update(currency);
+                await _currencyRepository.SaveChange(cancellationToken);
+                
+                // Utilisation d'AutoMapper pour créer le DTO de réponse
+                var currencyDto = _mapper.Map<CurrencyDto>(currency);
+                
+                return new ResponseHttp
                 {
-
-                    currency.Code = request.Code;
-                    currency.Name = request.Name;
-                    currency.Symbol = request.Symbol;
-                    currency.DecimalPlaces = request.DecimalPlaces;
-                    currency.IsActive = request.IsActive;
-                    currency.IsDefault = request.IsDefault;
-                    await _currencyRepository.Update(currency);
-                    await _currencyRepository.SaveChange(cancellationToken);
-                    return new ResponseHttp
-                    {
-                        Resultat = new CurrencyDto(currency),
-                        Status = 200,
-                        Fail_Messages = null
-                    };
-
-                }
-
+                    Resultat = currencyDto,
+                    Status = 200,
+                    Fail_Messages = null
+                };
             }
         }
     }
