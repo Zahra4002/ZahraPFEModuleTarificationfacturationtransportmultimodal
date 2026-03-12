@@ -16,12 +16,13 @@ namespace Application.Features.TestFeature.Dtos
         public string? TaxId { get; set; }
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }
-        public UserRole Role { get; set; }
         public Address BullingAddress { get; set; }
         public Address? ShippingAddress { get; set; }
         public string DefaultCurrencyCode { get; set; }
         public decimal CreditLimit { get; set; }
         public int PaymentTermDays { get; set; }
         public bool IsActive { get; set; }
+
+        public ClientDTO() { }
     }
 }

@@ -23,7 +23,6 @@ namespace Application.Features.ClientFeature.Commands
         string taxId,
         string email,
         string phoneNumber,
-        UserRole userRole,
         Address bullingAddress,
         Address shippingAddress,
         string defaultCurrencyCode,

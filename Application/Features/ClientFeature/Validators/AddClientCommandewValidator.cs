@@ -46,10 +46,7 @@ namespace Application.Features.ClientFeature.Validators
                 .Matches(@"^\+?[1-9][0-9]{7,14}$").WithMessage("Le format du téléphone n'est pas valide (ex: +216xxxxxxxx).")
                 .MaximumLength(20);
 
-            // userRole
-            RuleFor(v => v.UserRole)
-                .NotNull().WithMessage("Le rôle est obligatoire.")
-                .IsInEnum().WithMessage("Le rôle sélectionné n'est pas valide.");
+          
 
             // bullingAddress → obligatoire
             RuleFor(v => v.bullingAddress)

@@ -9473,9 +9473,6 @@
             "type": "string",
             "nullable": true
           },
-          "userRole": {
-            "$ref": "#/components/schemas/UserRole"
-          },
           "bullingAddress": {
             "$ref": "#/components/schemas/Address"
           },
@@ -10755,9 +10752,6 @@
             "type": "string",
             "nullable": true
           },
-          "userRole": {
-            "$ref": "#/components/schemas/UserRole"
-          },
           "bullingAddress": {
             "$ref": "#/components/schemas/Address"
           },
@@ -11671,16 +11665,6 @@
           }
         },
         "additionalProperties": false
-      },
-      "UserRole": {
-        "enum": [
-          "Administrateur",
-          "Gestionnaire",
-          "Operateur",
-          "Comptable",
-          "Lecture"
-        ],
-        "type": "string"
       }
     },
     "securitySchemes": {

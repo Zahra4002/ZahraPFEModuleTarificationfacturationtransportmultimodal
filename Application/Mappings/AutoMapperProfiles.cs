@@ -385,8 +385,28 @@ namespace Application.Mappings
             // ============================
 
 
-
+            // Command -> Entity (for create)
+            CreateMap<AddClientCommandNew,Client>()
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())           
+                .ForMember(dest => dest.BullingAddress, opt => opt.MapFrom(src => src.bullingAddress))
+                .ForMember(dest => dest.ShippingAddress, opt => opt.MapFrom(src => src.shippingAddress))
+                .ForMember(dest => dest.DefaultCurrencyCode, opt => opt.MapFrom(src => src.defaultCurrencyCode))
+                .ForMember(dest => dest.CreditLimit, opt => opt.MapFrom(src => src.creditLimit))
+                .ForMember(dest => dest.PaymentTermDays, opt => opt.MapFrom(src => src.paymenttermDays))
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.isActive))
+                .ForMember(dest => dest.Contracts, opt => opt.Ignore())
+                .ForMember(dest => dest.invoices, opt => opt.Ignore())
+                .ForMember(dest => dest.shipments, opt => opt.Ignore());
+                
             // Command -> Entity (for update)
+
             CreateMap<UpdateClientCommandNew, Client>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.ClientId))
                 .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
@@ -397,7 +417,6 @@ namespace Application.Mappings
                 .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
                 .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
                 .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.userRole))
                 .ForMember(dest => dest.BullingAddress, opt => opt.MapFrom(src => src.bullingAddress))
                 .ForMember(dest => dest.ShippingAddress, opt => opt.MapFrom(src => src.shippingAddress))
                 .ForMember(dest => dest.DefaultCurrencyCode, opt => opt.MapFrom(src => src.defaultCurrencyCode))
@@ -416,13 +435,28 @@ namespace Application.Mappings
                 .ForMember(dest => dest.TaxId, opt => opt.MapFrom(src => src.TaxId))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role))
                 .ForMember(dest => dest.BullingAddress, opt => opt.MapFrom(src => src.BullingAddress))
                 .ForMember(dest => dest.ShippingAddress, opt => opt.MapFrom(src => src.ShippingAddress))
                 .ForMember(dest => dest.DefaultCurrencyCode, opt => opt.MapFrom(src => src.DefaultCurrencyCode))
                 .ForMember(dest => dest.CreditLimit, opt => opt.MapFrom(src => src.CreditLimit))
                 .ForMember(dest => dest.PaymentTermDays, opt => opt.MapFrom(src => src.PaymentTermDays))
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive));
+
+            // Entity -> DTO
+            CreateMap<Client, ClientDTO>();
+                
+
+            // PagedList support pour Client
+            CreateMap<PagedList<Client>, PagedList<ClientDTO>>()
+                .ConvertUsing((src, dest, context) =>
+                {
+                    var items = context.Mapper.Map<List<ClientDTO>>(src.Items);
+                    return new PagedList<ClientDTO>(
+                        items,
+                        src.TotalCount,
+                        src.CurrentPage,
+                        src.PageSize);
+                });
 
 
             // ============================
