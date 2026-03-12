@@ -32,6 +32,11 @@ namespace Application.Features.ShipmentFeature.Dtos
 
         public List<TransportSegmentDto> TransportSegments { get; set; }
 
+        public ShipmentDto()
+        {
+            TransportSegments = new List<TransportSegmentDto>();
+        }
+
         public ShipmentDto(Shipment shipment)
         {
             Id = shipment.Id;

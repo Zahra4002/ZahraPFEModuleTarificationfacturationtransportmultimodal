@@ -84,7 +84,7 @@ namespace Application.Features.QuoteFeature.Commands
 
                 // 5️⃣ Sauvegarder l'expédition
                 await _shipmentRepository.AddAsync(shipment);
-                await _shipmentRepository.SaveChangesAsync(cancellationToken);
+                await _shipmentRepository.SaveChange(cancellationToken);
 
                 // 6️⃣ Retourner le DTO
                 var resultDto = new ConvertedShipmentDto

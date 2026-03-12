@@ -26,12 +26,8 @@ namespace Application.Features.ShipmentFeature.Commands
         decimal TotalTaxes,
         decimal TotalCostTTC,
         string CurrencyCode
-
-
         ) : IRequest<ResponseHttp>
-
     {
-
         public class AddShipmentCommandHandler : IRequestHandler<AddShipmentCommand, ResponseHttp>
         {
             private readonly IShipmentRepository shipementRepository;
@@ -47,40 +43,129 @@ namespace Application.Features.ShipmentFeature.Commands
             {
                 try
                 {
-                    // Perform validation to check if a shipment with the same ClientId, QuoteId, and MerchandiseTypeId already exists
-                    var validationResult = await shipementRepository.IsExitAsync(
-                        request.ClientId.Value,
-                        request.QuoteId.Value,
-                        request.MerchandiseTypeId.Value
-                    );
-                    // If validation fails, return a 400 Bad Request response with the validation error message
-                    if (!validationResult.ContainsKey(true))
+                    // Validate required fields
+                    if (!request.ClientId.HasValue)
                     {
                         return new ResponseHttp
                         {
                             Resultat = null,
                             Status = 400,
-                            Fail_Messages = validationResult.Values.FirstOrDefault() ?? "Validation failed."
+                            Fail_Messages = "ClientId is required."
+                        };
+                    }
+
+                    if (!request.QuoteId.HasValue)
+                    {
+                        return new ResponseHttp
+                        {
+                            Resultat = null,
+                            Status = 400,
+                            Fail_Messages = "QuoteId is required."
+                        };
+                    }
+
+                    // Vérification optionnelle du MerchandiseTypeId seulement s'il est fourni
+                    if (request.MerchandiseTypeId.HasValue)
+                    {
+                        var validationResult = await shipementRepository.IsExitAsync(
+                            request.ClientId.Value,
+                            request.QuoteId.Value,
+                            request.MerchandiseTypeId.Value
+                        );
+
+                        if (!validationResult.ContainsKey(true))
+                        {
+                            return new ResponseHttp
+                            {
+                                Resultat = null,
+                                Status = 400,
+                                Fail_Messages = validationResult.Values.FirstOrDefault() ?? "Validation failed."
+                            };
+                        }
+                    }
+                    else
+                    {
+                        var clientValidation = await shipementRepository.IsExitAsync(request.ClientId.Value);
+                        if (!clientValidation.ContainsKey(true))
+                        {
+                            return new ResponseHttp
+                            {
+                                Resultat = null,
+                                Status = 400,
+                                Fail_Messages = "ClientId does not exist."
+                            };
+                        }
+                    }
+
+                    // Vérification que AutoMapper est configuré
+                    if (mapper == null)
+                    {
+                        return new ResponseHttp
+                        {
+                            Resultat = null,
+                            Status = 500,
+                            Fail_Messages = "AutoMapper is not configured."
                         };
                     }
 
                     // Utilisation d'AutoMapper pour créer l'entité Shipment
                     var shipment = mapper.Map<Shipment>(request);
 
-                    // Définir le statut par défaut (puisqu'il est ignoré dans le mapping)
-                    shipment.Status = ShipmentStatus.Draft; // ou le statut par défaut que vous souhaitez
+                    // Vérifier si le mapping a réussi
+                    if (shipment == null)
+                    {
+                        return new ResponseHttp
+                        {
+                            Resultat = null,
+                            Status = 500,
+                            Fail_Messages = "Failed to map request to Shipment entity."
+                        };
+                    }
 
-                    shipementRepository.Post(shipment);
-                    shipementRepository.SaveChange(cancellationToken);
+                    // Définir les propriétés qui ne sont pas mappées automatiquement
+                    shipment.Id = Guid.NewGuid();
+                    shipment.Status = ShipmentStatus.Draft;
+                    shipment.CreatedDate = DateTime.UtcNow;
+                    shipment.IsDeleted = false;
+
+                    // Initialiser les collections si elles sont null
+                    if (shipment.Segments == null)
+                        shipment.Segments = new List<TransportSegment>();
+                    if (shipment.Invoices == null)
+                        shipment.Invoices = new List<Invoice>();
+
+                    // Post the shipment
+                    await shipementRepository.Post(shipment);
+                    await shipementRepository.SaveChange(cancellationToken);
 
                     // Utilisation d'AutoMapper pour créer le DTO de réponse
                     var shipmentDto = mapper.Map<ShipmentDto>(shipment);
+
+                    // Vérifier si le mapping de retour a réussi
+                    if (shipmentDto == null)
+                    {
+                        return new ResponseHttp
+                        {
+                            Resultat = null,
+                            Status = 500,
+                            Fail_Messages = "Failed to map Shipment entity to DTO."
+                        };
+                    }
 
                     return new ResponseHttp
                     {
                         Resultat = shipmentDto,
                         Status = 200,
                         Fail_Messages = null
+                    };
+                }
+                catch (AutoMapperMappingException amex)
+                {
+                    return new ResponseHttp
+                    {
+                        Resultat = null,
+                        Status = 500,
+                        Fail_Messages = $"AutoMapper error: {amex.Message}"
                     };
                 }
                 catch (Exception ex)

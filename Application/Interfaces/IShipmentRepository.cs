@@ -5,6 +5,7 @@ namespace Application.Interfaces
 {
     public interface IShipmentRepository : IGenericRepository<Shipment>
     {
+        
         Task<Shipment?> GetByIdWithDetailsAsync(Guid id);
         Task<Shipment?> GetByQuoteIdAsync(Guid quoteId);
         Task<List<Shipment>> GetAllWithTypeAsync

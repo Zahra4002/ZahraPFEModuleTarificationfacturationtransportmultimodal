@@ -10,8 +10,6 @@ namespace Persistance.Repositories
 {
     public class ShipmentRepository : GenericRepository<Shipment>, IShipmentRepository
     {
-        private readonly CleanArchitecturContext _context;
-
         public ShipmentRepository(CleanArchitecturContext context) : base(context)
         {
         }
