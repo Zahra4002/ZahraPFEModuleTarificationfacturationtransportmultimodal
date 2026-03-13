@@ -29,10 +29,12 @@ namespace Domain.Entities
         public decimal TotalSurcharges { get; set; }
         public decimal TotalTaxes { get; set; }
         public decimal TotalCostTTC { get; set; }
-        public string CurrencyCode { get; set; }
+        // Make sure CurrencyCode is never null to avoid NOT NULL constraint violations in the database.
+        public string CurrencyCode { get; set; } = string.Empty;
 
-        public virtual ICollection<TransportSegment> Segments { get; set; }
-        public virtual ICollection<Invoice> Invoices { get; set; }
+        // Initialize collections to avoid null reference issues when mapping or adding segments/invoices.
+        public virtual ICollection<TransportSegment> Segments { get; set; } = new List<TransportSegment>();
+        public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
          public decimal CalculateTotalCostHT()
         {
             if (Segments == null || !Segments.Any())

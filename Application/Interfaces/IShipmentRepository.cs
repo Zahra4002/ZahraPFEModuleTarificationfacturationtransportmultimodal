@@ -26,6 +26,7 @@ namespace Application.Interfaces
 
         Task<Shipment> GetShipementWithIncules(Guid shipmentId, string[] includes, CancellationToken cancellation);
 
+
         Task<List<Shipment>> GetShipmentsByDateRangeWithSegmentsAsync(DateTime from, DateTime to, CancellationToken cancellationToken = default);
     }
 }

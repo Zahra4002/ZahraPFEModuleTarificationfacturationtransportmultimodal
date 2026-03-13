@@ -164,3 +164,37 @@ D:\PFE REQUIRMENTS\backend1\Application\obj\Debug\net8.0\Application.dll
 D:\PFE REQUIRMENTS\backend1\Application\obj\Debug\net8.0\refint\Application.dll
 D:\PFE REQUIRMENTS\backend1\Application\obj\Debug\net8.0\Application.pdb
 D:\PFE REQUIRMENTS\backend1\Application\obj\Debug\net8.0\ref\Application.dll
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-Black.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-BlackItalic.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-Bold.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-BoldItalic.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-ExtraBold.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-ExtraBoldItalic.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-ExtraLight.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-ExtraLightItalic.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-Italic.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-Light.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-LightItalic.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-Medium.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-MediumItalic.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-Regular.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-SemiBold.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-SemiBoldItalic.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-Thin.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\Lato-ThinItalic.ttf
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\LatoFont\OFL.txt
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\Application.deps.json
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\Application.dll
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\Application.pdb
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\Domain.dll
+C:\Users\merie\source\repos\backend7\Application\bin\Debug\net8.0\Domain.pdb
+C:\Users\merie\source\repos\backend7\Application\obj\Debug\net8.0\Application.csproj.AssemblyReference.cache
+C:\Users\merie\source\repos\backend7\Application\obj\Debug\net8.0\Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\merie\source\repos\backend7\Application\obj\Debug\net8.0\Application.AssemblyInfoInputs.cache
+C:\Users\merie\source\repos\backend7\Application\obj\Debug\net8.0\Application.AssemblyInfo.cs
+C:\Users\merie\source\repos\backend7\Application\obj\Debug\net8.0\Application.csproj.CoreCompileInputs.cache
+C:\Users\merie\source\repos\backend7\Application\obj\Debug\net8.0\Applicat.44B5EDA2.Up2Date
+C:\Users\merie\source\repos\backend7\Application\obj\Debug\net8.0\Application.dll
+C:\Users\merie\source\repos\backend7\Application\obj\Debug\net8.0\refint\Application.dll
+C:\Users\merie\source\repos\backend7\Application\obj\Debug\net8.0\Application.pdb
+C:\Users\merie\source\repos\backend7\Application\obj\Debug\net8.0\ref\Application.dll

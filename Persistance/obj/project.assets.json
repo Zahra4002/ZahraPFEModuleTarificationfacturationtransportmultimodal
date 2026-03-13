@@ -9711,23 +9711,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Mega Pc\\.nuget\\packages\\": {},
+    "C:\\Users\\merie\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\PFE REQUIRMENTS\\backend1\\Persistance\\Persistance.csproj",
+      "projectUniqueName": "C:\\Users\\merie\\source\\repos\\backend7\\Persistance\\Persistance.csproj",
       "projectName": "Persistance",
-      "projectPath": "D:\\PFE REQUIRMENTS\\backend1\\Persistance\\Persistance.csproj",
-      "packagesPath": "C:\\Users\\Mega Pc\\.nuget\\packages\\",
-      "outputPath": "D:\\PFE REQUIRMENTS\\backend1\\Persistance\\obj\\",
+      "projectPath": "C:\\Users\\merie\\source\\repos\\backend7\\Persistance\\Persistance.csproj",
+      "packagesPath": "C:\\Users\\merie\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\merie\\source\\repos\\backend7\\Persistance\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Mega Pc\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\merie\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -9742,11 +9742,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\PFE REQUIRMENTS\\backend1\\Application\\Application.csproj": {
-              "projectPath": "D:\\PFE REQUIRMENTS\\backend1\\Application\\Application.csproj"
+            "C:\\Users\\merie\\source\\repos\\backend7\\Application\\Application.csproj": {
+              "projectPath": "C:\\Users\\merie\\source\\repos\\backend7\\Application\\Application.csproj"
             },
-            "D:\\PFE REQUIRMENTS\\backend1\\Domain\\Domain.csproj": {
-              "projectPath": "D:\\PFE REQUIRMENTS\\backend1\\Domain\\Domain.csproj"
+            "C:\\Users\\merie\\source\\repos\\backend7\\Domain\\Domain.csproj": {
+              "projectPath": "C:\\Users\\merie\\source\\repos\\backend7\\Domain\\Domain.csproj"
             }
           }
         }
@@ -9761,7 +9761,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.100"
+      "SdkAnalysisLevel": "10.0.200"
     },
     "frameworks": {
       "net8.0": {
@@ -9802,7 +9802,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.104/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.200/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -74,9 +74,20 @@ namespace Application.Mappings
                 .ForMember(dest => dest.DiscountPercent,               
                     opt => opt.MapFrom(src => src.DiscountPercent));
 
+
             // Entity -> DTO (pour les réponses)
             CreateMap<InvoiceLine, InvoiceLineDto>()
-              .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                 .ForMember(dest => dest.TransportSegmentId, opt => opt.MapFrom(src => src.TransportSegmentId))
+                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+                 .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
+                 .ForMember(dest => dest.UnitPriceHT, opt => opt.MapFrom(src => src.UnitPriceHT))
+                 .ForMember(dest => dest.VATRate, opt => opt.MapFrom(src => src.VATRate))
+                   .ForMember(dest => dest.DiscountPercent, opt => opt.MapFrom(src => src.DiscountPercent))
+                   .ForMember(dest => dest.TotalHT, opt => opt.MapFrom(src => src.TotalHT))
+             .ForMember(dest => dest.TotalVAT, opt => opt.MapFrom(src => src.TotalVAT))
+             .ForMember(dest => dest.TotalTTC, opt => opt.MapFrom(src => src.TotalTTC));
+
 
 
             // ============================
@@ -112,50 +123,22 @@ namespace Application.Mappings
             // ============================
 
             CreateMap<Invoice, InvoiceDTO>()
-                // Propriétés calculées
-                .ForMember(dest => dest.Balance,
-                    opt => opt.MapFrom(src => src.TotalTTC - src.AmountPaid))
-                .ForMember(dest => dest.IsOverdue,
-                    opt => opt.MapFrom(src =>
-                        src.Status == InvoiceStatus.Envoyee &&
-                        src.DueDate < DateTime.UtcNow))
-                .ForMember(dest => dest.DaysOverdue,
-                    opt => opt.MapFrom(src =>
-                        src.Status == InvoiceStatus.Envoyee &&
-                        src.DueDate < DateTime.UtcNow
-                            ? (DateTime.UtcNow - src.DueDate).Days
-                            : 0))
-                .ForMember(dest => dest.Status,                        // ✅ Convertir enum en string
-                    opt => opt.MapFrom(src => src.Status.ToString()))
+              .ForMember(dest => dest.ClientName,
+                  opt => opt.MapFrom(src => src.Client.Name))
 
-                // Informations dénormalisées
-                .ForMember(dest => dest.ClientName,
-                    opt => opt.MapFrom(src =>
-                        src.Client != null ? src.Client.Name : null))
-                .ForMember(dest => dest.SupplierName,
-                    opt => opt.MapFrom(src =>
-                        src.Supplier != null ? src.Supplier.Name : null))
-                .ForMember(dest => dest.ShipmentNumber,
-                    opt => opt.MapFrom(src =>
-                        src.Shipment != null ? src.Shipment.ShipmentNumber : null))
-                .ForMember(dest => dest.CurrencyCode,
-                    opt => opt.MapFrom(src =>
-                        src.Currency != null ? src.Currency.Code : null))
-                .ForMember(dest => dest.CreatedAt,
-                    opt => opt.MapFrom(src => src.CreatedDate))
+              .ForMember(dest => dest.SupplierName,
+                opt => opt.MapFrom(src => src.Supplier.Name))
+     
+             .ForMember(dest => dest.ShipmentNumber,
+                opt => opt.MapFrom(src => src.Shipment.ShipmentNumber))
 
-                // ✅ LIGNES - Sans référence circulaire !
-                .ForMember(dest => dest.Lines,
-                    opt => opt.MapFrom(src => src.Lines.Select(l => new InvoiceLineDto
-                    {
-                        Id = l.Id,
-                        Description = l.Description,
-                        Quantity = l.Quantity,
-                        UnitPriceHT = l.UnitPriceHT,
-                        VATRate = l.VATRate,
-                        TransportSegmentId = l.TransportSegmentId,
-                        DiscountPercent = l.DiscountPercent      
-                    })));
+            .ForMember(dest => dest.CurrencyCode,
+                opt => opt.MapFrom(src => src.Currency.Code))
+
+           .ForMember(dest => dest.Lines,
+                 opt => opt.MapFrom(src => src.Lines));
+
+            
 
 
             // ============================

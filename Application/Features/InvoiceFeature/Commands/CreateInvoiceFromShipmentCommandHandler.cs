@@ -39,7 +39,8 @@ namespace Application.Features.InvoiceFeature.Commands
                 // 1️⃣ Vérifier que ShipmentId n'est pas null
                
                 {
-                    return new ResponseHttp
+                    if (request.ShipmentId == Guid.Empty)
+                        return new ResponseHttp
                     {
                         Status = StatusCodes.Status400BadRequest,
                         Fail_Messages = "ShipmentId est requis"

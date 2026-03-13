@@ -15,6 +15,7 @@ namespace Application.Features.InvoiceFeature.Commands
 {
     public record AddInvoiceCommand(
         string InvoiceNumber,
+        Guid? supplierId,
         Guid? ClientId,
         Guid? ShipmentId,
         DateTime IssueDate,
@@ -93,7 +94,7 @@ namespace Application.Features.InvoiceFeature.Commands
 
                 // 🔥 Recharge depuis la base
                 var savedInvoice = await _invoiceRepository
-                    .GetByIdWithLinesAsync(invoice.Id, cancellationToken);
+                   .GetByIdWithDetailsAsync(invoice.Id, cancellationToken);
 
                 // 5️⃣ Retour DTO
                 return new ResponseHttp

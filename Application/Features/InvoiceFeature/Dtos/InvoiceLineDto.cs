@@ -1,25 +1,24 @@
-﻿namespace Application.Features.InvoiceFeature.Dtos
+﻿public class InvoiceLineDto
 {
-    public class InvoiceLineDto
-    {
-        public Guid Id { get; set; }
+    public Guid Id { get; set; }
 
-        public string? Description { get; set; }
+    public string Description { get; set; }
 
-        public int Quantity { get; set; }
+    public decimal Quantity { get; set; }
 
-        public decimal UnitPriceHT { get; set; }
+    public decimal UnitPriceHT { get; set; }
 
-        public decimal VATRate { get; set; }
+    public decimal VATRate { get; set; }
 
-        public decimal TotalHT { get; set; }
+    // ✅ ajouter ces champs
+    public decimal DiscountPercent { get; set; }
 
-        public decimal TotalVAT { get; set; }
+    public Guid? TransportSegmentId { get; set; }
 
-        public decimal TotalTTC { get; set; }
+    // totaux
+    public decimal TotalHT { get; set; }
 
-        public Guid? TransportSegmentId { get; set; }
+    public decimal TotalVAT { get; set; }
 
-        public decimal DiscountPercent { get; set; } = 0;
-    }
+    public decimal TotalTTC { get; set; }
 }
