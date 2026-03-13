@@ -1,6 +1,7 @@
 ﻿using Application.Features.ShipmentFeature.Dtos;
 using Application.Interfaces;
 using Application.Setting;
+using AutoMapper;
 using Domain.ValueObjects;
 using MediatR;
 
@@ -26,30 +27,22 @@ namespace Application.Features.ShipmentFeature.Commands
         {
 
             private readonly IShipmentRepository _shipmentRepository;
-            public UpdateShipmentCommandHandler(IShipmentRepository shipmentRepository)
+            private readonly IMapper _mapper;
+
+            public UpdateShipmentCommandHandler(IShipmentRepository shipmentRepository, IMapper mapper)
             {
                 _shipmentRepository = shipmentRepository;
+                _mapper = mapper;
             }
+
             public async Task<ResponseHttp> Handle(UpdateShipmentCommand request, CancellationToken cancellationToken)
             {
-
                 try
                 {
-
                     var shipmentToUpdate = await _shipmentRepository.GetByIdAsync(request.ShipmentId, cancellationToken);
                     if (shipmentToUpdate != null)
                     {
-                        shipmentToUpdate.ShipmentNumber = request.ShipmentNumber ?? shipmentToUpdate.ShipmentNumber;
-                        shipmentToUpdate.ClientId = request.ClientId ?? shipmentToUpdate.ClientId;
-                        shipmentToUpdate.QuoteId = request.QuoteId ?? shipmentToUpdate.QuoteId;
-                        shipmentToUpdate.OriginAddress = request.OriginAddress ?? shipmentToUpdate.OriginAddress;
-                        shipmentToUpdate.DestinationAddress = request.DestinationAddress ?? shipmentToUpdate.DestinationAddress;
-                        shipmentToUpdate.MerchandiseTypeId = request.MerchandiseTypeId ?? shipmentToUpdate.MerchandiseTypeId;
-                        shipmentToUpdate.TotalCostHT = request.TotalCostHT ?? shipmentToUpdate.TotalCostHT;
-                        shipmentToUpdate.TotalSurcharges = request.TotalSurcharges ?? shipmentToUpdate.TotalSurcharges;
-                        shipmentToUpdate.TotalTaxes = request.TotalTaxes ?? shipmentToUpdate.TotalTaxes;
-                        shipmentToUpdate.TotalCostTTC = request.TotalCostTTC ?? shipmentToUpdate.TotalCostTTC;
-                        shipmentToUpdate.CurrencyCode = request.CurrencyCode ?? shipmentToUpdate.CurrencyCode;
+                        _mapper.Map(request, shipmentToUpdate); // AutoMapper updates entity
                         await _shipmentRepository.Update(shipmentToUpdate);
                         await _shipmentRepository.SaveChange(cancellationToken);
                         return new ResponseHttp

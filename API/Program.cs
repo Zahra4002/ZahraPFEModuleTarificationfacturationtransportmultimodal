@@ -66,6 +66,7 @@ builder.Services.AddDbContext<CleanArchitecturContext>(options =>
 var app = builder.Build();
 app.UseRouting();
 // Configure the HTTP request pipeline.
+app.UseDeveloperExceptionPage();
 app.UseCors("cors");
 if (app.Environment.IsDevelopment())
 {

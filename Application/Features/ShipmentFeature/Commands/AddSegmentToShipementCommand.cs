@@ -4,6 +4,7 @@ using Application.Setting;
 using Domain.Entities;
 using Domain.Enums;
 using MediatR;
+using AutoMapper;
 
 namespace Application.Features.ShipmentFeature.Commands
 {
@@ -29,12 +30,18 @@ namespace Application.Features.ShipmentFeature.Commands
         {
             private readonly IShipmentRepository _shipmentRepository;
             private readonly ITransportSegmentRepository _transportSegmentRepository;
+            private readonly IMapper _mapper;
 
-            public AddSegmentToShipementCommandHandler(IShipmentRepository shipmentRepository, ITransportSegmentRepository transportSegmentRepository)
+            public AddSegmentToShipementCommandHandler(
+                IShipmentRepository shipmentRepository,
+                ITransportSegmentRepository transportSegmentRepository,
+                IMapper mapper)
             {
                 _shipmentRepository = shipmentRepository;
                 _transportSegmentRepository = transportSegmentRepository;
+                _mapper = mapper;
             }
+
             public async Task<ResponseHttp> Handle(AddSegmentToShipementCommand request, CancellationToken cancellationToken)
             {
                 try
@@ -64,23 +71,8 @@ namespace Application.Features.ShipmentFeature.Commands
                         };
                     }
 
-                    // If we reach here, all entities exist and segment does not exist, so create it
-                    var segment = new TransportSegment
-                    {
-                        ShipmentId = request.ShipmentId,
-                        TransportMode = request.TransportMode,
-                        SupplierId = request.SupplierId,
-                        ZoneFromId = request.ZoneFromId,
-                        ZoneToId = request.ZoneToId,
-                        DistanceKm = request.DistanceKm,
-                        EstimatedTransitDays = request.EstimatedTransitDays,
-                        DepartureDate = request.DepartureDate,
-                        ArrivalDate = request.ArrivalDate,
-                        BaseCost = request.BaseCost,
-                        SurchargesTotal = request.SurchargesTotal,
-                        TotalCost = request.TotalCost,
-                        CurrencyCode = request.CurrencyCode
-                    };
+                    // Use AutoMapper to create the segment
+                    var segment = _mapper.Map<TransportSegment>(request);
 
                     await _transportSegmentRepository.Post(segment);
                     await _transportSegmentRepository.SaveChange(cancellationToken);

@@ -699,6 +699,8 @@ CreateMap<PagedList<Contract>, PagedList<ContractDTO>>()
             // =============================
             CreateMap<Shipment, ShipmentDto>();
 
+            
+
             // Mapping pour AddressDto <-> Address
             CreateMap<AddressDto,Domain.ValueObjects. Address>();
             CreateMap<Domain.ValueObjects.Address, AddressDto>();
@@ -734,6 +736,44 @@ CreateMap<PagedList<Contract>, PagedList<ContractDTO>>()
                 .ForMember(dest => dest.Quote, opt => opt.Ignore())
                 .ForMember(dest => dest.Segments, opt => opt.Ignore())
                 .ForMember(dest => dest.Invoices, opt => opt.Ignore());
+
+
+            CreateMap<TransportSegment, Features.ShipmentFeature.Dtos.TransportSegmentDto>();
+            CreateMap<Features.ShipmentFeature.Dtos.TransportSegmentDto, TransportSegment>();
+
+            CreateMap<AddSegmentToShipementCommand, TransportSegment>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.Sequence, opt => opt.Ignore())
+                .ForMember(dest => dest.SurchargesTotal, opt => opt.Ignore())
+                .ForMember(dest => dest.TotalCost, opt => opt.Ignore())
+                .ForMember(dest => dest.Supplier, opt => opt.Ignore())
+                .ForMember(dest => dest.ZoneFromet, opt => opt.Ignore())
+                .ForMember(dest => dest.ZoneTo, opt => opt.Ignore());
+
+            CreateMap<UpdateSegmentOfShipementCommand,TransportSegment>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.Sequence, opt => opt.Ignore())
+                .ForMember(dest => dest.SurchargesTotal, opt => opt.Ignore())
+                .ForMember(dest => dest.TotalCost, opt => opt.Ignore())
+                .ForMember(dest => dest.Supplier, opt => opt.Ignore())
+                .ForMember(dest => dest.ZoneFromet, opt => opt.Ignore())
+                .ForMember(dest => dest.ZoneTo, opt => opt.Ignore());
 
 
 
