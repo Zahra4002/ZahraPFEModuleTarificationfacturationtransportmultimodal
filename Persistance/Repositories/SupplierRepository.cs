@@ -59,7 +59,7 @@ namespace Persistance.Repositories
                 .Where(s => !s.IsDeleted)
                 .Include(s => s.Contracts)
                 .Include(s => s.TransportSegments)
-                    .ThenInclude(ts => ts.ZoneFromet)
+                    .ThenInclude(ts => ts.ZoneFrom)
                 .Include(s => s.TransportSegments)
                     .ThenInclude(ts => ts.ZoneTo)
                 .OrderBy(s => s.Code)
@@ -86,7 +86,7 @@ namespace Persistance.Repositories
                 .Where(s => !s.IsDeleted && s.Id == id)
                 .Include(s => s.Contracts)
                 .Include(s => s.TransportSegments)
-                    .ThenInclude(ts => ts.ZoneFromet)
+                    .ThenInclude(ts => ts.ZoneFrom)
                 .Include(s => s.TransportSegments)
                     .ThenInclude(ts => ts.ZoneTo)
                 .FirstOrDefaultAsync(cancellationToken);
@@ -104,7 +104,7 @@ namespace Persistance.Repositories
                 .Where(s => !s.IsDeleted && s.Code == code)
                 .Include(s => s.Contracts)
                 .Include(s => s.TransportSegments)
-                    .ThenInclude(ts => ts.ZoneFromet)
+                    .ThenInclude(ts => ts.ZoneFrom)
                 .Include(s => s.TransportSegments)
                     .ThenInclude(ts => ts.ZoneTo)
                 .FirstOrDefaultAsync(cancellationToken);

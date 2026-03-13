@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Persistance.Data;
@@ -11,9 +12,11 @@ using Persistance.Data;
 namespace Persistance.Migrations
 {
     [DbContext(typeof(CleanArchitecturContext))]
-    partial class CleanArchitecturContextModelSnapshot : ModelSnapshot
+    [Migration("20260313120706_RepaireSomeIssues")]
+    partial class RepaireSomeIssues
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2127,7 +2130,7 @@ namespace Persistance.Migrations
                         .HasForeignKey("ShipmentId");
 
                     b.HasOne("Domain.Entities.Supplier", "Supplier")
-                        .WithMany("Invoices")
+                        .WithMany()
                         .HasForeignKey("SupplierId");
 
                     b.Navigation("Client");
@@ -2505,8 +2508,6 @@ namespace Persistance.Migrations
             modelBuilder.Entity("Domain.Entities.Supplier", b =>
                 {
                     b.Navigation("Contracts");
-
-                    b.Navigation("Invoices");
 
                     b.Navigation("TransportSegments");
                 });

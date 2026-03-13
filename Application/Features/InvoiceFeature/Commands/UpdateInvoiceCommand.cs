@@ -10,6 +10,7 @@ namespace Application.Features.InvoiceFeature.Commands
 {
     public record UpdateInvoiceCommand(
         Guid invoiceId,
+        Guid supplierId,
         string invoiceNumber,
         Guid clientId,
         Guid? shipmentId,
@@ -54,6 +55,7 @@ namespace Application.Features.InvoiceFeature.Commands
                 else
                 {
                     // Mise à jour des propriétés
+                    invoice.SupplierId = request.supplierId;
                     invoice.InvoiceNumber = request.invoiceNumber;
                     invoice.ClientId = request.clientId;
                     invoice.ShipmentId = request.shipmentId;

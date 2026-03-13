@@ -20,7 +20,8 @@ namespace Application.Features.ShipmentFeature.Commands
             {
                 try
                 {
-                    var shipmentToRecalculate = await _shipmentRepository.GetByIdAsync(request.ShipmentId, cancellationToken);
+                    var includes = new[] { "Segments", "Invoices" };
+                    var shipmentToRecalculate = await _shipmentRepository.GetShipmentWithIncludesAsync(request.ShipmentId, includes, cancellationToken);
 
                     if (shipmentToRecalculate != null)
                     {

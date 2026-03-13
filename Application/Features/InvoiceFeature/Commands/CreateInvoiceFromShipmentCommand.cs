@@ -6,6 +6,6 @@ namespace Application.Features.InvoiceFeature.Commands
 {
     public record CreateInvoiceFromShipmentCommand(
         Guid ShipmentId,
-        Guid? CurrencyId
+        Guid CurrencyId
     ) : IRequest<ResponseHttp>;
 }

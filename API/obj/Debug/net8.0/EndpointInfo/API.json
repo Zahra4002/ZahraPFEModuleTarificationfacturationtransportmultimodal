@@ -9680,6 +9680,11 @@
             "type": "string",
             "nullable": true
           },
+          "supplierId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
           "clientId": {
             "type": "string",
             "format": "uuid",
@@ -10160,8 +10165,7 @@
           },
           "currencyId": {
             "type": "string",
-            "format": "uuid",
-            "nullable": true
+            "format": "uuid"
           }
         },
         "additionalProperties": false
@@ -10571,8 +10575,8 @@
             "nullable": true
           },
           "quantity": {
-            "type": "integer",
-            "format": "int32"
+            "type": "number",
+            "format": "double"
           },
           "unitPriceHT": {
             "type": "number",
@@ -10581,6 +10585,15 @@
           "vatRate": {
             "type": "number",
             "format": "double"
+          },
+          "discountPercent": {
+            "type": "number",
+            "format": "double"
+          },
+          "transportSegmentId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
           },
           "totalHT": {
             "type": "number",
@@ -10591,15 +10604,6 @@
             "format": "double"
           },
           "totalTTC": {
-            "type": "number",
-            "format": "double"
-          },
-          "transportSegmentId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "discountPercent": {
             "type": "number",
             "format": "double"
           }
@@ -10976,6 +10980,10 @@
         "type": "object",
         "properties": {
           "invoiceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierId": {
             "type": "string",
             "format": "uuid"
           },

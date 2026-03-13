@@ -39,7 +39,8 @@ namespace Application.Features.InvoiceFeature.Commands
                 // 1️⃣ Vérifier que ShipmentId n'est pas null
                
                 {
-                    return new ResponseHttp
+                    if (request.ShipmentId == Guid.Empty)
+                        return new ResponseHttp
                     {
                         Status = StatusCodes.Status400BadRequest,
                         Fail_Messages = "ShipmentId est requis"
@@ -123,8 +124,8 @@ namespace Application.Features.InvoiceFeature.Commands
                         string originName = "Inconnu";
                         string destinationName = "Inconnu";
 
-                        if (segment.ZoneFromet != null)
-                            originName = segment.ZoneFromet.Name ?? "Zone " + segment.ZoneFromId;
+                        if (segment.ZoneFromId != null)
+                            originName = segment.ZoneFrom.Name ?? "Zone " + segment.ZoneFromId;
 
                         if (segment.ZoneTo != null)
                             destinationName = segment.ZoneTo.Name ?? "Zone " + segment.ZoneToId;

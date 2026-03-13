@@ -12,6 +12,7 @@ namespace Persistance.Repositories
     {
         public ShipmentRepository(CleanArchitecturContext context) : base(context)
         {
+            
         }
 
         public async Task<Shipment?> GetByIdWithDetailsAsync(Guid id)
@@ -21,8 +22,16 @@ namespace Persistance.Repositories
             var entity = await _context.Set<Shipment>().FindAsync(id);
             return entity;
         }
+
         public async Task<Shipment?> GetByQuoteIdAsync(Guid quoteId)
         {
+            // Vérification explicite
+            if (_context == null)
+                throw new InvalidOperationException("_context est null dans ShipmentRepository");
+
+            if (_context.Shipments == null)
+                throw new InvalidOperationException("_context.Shipments est null");
+
             return await _context.Shipments
                 .FirstOrDefaultAsync(s => s.QuoteId == quoteId && !s.IsDeleted);
         }
@@ -148,6 +157,23 @@ namespace Persistance.Repositories
                             && s.CreatedDate <= to)
                 .Include(s => s.Segments)
                 .ToListAsync(cancellationToken);
+        }
+
+        public Task<Shipment?> GetShipmentWithIncludesAsync(Guid id, string[] includes, CancellationToken cancellationToken = default)
+        {
+             var shipmentQuery = _context.Shipments
+                .AsNoTracking()
+                .Where(s => s.Id == id)
+                .AsQueryable();
+
+            foreach (var shipment in shipmentQuery) {
+                foreach (var include in includes)
+                {
+                    shipmentQuery = shipmentQuery.Include(include);
+                }
+            }
+
+            return shipmentQuery.FirstOrDefaultAsync(cancellationToken);
         }
     }
 }

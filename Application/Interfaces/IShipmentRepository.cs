@@ -7,6 +7,8 @@ namespace Application.Interfaces
     {
         
         Task<Shipment?> GetByIdWithDetailsAsync(Guid id);
+
+        Task<Shipment?> GetShipmentWithIncludesAsync(Guid id, string[] includes, CancellationToken cancellationToken = default);
         Task<Shipment?> GetByQuoteIdAsync(Guid quoteId);
         Task<List<Shipment>> GetAllWithTypeAsync
            (
@@ -27,6 +29,11 @@ namespace Application.Interfaces
 
         Task<Shipment> GetShipementWithIncules(Guid shipmentId, string[] includes, CancellationToken cancellation);
 
+
         Task<List<Shipment>> GetShipmentsByDateRangeWithSegmentsAsync(DateTime from, DateTime to, CancellationToken cancellationToken = default);
+
+
+
+
     }
 }

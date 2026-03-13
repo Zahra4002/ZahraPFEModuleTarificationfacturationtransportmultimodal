@@ -198,6 +198,18 @@ namespace Persistance.Data
                     IsActive = true
                 }
             );
+
+            modelBuilder.Entity<Supplier>().HasData(
+                new Supplier
+                {
+                    Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                    Code = "DUMMY",
+                    Name = "Unknown Supplier",
+                    IsActive = true,
+                    Address = "N/A",
+                    DefaultCurrencyCode = "USD"
+                }
+            );
         }
     }
 }

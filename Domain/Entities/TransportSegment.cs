@@ -12,11 +12,11 @@ namespace Domain.Entities
 
         public virtual Supplier? Supplier { get; set; }
         public Guid? ZoneFromId { get; set; }
+        public virtual Zone ZoneFrom { get; set; } // <-- Correct name
 
-        public virtual Zone ZoneFromet { get; set; }
         public Guid? ZoneToId { get; set; }
-
         public virtual Zone ZoneTo { get; set; }
+
         public decimal? DistanceKm { get; set; }
         public int? EstimatedTransitDays { get; set; }
         public DateTime? DepartureDate { get; set; }

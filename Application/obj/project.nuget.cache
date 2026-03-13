@@ -153,5 +153,15 @@
     "C:\\Users\\Mega Pc\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
     "C:\\Users\\Mega Pc\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "message": "Problem reading the cache file D:\\PFE REQUIRMENTS\\backend1\\Application\\obj\\project.nuget.cache : '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0.",
+      "projectPath": "D:\\PFE REQUIRMENTS\\backend1\\Application\\Application.csproj",
+      "warningLevel": 1,
+      "filePath": "D:\\PFE REQUIRMENTS\\backend1\\Application\\Application.csproj",
+      "targetGraphs": []
+    }
+  ]
 }

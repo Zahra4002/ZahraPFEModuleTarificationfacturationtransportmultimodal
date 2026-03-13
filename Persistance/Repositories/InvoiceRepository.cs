@@ -30,6 +30,8 @@ namespace Persistance.Repositories
                 .Include(i => i.Lines)
                 .Include(i => i.Payements)
                 .Include(i => i.Currency)
+                 .Include(i => i.Supplier)      // ← AJOUTER
+                .Include(i => i.Shipment)
                 .AsQueryable();
 
             var totalRows = await query.CountAsync(cancellationToken);
@@ -63,6 +65,8 @@ namespace Persistance.Repositories
                 .Include(i => i.Lines)
                 .Include(i => i.Payements)
                 .Include(i => i.Currency)
+                 .Include(i => i.Supplier)      // ← AJOUTER
+                .Include(i => i.Shipment)
                 .FirstOrDefaultAsync(cancellationToken);
         }
 

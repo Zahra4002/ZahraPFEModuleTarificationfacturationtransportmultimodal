@@ -25,6 +25,8 @@ namespace Domain.Entities
 
         public virtual ICollection<Contract> Contracts { get; set; }
 
+        public virtual ICollection<Invoice> Invoices { get; set; }
+
         public virtual ICollection<TransportSegment> TransportSegments { get; set; }
 
     }

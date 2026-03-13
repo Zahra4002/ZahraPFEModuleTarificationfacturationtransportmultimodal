@@ -1,6 +1,7 @@
 ﻿using Application.Features.ShipmentFeature.Dtos;
 using Application.Interfaces;
 using Application.Setting;
+using AutoMapper;
 using Domain.Enums;
 using MediatR;
 
@@ -28,10 +29,12 @@ namespace Application.Features.ShipmentFeature.Commands
         public class UpdateSegmentOfShipementCommandHandler : IRequestHandler<UpdateSegmentOfShipementCommand, ResponseHttp>
         {
             private readonly ITransportSegmentRepository _transportSegmentRepository;
+            private readonly IMapper _mapper;
 
-            public UpdateSegmentOfShipementCommandHandler(ITransportSegmentRepository transportSegmentRepository)
+            public UpdateSegmentOfShipementCommandHandler(ITransportSegmentRepository transportSegmentRepository, IMapper mapper)
             {
                 _transportSegmentRepository = transportSegmentRepository;
+                _mapper = mapper;
             }
 
             public async Task<ResponseHttp> Handle(UpdateSegmentOfShipementCommand request, CancellationToken cancellationToken)
@@ -51,19 +54,8 @@ namespace Application.Features.ShipmentFeature.Commands
 
                     var updateSegment = await _transportSegmentRepository.GetByIdAsync(request.SegmentId, cancellationToken);
 
-                    updateSegment.Sequence = request.Sequence ?? updateSegment.Sequence;
-                    updateSegment.TransportMode = request.TransportMode ?? updateSegment.TransportMode;
-                    updateSegment.SupplierId = request.SupplierId ?? updateSegment.SupplierId;
-                    updateSegment.ZoneFromId = request.ZoneFromId ?? updateSegment.ZoneFromId;
-                    updateSegment.ZoneToId = request.ZoneToId ?? updateSegment.ZoneToId;
-                    updateSegment.DistanceKm = request.DistanceKm ?? updateSegment.DistanceKm;
-                    updateSegment.EstimatedTransitDays = request.EstimatedTransitDays ?? updateSegment.EstimatedTransitDays;
-                    updateSegment.DepartureDate = request.DepartureDate ?? updateSegment.DepartureDate;
-                    updateSegment.ArrivalDate = request.ArrivalDate ?? updateSegment.ArrivalDate;
-                    updateSegment.BaseCost = request.BaseCost ?? updateSegment.BaseCost;
-                    updateSegment.SurchargesTotal = request.SurchargesTotal ?? updateSegment.SurchargesTotal;
-                    updateSegment.TotalCost = request.TotalCost ?? updateSegment.TotalCost;
-                    updateSegment.CurrencyCode = request.CurrencyCode ?? updateSegment.CurrencyCode;
+                    // Use AutoMapper to update only non-null properties
+                    _mapper.Map(request, updateSegment);
 
                     await _transportSegmentRepository.Update(updateSegment);
                     await _transportSegmentRepository.SaveChange(cancellationToken);

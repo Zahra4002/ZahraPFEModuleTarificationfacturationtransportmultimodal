@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Persistance.Data;
@@ -11,9 +12,11 @@ using Persistance.Data;
 namespace Persistance.Migrations
 {
     [DbContext(typeof(CleanArchitecturContext))]
-    partial class CleanArchitecturContextModelSnapshot : ModelSnapshot
+    [Migration("20260312234454_MakeSupplierIdNull")]
+    partial class MakeSupplierIdNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1637,6 +1640,9 @@ namespace Persistance.Migrations
                     b.Property<Guid?>("ZoneFromId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("ZoneFrometId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid?>("ZoneToId")
                         .HasColumnType("uuid");
 
@@ -1646,7 +1652,7 @@ namespace Persistance.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.HasIndex("ZoneFromId");
+                    b.HasIndex("ZoneFrometId");
 
                     b.HasIndex("ZoneToId");
 
@@ -2127,7 +2133,7 @@ namespace Persistance.Migrations
                         .HasForeignKey("ShipmentId");
 
                     b.HasOne("Domain.Entities.Supplier", "Supplier")
-                        .WithMany("Invoices")
+                        .WithMany()
                         .HasForeignKey("SupplierId");
 
                     b.Navigation("Client");
@@ -2422,9 +2428,11 @@ namespace Persistance.Migrations
                         .WithMany("TransportSegments")
                         .HasForeignKey("SupplierId");
 
-                    b.HasOne("Domain.Entities.Zone", "ZoneFrom")
+                    b.HasOne("Domain.Entities.Zone", "ZoneFromet")
                         .WithMany()
-                        .HasForeignKey("ZoneFromId");
+                        .HasForeignKey("ZoneFrometId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Domain.Entities.Zone", "ZoneTo")
                         .WithMany()
@@ -2432,7 +2440,7 @@ namespace Persistance.Migrations
 
                     b.Navigation("Supplier");
 
-                    b.Navigation("ZoneFrom");
+                    b.Navigation("ZoneFromet");
 
                     b.Navigation("ZoneTo");
                 });
@@ -2505,8 +2513,6 @@ namespace Persistance.Migrations
             modelBuilder.Entity("Domain.Entities.Supplier", b =>
                 {
                     b.Navigation("Contracts");
-
-                    b.Navigation("Invoices");
 
                     b.Navigation("TransportSegments");
                 });
