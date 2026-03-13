@@ -10,12 +10,9 @@ namespace Persistance.Repositories
 {
     public class ShipmentRepository : GenericRepository<Shipment>, IShipmentRepository
     {
-        private readonly CleanArchitecturContext _context;
-
         public ShipmentRepository(CleanArchitecturContext context) : base(context)
         {
-            _context = context;  // ← AJOUTE CETTE LIGNE !
-            Console.WriteLine($"✅ ShipmentRepository initialisé: {_context != null}");
+           
         }
 
         public async Task<Shipment?> GetByIdWithDetailsAsync(Guid id)
