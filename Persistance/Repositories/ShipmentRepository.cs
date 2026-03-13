@@ -12,8 +12,7 @@ namespace Persistance.Repositories
     {
         public ShipmentRepository(CleanArchitecturContext context) : base(context)
         {
-            _context = context;  // ← AJOUTE CETTE LIGNE !
-            Console.WriteLine($"✅ ShipmentRepository initialisé: {_context != null}");
+            
         }
 
         public async Task<Shipment?> GetByIdWithDetailsAsync(Guid id)
