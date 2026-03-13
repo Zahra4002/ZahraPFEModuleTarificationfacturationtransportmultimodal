@@ -14,7 +14,6 @@ namespace Domain.Entities
         /// </summary>
         public virtual Client Client { get; set; }
         public Guid? QuoteId { get; set; }
-
         public virtual Quote? Quote { get; set; }
         public Address OriginAddress { get; set; }
         public Address DestinationAddress { get; set; }

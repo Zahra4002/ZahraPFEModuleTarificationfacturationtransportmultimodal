@@ -43,6 +43,32 @@ namespace Persistance.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            
+            // Configuration de la relation Quote-Shipment (AJOUTER CECI EN PREMIER)
+            modelBuilder.Entity<Shipment>(entity =>
+            {
+                entity.HasOne(s => s.Quote)
+                    .WithOne(q => q.Shipment)
+                    .HasForeignKey<Shipment>(s => s.QuoteId)
+                    .IsRequired(false);
+                
+                entity.OwnsOne(s => s.OriginAddress, a =>
+                {
+                    a.WithOwner();
+                    a.Property(p => p.Street).HasColumnName("Shipment_Origin_Street");
+                    a.Property(p => p.City).HasColumnName("Shipment_Origin_City");
+                });
+                entity.Navigation(s => s.OriginAddress).IsRequired();
+
+                entity.OwnsOne(s => s.DestinationAddress, a =>
+                {
+                    a.WithOwner();
+                    a.Property(p => p.Street).HasColumnName("Shipment_Dest_Street");
+                    a.Property(p => p.City).HasColumnName("Shipment_Dest_City");
+                });
+                entity.Navigation(s => s.DestinationAddress).IsRequired();
+            });
+
             // Seed data pour Currencies avec GUID
             modelBuilder.Entity<Currency>().HasData(
                 new Currency
@@ -135,7 +161,8 @@ namespace Persistance.Data
                 });
                 entity.Navigation(q => q.DestinationAddress).IsRequired();
             });
-            // MerchandiseType 
+            
+            // MerchandiseType seed data
             modelBuilder.Entity<MerchandiseType>().HasData(
                 new MerchandiseType
                 {
@@ -171,26 +198,6 @@ namespace Persistance.Data
                     IsActive = true
                 }
             );
-
-            // Shipment addresses
-            modelBuilder.Entity<Shipment>(entity =>
-            {
-                entity.OwnsOne(s => s.OriginAddress, a =>
-                {
-                    a.WithOwner();
-                    a.Property(p => p.Street).HasColumnName("Shipment_Origin_Street");
-                    a.Property(p => p.City).HasColumnName("Shipment_Origin_City");
-                });
-                entity.Navigation(s => s.OriginAddress).IsRequired();
-
-                entity.OwnsOne(s => s.DestinationAddress, a =>
-                {
-                    a.WithOwner();
-                    a.Property(p => p.Street).HasColumnName("Shipment_Dest_Street");
-                    a.Property(p => p.City).HasColumnName("Shipment_Dest_City");
-                });
-                entity.Navigation(s => s.DestinationAddress).IsRequired();
-            });
         }
     }
 }

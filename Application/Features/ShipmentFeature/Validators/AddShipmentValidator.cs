@@ -31,7 +31,7 @@ namespace Application.Features.ShipmentFeature.Validators
 
             RuleFor(x => x.MerchandiseTypeId)
                 .NotNull().WithMessage("MerchandiseTypeId is required.");
-
+            
             RuleFor(x => x.TotalCostHT)
                 .GreaterThanOrEqualTo(0).WithMessage("TotalCostHT must be non-negative.");
 
