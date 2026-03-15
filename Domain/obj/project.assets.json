@@ -6668,23 +6668,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Mega Pc\\.nuget\\packages\\": {},
+    "C:\\Users\\riyem\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\PFE REQUIRMENTS\\backend1\\Domain\\Domain.csproj",
+      "projectUniqueName": "C:\\Users\\riyem\\source\\repos\\backendzahra - Copie\\Domain\\Domain.csproj",
       "projectName": "Domain",
-      "projectPath": "D:\\PFE REQUIRMENTS\\backend1\\Domain\\Domain.csproj",
-      "packagesPath": "C:\\Users\\Mega Pc\\.nuget\\packages\\",
-      "outputPath": "D:\\PFE REQUIRMENTS\\backend1\\Domain\\obj\\",
+      "projectPath": "C:\\Users\\riyem\\source\\repos\\backendzahra - Copie\\Domain\\Domain.csproj",
+      "packagesPath": "C:\\Users\\riyem\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\riyem\\source\\repos\\backendzahra - Copie\\Domain\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Mega Pc\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\riyem\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -6711,7 +6711,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.200"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net8.0": {
@@ -6746,16 +6746,8 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.200/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.310/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Problem reading the cache file D:\\PFE REQUIRMENTS\\backend1\\Domain\\obj\\project.nuget.cache : '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0."
-    }
-  ]
+  }
 }

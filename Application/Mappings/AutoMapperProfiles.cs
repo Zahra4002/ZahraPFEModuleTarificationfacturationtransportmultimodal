@@ -5,6 +5,8 @@ using Application.Features.CurrencyFeature.Commands;
 using Application.Features.CurrencyFeature.Dtos;
 using Application.Features.InvoiceFeature.Commands;
 using Application.Features.InvoiceFeature.Dtos;
+using Application.Features.PaymentFeature.Commands;
+using Application.Features.PaymentFeature.Dtos;
 using Application.Features.QuoteFeature.Commands;
 using Application.Features.QuoteFeature.Dtos;
 using Application.Features.ShipmentFeature.Commands;
@@ -124,22 +126,29 @@ namespace Application.Mappings
 
             CreateMap<Invoice, InvoiceDTO>()
               .ForMember(dest => dest.ClientName,
-                  opt => opt.MapFrom(src => src.Client.Name))
+                  opt => opt.MapFrom(src => src.Client != null ? src.Client.Name : null))
 
               .ForMember(dest => dest.SupplierName,
-                opt => opt.MapFrom(src => src.Supplier.Name))
+                opt => opt.MapFrom(src => src.Supplier != null ? src.Supplier.Name : null))
      
              .ForMember(dest => dest.ShipmentNumber,
-                opt => opt.MapFrom(src => src.Shipment.ShipmentNumber))
+                opt => opt.MapFrom(src => src.Shipment != null ? src.Shipment.ShipmentNumber : null))
 
             .ForMember(dest => dest.CurrencyCode,
-                opt => opt.MapFrom(src => src.Currency.Code))
+                opt => opt.MapFrom(src => src.Currency != null ? src.Currency.Code : null))
 
            .ForMember(dest => dest.Lines,
                  opt => opt.MapFrom(src => src.Lines));
 
-            
-
+            // Entity -> DTO (pour les réponses)
+            CreateMap<Payment, PaymentDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.InvoiceId, opt => opt.MapFrom(src => src.InvoiceId))
+                .ForMember(dest => dest.PaymentDate, opt => opt.MapFrom(src => src.PaymentDate))
+                .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount))
+                .ForMember(dest => dest.PaymentMethod, opt => opt.MapFrom(src => src.PaymentMethod))
+                .ForMember(dest => dest.Reference, opt => opt.MapFrom(src => src.Reference))
+                .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes));
 
             // ============================
             // PAGED LIST SUPPORT
@@ -267,6 +276,30 @@ namespace Application.Mappings
                     opt => opt.MapFrom(src => src.TotalCost))
                 .ForMember(dest => dest.SurchargesTotal,
                     opt => opt.MapFrom(src => src.SurchargesTotal));
+
+            // ============================
+            // CONTRACT -> CONTRACTDTO (pour SupplierDto)
+            // ============================
+            CreateMap<Contract, Application.Features.SupplierFeature.Dtos.ContractDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ContractNumber, opt => opt.MapFrom(src => src.ContractNumber))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => (int)src.Type))
+                .ForMember(dest => dest.ClientId, opt => opt.MapFrom(src => src.ClientId))
+                .ForMember(dest => dest.ClientName, opt => opt.MapFrom(src => src.Client != null ? src.Client.Name : null))
+                .ForMember(dest => dest.ValidFrom, opt => opt.MapFrom(src => src.ValidFrom))
+                .ForMember(dest => dest.ValidTo, opt => opt.MapFrom(src => src.ValidTo))
+                .ForMember(dest => dest.Terms, opt => opt.MapFrom(src => src.Terms))
+                .ForMember(dest => dest.TermsAccepted, opt => opt.MapFrom(src => src.TermsAccepted))
+                .ForMember(dest => dest.TermsAcceptedAt, opt => opt.MapFrom(src => src.TermsAcceptedAt))
+                .ForMember(dest => dest.GlobalDiscountPercent, opt => opt.MapFrom(src => src.GlobalDiscountPercent))
+                .ForMember(dest => dest.MinimumVolume, opt => opt.MapFrom(src => src.MinimumVolume))
+                .ForMember(dest => dest.MinimumVolumeUnit, opt => opt.MapFrom(src => src.MinimumVolumeUnit))
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
+                .ForMember(dest => dest.AutoRenew, opt => opt.MapFrom(src => src.AutoRenew))
+                .ForMember(dest => dest.RenewalNoticeDays, opt => opt.MapFrom(src => src.RenewalNoticeDays))
+                .ForMember(dest => dest.IsValid, opt => opt.MapFrom(src => !src.IsDeleted && DateTime.UtcNow >= src.ValidFrom && DateTime.UtcNow <= src.ValidTo))
+                .ForMember(dest => dest.IsExpiringSoon, opt => opt.MapFrom(src => !src.IsDeleted && (src.ValidTo - DateTime.UtcNow).TotalDays <= 30));
 
             // ============================
             // SUPPLIER (avec collections)
@@ -535,11 +568,6 @@ CreateMap<PagedList<Contract>, PagedList<ContractDTO>>()
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
                 .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
 
-
-
-
-
-
             // Command → Entity (pour la mise à jour)
             CreateMap<UpdateContractCommandNew, Contract>()
     .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.ContractId))
@@ -763,6 +791,45 @@ CreateMap<PagedList<Contract>, PagedList<ContractDTO>>()
 
 
 
+            // ============================
+            // PAYMENT MAPPINGS
+            // ============================
+            
+            // Command -> Entity (pour la création)
+            CreateMap<AddPaymentCommandNew, Payment>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.Invoice, opt => opt.Ignore())
+                .ForMember(dest => dest.InvoiceId, opt => opt.MapFrom(src => Guid.Parse(src.invoice)));
+
+            // Entity -> DTO (pour les réponses)
+            CreateMap<Payment, PaymentDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.InvoiceId, opt => opt.MapFrom(src => src.InvoiceId))
+                .ForMember(dest => dest.PaymentDate, opt => opt.MapFrom(src => src.PaymentDate))
+                .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount))
+                .ForMember(dest => dest.PaymentMethod, opt => opt.MapFrom(src => src.PaymentMethod))
+                .ForMember(dest => dest.Reference, opt => opt.MapFrom(src => src.Reference))
+                .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes));
+
+            // PagedList support pour Payment
+            CreateMap<PagedList<Payment>, PagedList<PaymentDTO>>()
+                .ConvertUsing((src, dest, context) =>
+                {
+                    var items = context.Mapper.Map<List<PaymentDTO>>(src.Items);
+                    return new PagedList<PaymentDTO>(
+                        items,
+                        src.TotalCount,
+                        src.CurrentPage,
+                        src.PageSize);
+                });
         }
 
 

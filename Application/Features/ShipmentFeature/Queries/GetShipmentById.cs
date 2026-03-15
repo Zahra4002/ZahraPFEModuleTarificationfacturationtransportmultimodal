@@ -17,11 +17,10 @@ namespace Application.Features.ShipmentFeature.Queries
             }
             public async Task<ResponseHttp> Handle(GetShipmentById request, CancellationToken cancellationToken)
             {
-
                 try
                 {
                     var shipment = await _shipementRepository.GetShipementWithIncules(request.ShipmentId, new string[] { "Segments" }, cancellationToken);
-                    var result = new ShipmentDto(shipment);
+                    
                     if (shipment == null)
                     {
                         return new ResponseHttp
@@ -30,12 +29,14 @@ namespace Application.Features.ShipmentFeature.Queries
                             Fail_Messages = $"Shipment with ID {request.ShipmentId} not found."
                         };
                     }
+
+                    var result = new ShipmentDto(shipment);
+                    
                     return new ResponseHttp
                     {
                         Status = 200,
                         Resultat = result,
                         Fail_Messages = null
-
                     };
                 }
                 catch (Exception ex)
@@ -45,7 +46,6 @@ namespace Application.Features.ShipmentFeature.Queries
                         Status = 500,
                         Fail_Messages = $"An error occurred while retrieving the shipment: {ex.Message}"
                     };
-
                 }
 
             }
