@@ -10119,43 +10119,6 @@
         },
         "additionalProperties": false
       },
-      "CreateContractDto": {
-        "type": "object",
-        "properties": {
-          "contractNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "type": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "validFrom": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "validTo": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "terms": {
-            "type": "string",
-            "nullable": true
-          },
-          "globalDiscountPercent": {
-            "type": "number",
-            "format": "double"
-          },
-          "isActive": {
-            "type": "boolean"
-          }
-        },
-        "additionalProperties": false
-      },
       "CreateInvoiceFromShipmentDto": {
         "type": "object",
         "properties": {
@@ -10259,20 +10222,6 @@
           },
           "isActive": {
             "type": "boolean"
-          },
-          "contracts": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateContractDto"
-            },
-            "nullable": true
-          },
-          "transportSegments": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateTransportSegmentDto"
-            },
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -10491,43 +10440,6 @@
           "maxHeight": {
             "type": "number",
             "format": "double",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "CreateTransportSegmentDto": {
-        "type": "object",
-        "properties": {
-          "sequence": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "transportMode": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "zoneFromId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "zoneToId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "distanceKm": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "baseCost": {
-            "type": "number",
-            "format": "double"
-          },
-          "currencyCode": {
-            "type": "string",
             "nullable": true
           }
         },

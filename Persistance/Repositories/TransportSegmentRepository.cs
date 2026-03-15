@@ -62,6 +62,10 @@ namespace Persistance.Repositories
             return new Dictionary<bool, string> { { true, "Transport Segment already exists." } };
 
         }
-
+        public async Task UpdateAsync(TransportSegment segment, CancellationToken cancellationToken = default)
+        {
+            _context.TransportSegments.Update(segment);
+            await Task.CompletedTask;
+        }
     }
 }

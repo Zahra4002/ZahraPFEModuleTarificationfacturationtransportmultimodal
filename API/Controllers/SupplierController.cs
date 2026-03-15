@@ -32,7 +32,9 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateSupplierDto dto)
+
         {
+           
             var command = new CreateSupplierCommand(
                 dto.Code,
                 dto.Name,
@@ -41,9 +43,8 @@ namespace API.Controllers
                 dto.Phone,
                 dto.Address,
                 dto.DefaultCurrencyCode,
-                dto.IsActive,
-                dto.Contracts,
-                dto.TransportSegments
+                dto.IsActive
+               
             );
 
             var result = await _mediator.Send(command);

@@ -251,26 +251,22 @@ namespace Application.Mappings
                         src.CurrentPage,
                         src.PageSize);
                 });
-            
+
 
             // ============================
             // TRANSPORT SEGMENT DTO
             // ============================
             CreateMap<TransportSegment, Application.Features.SupplierFeature.Dtos.TransportSegmentDto>()
-                .ForMember(dest => dest.ZoneFromName,
-                    opt => opt.MapFrom(src => src.ZoneFrom != null ? src.ZoneFrom.Name : null))
-                .ForMember(dest => dest.ZoneToName,
-                    opt => opt.MapFrom(src => src.ZoneTo != null ? src.ZoneTo.Name : null))
+                
                 .ForMember(dest => dest.TransportModeName,
-                    opt => opt.MapFrom(src => src.TransportMode.ToString()))
-                .ForMember(dest => dest.TotalCost,
-                    opt => opt.MapFrom(src => src.TotalCost))
-                .ForMember(dest => dest.SurchargesTotal,
-                    opt => opt.MapFrom(src => src.SurchargesTotal));
+                    opt => opt.MapFrom(src => src.TransportMode.ToString()));
+           
 
             // ============================
-            // SUPPLIER (avec collections)
+            // SUPPLIER MAPPINGS
             // ============================
+
+            // Entity -> DTO
             CreateMap<Supplier, SupplierDto>()
                 .ForMember(dest => dest.CreatedDate,
                     opt => opt.MapFrom(src => src.CreatedDate))
@@ -281,10 +277,22 @@ namespace Application.Mappings
 
             // DTO -> Command
             CreateMap<CreateSupplierDto, CreateSupplierCommand>();
-            CreateMap<UpdateSupplierDto, UpdateSupplierCommand>();
-            CreateMap<CreateContractDto, CreateContractDto>();
-            CreateMap<CreateTransportSegmentDto, CreateTransportSegmentDto>();
 
+            // Command -> Entity (pour Create)
+            CreateMap<CreateSupplierCommand, Supplier>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore());
+            CreateMap<Invoice, InvoiceSummaryDTO>();
+            CreateMap<Contract, ContractSummaryDto>();
+            CreateMap<Contract, ContractDto>();
+            CreateMap<TransportSegment, Features.SupplierFeature.Dtos.TransportSegmentDto>()
+                .ForMember(dest => dest.TransportModeName,
+                    opt => opt.MapFrom(src => src.TransportMode.ToString()));
             // PagedList support
             CreateMap<PagedList<Supplier>, PagedList<SupplierDto>>()
                 .ConvertUsing((src, dest, context) =>
@@ -296,6 +304,21 @@ namespace Application.Mappings
                         src.CurrentPage,
                         src.PageSize);
                 });
+            // ============================
+            // UPDATE SUPPLIER COMMAND
+            // ============================
+            CreateMap<UpdateSupplierCommand, Supplier>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())  // On garde l'ID existant
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => DateTime.UtcNow))
+                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => "System"))
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.Contracts, opt => opt.Ignore())
+                .ForMember(dest => dest.TransportSegments, opt => opt.Ignore());
             // Test mappings
             CreateMap<AddTestCommandNew, Test>();
             CreateMap<Test, TestDTO>().ReverseMap();

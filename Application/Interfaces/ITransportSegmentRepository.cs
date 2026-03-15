@@ -7,6 +7,7 @@ namespace Application.Interfaces
         Task Delete(TransportSegment segment);
         Task<Dictionary<bool, string>> IsExitAsync(Guid ShipmentId, Guid SupplierId, Guid ZoneFromId, Guid ZoneToId);
         Task<Dictionary<bool, string>> IsExitAsync(Guid ShipmentId, Guid SegmentId);
+        Task UpdateAsync(TransportSegment segment, CancellationToken cancellationToken = default);
 
     }
 }

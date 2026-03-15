@@ -8228,23 +8228,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Mega Pc\\.nuget\\packages\\": {},
+    "C:\\Users\\merie\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\PFE REQUIRMENTS\\backend1\\Application\\Application.csproj",
+      "projectUniqueName": "C:\\Users\\merie\\source\\repos\\backend9\\Application\\Application.csproj",
       "projectName": "Application",
-      "projectPath": "D:\\PFE REQUIRMENTS\\backend1\\Application\\Application.csproj",
-      "packagesPath": "C:\\Users\\Mega Pc\\.nuget\\packages\\",
-      "outputPath": "D:\\PFE REQUIRMENTS\\backend1\\Application\\obj\\",
+      "projectPath": "C:\\Users\\merie\\source\\repos\\backend9\\Application\\Application.csproj",
+      "packagesPath": "C:\\Users\\merie\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\merie\\source\\repos\\backend9\\Application\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Mega Pc\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\merie\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -8259,8 +8259,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\PFE REQUIRMENTS\\backend1\\Domain\\Domain.csproj": {
-              "projectPath": "D:\\PFE REQUIRMENTS\\backend1\\Domain\\Domain.csproj"
+            "C:\\Users\\merie\\source\\repos\\backend9\\Domain\\Domain.csproj": {
+              "projectPath": "C:\\Users\\merie\\source\\repos\\backend9\\Domain\\Domain.csproj"
             }
           }
         }
@@ -8352,10 +8352,14 @@
   },
   "logs": [
     {
-      "code": "Undefined",
+      "code": "NU1903",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Problem reading the cache file D:\\PFE REQUIRMENTS\\backend1\\Application\\obj\\project.nuget.cache : '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0."
+      "message": "Le package 'AutoMapper' 13.0.1 présente une vulnérabilité de gravité élevé(e) connue, https://github.com/advisories/GHSA-rvv3-g6hj-g44x.",
+      "libraryId": "AutoMapper",
+      "targetGraphs": [
+        "net8.0"
+      ]
     }
   ]
 }
