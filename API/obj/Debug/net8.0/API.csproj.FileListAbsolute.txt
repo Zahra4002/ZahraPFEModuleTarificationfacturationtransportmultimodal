@@ -1892,3 +1892,8 @@ C:\Users\merie\source\repos\backend7\API\obj\Debug\net8.0\refint\API.dll
 C:\Users\merie\source\repos\backend7\API\obj\Debug\net8.0\API.pdb
 C:\Users\merie\source\repos\backend7\API\obj\Debug\net8.0\API.genruntimeconfig.cache
 C:\Users\merie\source\repos\backend7\API\obj\Debug\net8.0\ref\API.dll
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2026\Projet 3 TarificationFacturation\API\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2026\Projet 3 TarificationFacturation\API\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2026\Projet 3 TarificationFacturation\API\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2026\Projet 3 TarificationFacturation\API\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
+E:\Addinn\Dossier Addinn\Dossier de Stage\Stage_PFE_2026\Projet 3 TarificationFacturation\API\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
