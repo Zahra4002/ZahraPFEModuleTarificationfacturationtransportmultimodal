@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "mKdjOPmn0TY=",
+  "dgSpecHash": "tLRhYuwaK7k=",
   "success": true,
-  "projectFilePath": "C:\\Users\\LENOVO_ADDINN\\Downloads\\Version Final\\backend1\\Application\\Application.csproj",
+  "projectFilePath": "E:\\Addinn\\Dossier Addinn\\Dossier de Stage\\Stage_PFE_2026\\Projet 3 TarificationFacturation\\Application\\Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\LENOVO_ADDINN\\.nuget\\packages\\automapper\\16.1.1\\automapper.16.1.1.nupkg.sha512",
     "C:\\Users\\LENOVO_ADDINN\\.nuget\\packages\\bcrypt.net-next\\4.1.0\\bcrypt.net-next.4.1.0.nupkg.sha512",
@@ -153,5 +153,15 @@
     "C:\\Users\\LENOVO_ADDINN\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
     "C:\\Users\\LENOVO_ADDINN\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "message": "Problem reading the cache file E:\\Addinn\\Dossier Addinn\\Dossier de Stage\\Stage_PFE_2026\\Projet 3 TarificationFacturation\\Application\\obj\\project.nuget.cache : '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0.",
+      "projectPath": "E:\\Addinn\\Dossier Addinn\\Dossier de Stage\\Stage_PFE_2026\\Projet 3 TarificationFacturation\\Application\\Application.csproj",
+      "warningLevel": 1,
+      "filePath": "E:\\Addinn\\Dossier Addinn\\Dossier de Stage\\Stage_PFE_2026\\Projet 3 TarificationFacturation\\Application\\Application.csproj",
+      "targetGraphs": []
+    }
+  ]
 }

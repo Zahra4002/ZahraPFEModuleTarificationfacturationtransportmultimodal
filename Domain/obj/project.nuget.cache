@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "HYqlmf1UCqQ=",
+  "dgSpecHash": "JTheI4AQ4RA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\LENOVO_ADDINN\\Downloads\\Version Final\\backend1\\Domain\\Domain.csproj",
+  "projectFilePath": "E:\\Addinn\\Dossier Addinn\\Dossier de Stage\\Stage_PFE_2026\\Projet 3 TarificationFacturation\\Domain\\Domain.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\LENOVO_ADDINN\\.nuget\\packages\\fluentvalidation\\11.9.0\\fluentvalidation.11.9.0.nupkg.sha512",
     "C:\\Users\\LENOVO_ADDINN\\.nuget\\packages\\ippdotnetsdkforquickbooksapiv3\\14.7.0.4\\ippdotnetsdkforquickbooksapiv3.14.7.0.4.nupkg.sha512",
@@ -125,5 +125,15 @@
     "C:\\Users\\LENOVO_ADDINN\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
     "C:\\Users\\LENOVO_ADDINN\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "message": "Problem reading the cache file E:\\Addinn\\Dossier Addinn\\Dossier de Stage\\Stage_PFE_2026\\Projet 3 TarificationFacturation\\Domain\\obj\\project.nuget.cache : '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0.",
+      "projectPath": "E:\\Addinn\\Dossier Addinn\\Dossier de Stage\\Stage_PFE_2026\\Projet 3 TarificationFacturation\\Domain\\Domain.csproj",
+      "warningLevel": 1,
+      "filePath": "E:\\Addinn\\Dossier Addinn\\Dossier de Stage\\Stage_PFE_2026\\Projet 3 TarificationFacturation\\Domain\\Domain.csproj",
+      "targetGraphs": []
+    }
+  ]
 }
