@@ -36,7 +36,11 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
 builder.Services.ConfigureSwagger();
-builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<AutoMapperProfiles>();
+});
+
 builder.Services.AddMediatR(cfg => {
     cfg.RegisterServicesFromAssembly(typeof(UpdateQuoteCommandHandler).Assembly);
 });
