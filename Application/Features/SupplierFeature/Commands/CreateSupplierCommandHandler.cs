@@ -3,14 +3,8 @@ using Application.Interfaces;
 using Application.Setting;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Application.Features.SupplierFeature.Commands
 {
@@ -76,11 +70,6 @@ namespace Application.Features.SupplierFeature.Commands
                     CreatedBy = "System",
 
                 };
-
-                // 3️⃣ Ajouter les contrats existants par leurs IDs
-
-
-                // 4️⃣ Ajouter les segments existants par leurs IDs
 
 
                 // 5️⃣ Sauvegarder le fournisseur (cela sauvegardera aussi les relations)
