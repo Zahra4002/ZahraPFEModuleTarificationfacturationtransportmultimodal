@@ -5,6 +5,8 @@ using Application.Features.CurrencyFeature.Commands;
 using Application.Features.CurrencyFeature.Dtos;
 using Application.Features.InvoiceFeature.Commands;
 using Application.Features.InvoiceFeature.Dtos;
+using Application.Features.PaymentFeature.Commands;
+using Application.Features.PaymentFeature.Dtos;
 using Application.Features.QuoteFeature.Commands;
 using Application.Features.QuoteFeature.Dtos;
 using Application.Features.ShipmentFeature.Commands;
@@ -102,8 +104,8 @@ namespace Application.Mappings
                 .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
                 .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
                 .ForMember(dest => dest.InvoiceDate,
-                    opt => opt.MapFrom(src => src.IssueDate))
-                .ForMember(dest => dest.Lines, opt => opt.Ignore()); // On gère les lignes manuellement
+                    opt => opt.MapFrom(src => src.IssueDate));
+            //.ForMember(dest => dest.Lines, opt => opt.Ignore()); // On gère les lignes manuellement
 
 
             // ============================
@@ -111,34 +113,47 @@ namespace Application.Mappings
             // ============================
 
             CreateMap<UpdateInvoiceCommand, Invoice>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.Status, opt => opt.Ignore())    // ✅ Ajouté !
-                .ForMember(dest => dest.ModifiedDate,
-                    opt => opt.MapFrom(src => DateTime.UtcNow))
-                .ForMember(dest => dest.Lines, opt => opt.Ignore());
-
+    .ForMember(dest => dest.Id, opt => opt.Ignore())
+    .ForMember(dest => dest.Status, opt => opt.Ignore())
+    .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+    .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+    .ForMember(dest => dest.Lines, opt => opt.Ignore())
+    .ForMember(dest => dest.InvoiceDate,
+        opt => opt.MapFrom(src => src. IssueDate))
+    .ForMember(dest => dest.ModifiedDate,
+        opt => opt.MapFrom(src => DateTime.UtcNow))
+    .ForMember(dest => dest.ModifiedBy,
+        opt => opt.MapFrom(src => "System"))
+    .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+    .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+    .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+    .ForMember(dest => dest.DeletedDate, opt => opt.Ignore());
 
             // ============================
             // INVOICE ENTITY -> INVOICE DTO
             // ============================
 
             CreateMap<Invoice, InvoiceDTO>()
-              .ForMember(dest => dest.ClientName,
-                  opt => opt.MapFrom(src => src.Client.Name))
 
-              .ForMember(dest => dest.SupplierName,
-                opt => opt.MapFrom(src => src.Supplier.Name))
-     
-             .ForMember(dest => dest.ShipmentNumber,
-                opt => opt.MapFrom(src => src.Shipment.ShipmentNumber))
+   .ForMember(dest => dest.ClientName,
 
-            .ForMember(dest => dest.CurrencyCode,
-                opt => opt.MapFrom(src => src.Currency.Code))
+       opt => opt.MapFrom(src => src.Client != null ? src.Client.Name : null))
 
-           .ForMember(dest => dest.Lines,
-                 opt => opt.MapFrom(src => src.Lines));
 
-            
+   .ForMember(dest => dest.SupplierName,
+
+     opt => opt.MapFrom(src => src.Supplier != null ? src.Supplier.Name : null))
+
+       .ForMember(dest => dest.ShipmentNumber,
+
+     opt => opt.MapFrom(src => src.Shipment != null ? src.Shipment.ShipmentNumber : null))
+
+
+ .ForMember(dest => dest.CurrencyCode,
+
+     opt => opt.MapFrom(src => src.Currency != null ? src.Currency.Code : null));
+
+
 
 
             // ============================
@@ -251,22 +266,16 @@ namespace Application.Mappings
                         src.CurrentPage,
                         src.PageSize);
                 });
-            
+
 
             // ============================
             // TRANSPORT SEGMENT DTO
             // ============================
             CreateMap<TransportSegment, Application.Features.SupplierFeature.Dtos.TransportSegmentDto>()
-                .ForMember(dest => dest.ZoneFromName,
-                    opt => opt.MapFrom(src => src.ZoneFrom != null ? src.ZoneFrom.Name : null))
-                .ForMember(dest => dest.ZoneToName,
-                    opt => opt.MapFrom(src => src.ZoneTo != null ? src.ZoneTo.Name : null))
                 .ForMember(dest => dest.TransportModeName,
-                    opt => opt.MapFrom(src => src.TransportMode.ToString()))
-                .ForMember(dest => dest.TotalCost,
-                    opt => opt.MapFrom(src => src.TotalCost))
-                .ForMember(dest => dest.SurchargesTotal,
-                    opt => opt.MapFrom(src => src.SurchargesTotal));
+                    opt => opt.MapFrom(src => src.TransportMode.ToString()));
+              
+             
 
             // ============================
             // SUPPLIER (avec collections)
@@ -279,11 +288,61 @@ namespace Application.Mappings
                 .ForMember(dest => dest.TransportSegments,
                     opt => opt.MapFrom(src => src.TransportSegments.Where(ts => !ts.IsDeleted).ToList()));
 
-            // DTO -> Command
-            CreateMap<CreateSupplierDto, CreateSupplierCommand>();
-            CreateMap<UpdateSupplierDto, UpdateSupplierCommand>();
-            CreateMap<CreateContractDto, CreateContractDto>();
-            CreateMap<CreateTransportSegmentDto, CreateTransportSegmentDto>();
+           // DTO -> Command
+           CreateMap<CreateSupplierDto, CreateSupplierCommand>();
+
+            //  ============================// UPDATE SUPPLIER COMMAND// ============================
+            CreateMap<UpdateSupplierCommand, Supplier>()
+
+    .ForMember(dest => dest.Id, opt => opt.Ignore())  // On garde l'ID existant    .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+
+    .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+
+    .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => DateTime.UtcNow))
+
+    .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => "System"))
+
+    .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+
+    .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+
+    .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+
+    .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+
+    .ForMember(dest => dest.Contracts, opt => opt.Ignore())
+
+    .ForMember(dest => dest.TransportSegments, opt => opt.Ignore());
+
+
+            // Command -> Entity (pour Create)
+            CreateMap<CreateSupplierCommand, Supplier>()
+
+      .ForMember(dest => dest.Id, opt => opt.Ignore())
+
+     .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+
+     .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+
+     .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+
+     .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+
+     .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+
+     .ForMember(dest => dest.DeletedDate, opt => opt.Ignore());
+
+            CreateMap<Invoice, InvoiceSummaryDTO>();
+
+            CreateMap<Contract, ContractSummaryDto>();
+
+            CreateMap<Contract, ContractDto>();
+
+            CreateMap<TransportSegment, Features.SupplierFeature.Dtos.TransportSegmentDto>()
+
+                .ForMember(dest => dest.TransportModeName,
+
+                    opt => opt.MapFrom(src => src.TransportMode.ToString()));
 
             // PagedList support
             CreateMap<PagedList<Supplier>, PagedList<SupplierDto>>()
@@ -725,25 +784,112 @@ CreateMap<PagedList<Contract>, PagedList<ContractDTO>>()
             CreateMap<Features.ShipmentFeature.Dtos.TransportSegmentDto, TransportSegment>();
 
             CreateMap<AddSegmentToShipementCommand, TransportSegment>()
+    .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => Guid.NewGuid()))
+    .ForMember(dest => dest.ShipmentId, opt => opt.MapFrom(src => src.ShipmentId))
+    .ForMember(dest => dest.Sequence, opt => opt.MapFrom(src => src.sequence))  // ← Mapping du nom différent
+    .ForMember(dest => dest.TransportMode, opt => opt.MapFrom(src => src.TransportMode))
+    .ForMember(dest => dest.SupplierId, opt => opt.MapFrom(src => src.SupplierId))
+    .ForMember(dest => dest.ZoneFromId, opt => opt.MapFrom(src => src.ZoneFromId))
+    .ForMember(dest => dest.ZoneToId, opt => opt.MapFrom(src => src.ZoneToId))
+    .ForMember(dest => dest.DistanceKm, opt => opt.MapFrom(src => src.DistanceKm))
+    .ForMember(dest => dest.EstimatedTransitDays, opt => opt.MapFrom(src => src.EstimatedTransitDays))
+    .ForMember(dest => dest.DepartureDate, opt => opt.MapFrom(src => src.DepartureDate))
+    .ForMember(dest => dest.ArrivalDate, opt => opt.MapFrom(src => src.ArrivalDate))
+    .ForMember(dest => dest.BaseCost, opt => opt.MapFrom(src => src.BaseCost))
+    .ForMember(dest => dest.SurchargesTotal, opt => opt.MapFrom(src => src.SurchargesTotal))
+    .ForMember(dest => dest.TotalCost, opt => opt.MapFrom(src => src.TotalCost))
+    .ForMember(dest => dest.CurrencyCode, opt => opt.MapFrom(src => src.CurrencyCode))
+    // Relations à ignorer
+    .ForMember(dest => dest.Shipment, opt => opt.Ignore())
+    .ForMember(dest => dest.Supplier, opt => opt.Ignore())
+    .ForMember(dest => dest.ZoneFrom, opt => opt.Ignore())
+    .ForMember(dest => dest.ZoneTo, opt => opt.Ignore())
+    // Propriétés Entity (Date de création, etc.)
+    .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(_ => DateTime.UtcNow))
+    .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(_ => false));
+
+            CreateMap<UpdateSegmentOfShipementCommand, TransportSegment>()
     .ForMember(dest => dest.Id, opt => opt.Ignore())
+    .ForMember(dest => dest.ShipmentId, opt => opt.Ignore())
     .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
     .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
-    .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
-    .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
     .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
     .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
     .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
     .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
-    .ForMember(dest => dest.Sequence, opt => opt.Ignore())
-    .ForMember(dest => dest.SurchargesTotal, opt => opt.Ignore())
-    .ForMember(dest => dest.TotalCost, opt => opt.Ignore())
-    .ForMember(dest => dest.Supplier, opt => opt.Ignore())
-    .ForMember(dest => dest.ZoneFromId, opt => opt.MapFrom(src => src.ZoneFromId))
-    .ForMember(dest => dest.ZoneToId, opt => opt.MapFrom(src => src.ZoneToId))
-    .ForMember(dest => dest.ZoneFrom, opt => opt.Ignore())
-    .ForMember(dest => dest.ZoneTo, opt => opt.Ignore());
 
-            CreateMap<UpdateSegmentOfShipementCommand,TransportSegment>()
+    // ✅ Mapping conditionnel correct
+    .ForMember(dest => dest.Sequence, opt =>
+    {
+        opt.Condition(src => src.Sequence.HasValue);
+        opt.MapFrom(src => src.Sequence.Value);
+    })
+    .ForMember(dest => dest.TransportMode, opt =>
+    {
+        opt.Condition(src => src.TransportMode.HasValue);
+        opt.MapFrom(src => src.TransportMode.Value);
+    })
+    .ForMember(dest => dest.SupplierId, opt =>
+    {
+        opt.Condition(src => src.SupplierId.HasValue);
+        opt.MapFrom(src => src.SupplierId.Value);
+    })
+    .ForMember(dest => dest.ZoneFromId, opt =>
+    {
+        opt.Condition(src => src.ZoneFromId.HasValue);
+        opt.MapFrom(src => src.ZoneFromId.Value);
+    })
+    .ForMember(dest => dest.ZoneToId, opt =>
+    {
+        opt.Condition(src => src.ZoneToId.HasValue);
+        opt.MapFrom(src => src.ZoneToId.Value);
+    })
+    .ForMember(dest => dest.DistanceKm, opt =>
+    {
+        opt.Condition(src => src.DistanceKm.HasValue);
+        opt.MapFrom(src => src.DistanceKm.Value);
+    })
+    .ForMember(dest => dest.EstimatedTransitDays, opt =>
+    {
+        opt.Condition(src => src.EstimatedTransitDays.HasValue);
+        opt.MapFrom(src => src.EstimatedTransitDays.Value);
+    })
+    .ForMember(dest => dest.DepartureDate, opt =>
+    {
+        opt.Condition(src => src.DepartureDate.HasValue);
+        opt.MapFrom(src => src.DepartureDate.Value);
+    })
+    .ForMember(dest => dest.ArrivalDate, opt =>
+    {
+        opt.Condition(src => src.ArrivalDate.HasValue);
+        opt.MapFrom(src => src.ArrivalDate.Value);
+    })
+    .ForMember(dest => dest.BaseCost, opt =>
+    {
+        opt.Condition(src => src.BaseCost.HasValue);
+        opt.MapFrom(src => src.BaseCost.Value);
+    })
+    .ForMember(dest => dest.SurchargesTotal, opt =>
+    {
+        opt.Condition(src => src.SurchargesTotal.HasValue);
+        opt.MapFrom(src => src.SurchargesTotal.Value);
+    })
+    .ForMember(dest => dest.TotalCost, opt =>
+    {
+        opt.Condition(src => src.TotalCost.HasValue);
+        opt.MapFrom(src => src.TotalCost.Value);
+    })
+    .ForMember(dest => dest.CurrencyCode, opt =>
+    {
+        opt.Condition(src => !string.IsNullOrEmpty(src.CurrencyCode));
+        opt.MapFrom(src => src.CurrencyCode);
+    });
+
+            // ============================
+            // PAYMENT MAPPINGS
+            // ============================
+            // Command -> Entity (pour la création)
+            CreateMap<AddPaymentCommandNew, Payment>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
@@ -753,15 +899,30 @@ CreateMap<PagedList<Contract>, PagedList<ContractDTO>>()
                 .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
                 .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
                 .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
-                .ForMember(dest => dest.Sequence, opt => opt.Ignore())
-                .ForMember(dest => dest.SurchargesTotal, opt => opt.Ignore())
-                .ForMember(dest => dest.TotalCost, opt => opt.Ignore())
-                .ForMember(dest => dest.Supplier, opt => opt.Ignore())
-                .ForMember(dest => dest.ZoneFrom, opt => opt.Ignore())
-                .ForMember(dest => dest.ZoneTo, opt => opt.Ignore());
+                .ForMember(dest => dest.Invoice, opt => opt.Ignore())
+                .ForMember(dest => dest.InvoiceId, opt => opt.MapFrom(src => src.invoiceId));
 
+            // Entity -> DTO (pour les réponses)
+            CreateMap<Payment, PaymentDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.InvoiceId, opt => opt.MapFrom(src => src.InvoiceId))
+                .ForMember(dest => dest.PaymentDate, opt => opt.MapFrom(src => src.PaymentDate))
+                .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount))
+                .ForMember(dest => dest.PaymentMethod, opt => opt.MapFrom(src => src.PaymentMethod))
+                .ForMember(dest => dest.Reference, opt => opt.MapFrom(src => src.Reference))
+                .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes));
 
-
+            // PagedList support pour Payment
+            CreateMap<PagedList<Payment>, PagedList<PaymentDTO>>()
+                .ConvertUsing((src, dest, context) =>
+                {
+                    var items = context.Mapper.Map<List<PaymentDTO>>(src.Items);
+                    return new PagedList<PaymentDTO>(
+                        items,
+                        src.TotalCount,
+                        src.CurrentPage,
+                        src.PageSize);
+                });
 
         }
 

@@ -6,6 +6,8 @@ namespace Domain.Entities
     public class TransportSegment : Entity
     {
         public Guid? ShipmentId { get; set; }
+
+        public virtual Shipment Shipment { get; set; }
         public int Sequence { get; set; }
         public TransportMode TransportMode { get; set; }
         public Guid? SupplierId { get; set; }

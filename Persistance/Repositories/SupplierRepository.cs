@@ -62,6 +62,7 @@ namespace Persistance.Repositories
                     .ThenInclude(ts => ts.ZoneFrom)
                 .Include(s => s.TransportSegments)
                     .ThenInclude(ts => ts.ZoneTo)
+                .Include(s => s.Invoices)
                 .OrderBy(s => s.Code)
                 .AsQueryable();
 
@@ -89,6 +90,7 @@ namespace Persistance.Repositories
                     .ThenInclude(ts => ts.ZoneFrom)
                 .Include(s => s.TransportSegments)
                     .ThenInclude(ts => ts.ZoneTo)
+                .Include(s => s.Invoices)
                 .FirstOrDefaultAsync(cancellationToken);
         }
 

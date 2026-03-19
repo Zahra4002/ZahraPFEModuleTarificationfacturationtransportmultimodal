@@ -34,7 +34,7 @@ namespace Application.Features.QuoteFeature.Commands
                 }
 
                 // ✅ Utilisation de DeleteAsync
-                await _quoteRepository.DeleteAsync(quote, cancellationToken);
+                await _quoteRepository.Delete(request.Id);
                 await _quoteRepository.SaveChangesAsync(cancellationToken);
 
                 return new ResponseHttp

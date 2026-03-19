@@ -11,7 +11,7 @@ using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Application.Interfaces.Security
+namespace Application.Security
 {
     public class JwtProvider : IJwtProvider
     {

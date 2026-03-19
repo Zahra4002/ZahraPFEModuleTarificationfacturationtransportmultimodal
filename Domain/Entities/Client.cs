@@ -25,7 +25,9 @@ namespace Domain.Entities
 
         public virtual ICollection<Shipment> shipments { get; set; }
 
-       
+        public virtual ICollection<Quote> Quotes { get; set; }
+
+
 
     }
 }

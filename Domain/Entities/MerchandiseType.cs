@@ -14,6 +14,8 @@ namespace Domain.Entities
 
         public virtual ICollection<Quote> Quotes { get; set; } = new List<Quote>();
 
+        public virtual ICollection<Shipment> Shipments { get; set; } = new List<Shipment>();
+
 
 
     }

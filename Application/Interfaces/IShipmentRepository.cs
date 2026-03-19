@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using System.Linq.Expressions;
 
 namespace Application.Interfaces
@@ -19,6 +20,7 @@ namespace Application.Interfaces
               string? searchTerm = null,
               CancellationToken cancellationToken = default
            );
+
         Task AddAsync(Shipment shipment);
         Task SaveChangesAsync(CancellationToken cancellationToken = default);
         Task<Dictionary<bool, string>> IsExitAsync(Guid clientId, Guid quoteId, Guid merchandiseTypeId);
@@ -31,6 +33,22 @@ namespace Application.Interfaces
 
 
         Task<List<Shipment>> GetShipmentsByDateRangeWithSegmentsAsync(DateTime from, DateTime to, CancellationToken cancellationToken = default);
+
+        Task<List<Shipment>> GetShipmentsForPriceCalculationAsync(
+            Guid clientId,
+            Guid zoneFromId,
+            Guid zoneToId, 
+            TransportMode transportMode,
+            decimal weightKg,
+            decimal volumeM3,
+            ContainerType containerType, 
+            int containerCount, 
+            Guid merchandiseTypeId, 
+            DateTime? date, CancellationToken 
+            cancellationToken = default
+            );
+
+        Task<Shipment> GetShipmentByIdWithDetailsAsync(Guid shipmentId, CancellationToken cancellationToken );
 
 
 

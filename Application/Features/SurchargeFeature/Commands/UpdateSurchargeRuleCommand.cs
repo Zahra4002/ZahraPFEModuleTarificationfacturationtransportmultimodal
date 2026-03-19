@@ -83,7 +83,7 @@ namespace Application.Features.SurchargeFeature.Commands
                 rule.Priority = request.RuleDto.Priority;
                 rule.ModifiedDate = DateTime.UtcNow;
 
-                await _surchargeRepository.UpdateRuleAsync(rule);
+                await _surchargeRepository.Update(surcharge);
                 await _surchargeRepository.SaveChange(cancellationToken);
 
                 // Get updated rule with details

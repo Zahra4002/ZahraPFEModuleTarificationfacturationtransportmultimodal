@@ -16,6 +16,7 @@ namespace Application.Features.ShipmentFeature.Commands
            Guid SupplierId,
            Guid ZoneFromId,
            Guid ZoneToId,
+           int sequence,
            decimal DistanceKm,
            int EstimatedTransitDays,
            DateTime? DepartureDate,

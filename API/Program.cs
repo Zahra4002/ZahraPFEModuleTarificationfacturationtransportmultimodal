@@ -1,8 +1,8 @@
 using API.Extension;
 using Application.Features.QuoteFeature.Commands;
 using Application.Interfaces;
-using Application.Interfaces.Security;
 using Application.Mappings;
+using Application.Security;
 using Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

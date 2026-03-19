@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Persistance.Data;
 using System;
@@ -174,6 +175,60 @@ namespace Persistance.Repositories
             }
 
             return shipmentQuery.FirstOrDefaultAsync(cancellationToken);
+        }
+
+        public async Task<List<Shipment>> GetShipmentsForPriceCalculationAsync(
+        Guid clientId,
+        Guid zoneFromId,
+        Guid zoneToId,
+        TransportMode transportMode,
+        decimal weightKg,
+        decimal volumeM3,
+        ContainerType containerType,
+        int containerCount,
+        Guid merchandiseTypeId,
+        DateTime? date,
+        CancellationToken cancellationToken = default)
+        {
+            return await _context.Shipments
+                .AsNoTracking()
+                .Where(s => !s.IsDeleted
+                            && s.ClientId == clientId
+                            && s.MerchandiseTypeId == merchandiseTypeId
+                            && s.WeightKg == weightKg
+                            && s.VolumeM3 == volumeM3
+                            && s.ContainerType == containerType
+                            && s.ContainerCount == containerCount
+                            && s.Segments.Any(seg => seg.ZoneFromId == zoneFromId
+                                                    && seg.ZoneToId == zoneToId
+                                                    && seg.TransportMode == transportMode))
+                // Shipment relations
+                .Include(s => s.Client)
+                .Include(s => s.Quote)
+                .Include(s => s.MerchandiseType)
+
+                // Segments et leurs relations
+                .Include(s => s.Segments)
+                    .ThenInclude(seg => seg.Supplier)
+                .Include(s => s.Segments)
+                    .ThenInclude(seg => seg.ZoneFrom)
+                .Include(s => s.Segments)
+                    .ThenInclude(seg => seg.ZoneTo)
+
+                // Invoices et leurs relations
+                .Include(s => s.Invoices)
+
+                .ToListAsync(cancellationToken);
+        }
+
+        public Task<Shipment> GetShipmentByIdWithDetailsAsync(Guid shipmentId, CancellationToken cancellationToken )
+        {
+            return _context.Shipments
+                .AsNoTracking()
+                .Where(s => s.Id == shipmentId)
+                .Include(s => s.Segments) 
+                .Include(s => s.Invoices)
+                .FirstOrDefaultAsync(cancellationToken);
         }
     }
 }

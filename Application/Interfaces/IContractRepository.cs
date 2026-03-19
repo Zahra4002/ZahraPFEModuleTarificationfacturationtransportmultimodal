@@ -26,5 +26,7 @@ namespace Application.Interfaces
         Task<IReadOnlyList<ContractPricing>> GetContractPricingByContractIdAsync(Guid contractId, CancellationToken ct = default);
 
         Task<ContractPricing?> GetContractPricingByIdAsync(Guid ContractId,Guid CpId, CancellationToken ct = default);
+
+        Task<Contract?> GetActiveContractForClientAsync(Guid clientId, CancellationToken cancellationToken = default);
     }
 }

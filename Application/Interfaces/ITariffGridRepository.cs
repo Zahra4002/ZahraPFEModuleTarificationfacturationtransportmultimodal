@@ -1,5 +1,6 @@
 ﻿using Domain.Common;
 using Domain.Entities;
+using Domain.Enums;
 
 namespace Application.Interfaces
 {
@@ -29,5 +30,7 @@ namespace Application.Interfaces
         Task UpdateLineAsync(TariffLine line);
         Task<bool> DeleteLineAsync(Guid lineId);
         Task<bool> LineExistsInGridAsync(Guid gridId, Guid? zoneFromId, Guid? zoneToId, Guid? excludeLineId = null);
+
+        Task<TariffGrid?> GetApplicableTariffGridAsync(TransportMode transportMode, DateTime date, CancellationToken cancellationToken = default);
     }
 }

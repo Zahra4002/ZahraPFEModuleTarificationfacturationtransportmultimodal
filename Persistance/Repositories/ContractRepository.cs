@@ -10,11 +10,11 @@ namespace Persistance.Repositories
 {
     public class ContractRepository : GenericRepository<Contract>, IContractRepository
     {
-        private readonly CleanArchitecturContext _context;
+        
 
         public ContractRepository(CleanArchitecturContext context) : base(context)
         {
-            _context = context;
+            
         }
         public async Task<PagedList<Contract>> GetAllWithTypesAsync(int? pageNumber, int? pageSize, CancellationToken cancellationToken)
         {
@@ -118,6 +118,14 @@ namespace Persistance.Repositories
         {
             return await _context.ContractPricings
                 .FirstOrDefaultAsync(cp => cp.ContractId == ContractId && cp.Id == CpId && !cp.IsDeleted, ct);
+        }
+
+        public Task<Contract?> GetActiveContractForClientAsync(Guid clientId, CancellationToken cancellationToken = default)
+        {
+             return _context.Contracts
+                .Where(c => c.ClientId == clientId && c.IsActive && !c.IsDeleted)
+                .OrderByDescending(c => c.ValidFrom)
+                .FirstOrDefaultAsync(cancellationToken);
         }
     }
 }

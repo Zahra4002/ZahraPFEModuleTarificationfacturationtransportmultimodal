@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistance.Configurations;
+using Persistance.Extentios;
 
 namespace Persistance.Data
 {
@@ -11,6 +12,8 @@ namespace Persistance.Data
 
         public DbSet<Test> Tests { get; set; }
         public DbSet<Domain.Entities.User> Users { get; set; }
+
+        public DbSet<TariffGrid> TariffGrids { get; set; }
 
         public DbSet<Zone> Zones { get; set; }
         public DbSet<TariffLine> TariffLines { get; set; }
@@ -44,7 +47,12 @@ namespace Persistance.Data
         {
             base.OnModelCreating(modelBuilder);
             
-            // Configuration de la relation Quote-Shipment (AJOUTER CECI EN PREMIER)
+            // ✅ APPELER LE SEED CENTRALISÉ
+            modelBuilder.SeedSMSContext();
+            
+            // ========== CONFIGURATIONS ENTITÉS ==========
+            
+            // Configuration de la relation Quote-Shipment
             modelBuilder.Entity<Shipment>(entity =>
             {
                 entity.HasOne(s => s.Quote)
@@ -69,60 +77,7 @@ namespace Persistance.Data
                 entity.Navigation(s => s.DestinationAddress).IsRequired();
             });
 
-            // Seed data pour Currencies avec GUID
-            modelBuilder.Entity<Currency>().HasData(
-                new Currency
-                {
-                    Id = Guid.Parse("55555555-5555-5555-5555-555555555555"),
-                    Code = "EUR",
-                    Name = "Euro",
-                    Symbol = "€",
-                    IsActive = true
-                },
-                new Currency
-                {
-                    Id = Guid.Parse("66666666-6666-6666-6666-666666666666"),
-                    Code = "USD",
-                    Name = "US Dollar",
-                    Symbol = "$",
-                    IsActive = true
-                },
-                new Currency
-                {
-                    Id = Guid.Parse("77777777-7777-7777-7777-777777777777"),
-                    Code = "MAD",
-                    Name = "Dirham Marocain",
-                    Symbol = "DH",
-                    IsActive = true
-                }
-            );
-
-
-
-            // modelBuilder.ApplyConfiguration(new UserConfiguration());
-            modelBuilder.ApplyConfiguration(new SurchargeConfiguration());
-            modelBuilder.ApplyConfiguration(new SurchargeRuleConfiguration());
-
-
-            modelBuilder.Entity<ExchangeRate>()
-                .HasOne(er => er.FromCurrency)
-                .WithMany(c => c.ExchangeRatesFrom)
-                .HasForeignKey(er => er.FromCurrencyId);
-
-            modelBuilder.Entity<TariffLine>(entity =>
-            {
-                entity.HasOne(t => t.ZoneFrom)
-                    .WithMany(z => z.TariffLinesFrom)
-                    .HasForeignKey(t => t.ZoneFromId)
-                    .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(t => t.ZoneTo)
-                    .WithMany(z => z.TariffLinesTo)
-                    .HasForeignKey(t => t.ZoneToId)
-                    .OnDelete(DeleteBehavior.Restrict);
-            });
-
-            // Client addresses
+            // Configuration des adresses Client
             modelBuilder.Entity<Client>(entity =>
             {
                 entity.OwnsOne(c => c.BullingAddress, a =>
@@ -142,7 +97,7 @@ namespace Persistance.Data
                 entity.Navigation(c => c.ShippingAddress).IsRequired();
             });
 
-            // Quote addresses
+            // Configuration des adresses Quote
             modelBuilder.Entity<Quote>(entity =>
             {
                 entity.OwnsOne(q => q.OriginAddress, a =>
@@ -161,55 +116,30 @@ namespace Persistance.Data
                 });
                 entity.Navigation(q => q.DestinationAddress).IsRequired();
             });
-            
-            // MerchandiseType seed data
-            modelBuilder.Entity<MerchandiseType>().HasData(
-                new MerchandiseType
-                {
-                    Id = Guid.Parse("88888888-8888-8888-8888-888888888888"),
-                    Code = "GEN001",
-                    Name = "General Cargo",
-                    Description = "Standard general cargo with no special requirements",
-                    HazardousLevel = 0,
-                    PriceMultiplier = 1.0m,
-                    RequiresSpecialHandling = false,
-                    IsActive = true
-                },
-                new MerchandiseType
-                {
-                    Id = Guid.Parse("99999999-9999-9999-9999-999999999999"),
-                    Code = "PER002",
-                    Name = "Perishable Goods",
-                    Description = "Temperature-sensitive goods requiring refrigeration or special handling",
-                    HazardousLevel = 0,
-                    PriceMultiplier = 1.5m,
-                    RequiresSpecialHandling = true,
-                    IsActive = true
-                },
-                new MerchandiseType
-                {
-                    Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                    Code = "HAZ003",
-                    Name = "Hazardous Materials",
-                    Description = "Dangerous goods requiring special permits and handling procedures",
-                    HazardousLevel = 3,
-                    PriceMultiplier = 2.0m,
-                    RequiresSpecialHandling = true,
-                    IsActive = true
-                }
-            );
 
-            modelBuilder.Entity<Supplier>().HasData(
-                new Supplier
-                {
-                    Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                    Code = "DUMMY",
-                    Name = "Unknown Supplier",
-                    IsActive = true,
-                    Address = "N/A",
-                    DefaultCurrencyCode = "USD"
-                }
-            );
+            // Configuration des Taux d'Échange
+            modelBuilder.Entity<ExchangeRate>()
+                .HasOne(er => er.FromCurrency)
+                .WithMany(c => c.ExchangeRatesFrom)
+                .HasForeignKey(er => er.FromCurrencyId);
+
+            // Configuration des Lignes Tarifaires
+            modelBuilder.Entity<TariffLine>(entity =>
+            {
+                entity.HasOne(t => t.ZoneFrom)
+                    .WithMany(z => z.TariffLinesFrom)
+                    .HasForeignKey(t => t.ZoneFromId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(t => t.ZoneTo)
+                    .WithMany(z => z.TariffLinesTo)
+                    .HasForeignKey(t => t.ZoneToId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // ========== APPLIQUER LES CONFIGURATIONS ==========
+            modelBuilder.ApplyConfiguration(new SurchargeConfiguration());
+            modelBuilder.ApplyConfiguration(new SurchargeRuleConfiguration());
         }
     }
 }

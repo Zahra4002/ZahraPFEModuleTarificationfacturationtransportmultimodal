@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Domain.Common;
 using Domain.Entities;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Persistance.Data;
 
@@ -214,6 +215,7 @@ namespace Persistance.Repositories
             return clonedGrid;
         }
 
+
         #region Tariff Lines Methods
 
         public async Task<TariffLine?> GetLineByIdAsync(Guid lineId, CancellationToken cancellationToken)
@@ -284,7 +286,17 @@ namespace Persistance.Repositories
 
             return await query.AnyAsync();
         }
-
         #endregion
+
+        public async Task<TariffGrid?> GetApplicableTariffGridAsync(TransportMode transportMode, DateTime date, CancellationToken cancellationToken = default)
+        {
+            return await _context.TariffGrids
+                .Where(t => t.TransportMode == transportMode
+        && t.IsActive
+        && t.ValidFrom <= date
+        && t.ValidTo >= date)
+                .OrderByDescending(t => t.Version)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
     }
 }

@@ -35,6 +35,7 @@ namespace API.Extension
             services.AddScoped<Application.Interfaces.ICurrencyRepository, Persistance.Repositories.CurrencyRepository>();
             services.AddScoped<Application.Interfaces.IShipmentRepository, Persistance.Repositories.ShipmentRepository>();
             services.AddScoped<Application.Interfaces.ITransportSegmentRepository, Persistance.Repositories.TransportSegmentRepository>();
+            services.AddScoped<Application.Interfaces.ITaxRuleRepository, Persistance.Repositories.TaxRuleRepository>();
         }
 
         private static DbConnectionInfo GetConnectionInfo(IConfiguration configuration)

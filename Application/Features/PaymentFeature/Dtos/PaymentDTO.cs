@@ -8,10 +8,10 @@ using Domain.Enums;
 
 namespace Application.Features.PaymentFeature.Dtos
 {
-    internal class PaymentDTO
+    public  class PaymentDTO
     {
+        public Guid? Id { get; set; }
         public Guid? InvoiceId { get; set; }
-        public virtual Invoice Invoice { get; set; }
         public DateTime PaymentDate { get; set; }
         public decimal Amount { get; set; }
         public PaymentMethod PaymentMethod { get; set; }

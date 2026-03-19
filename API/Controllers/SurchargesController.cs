@@ -4,6 +4,7 @@ using Application.Features.SurchargeFeature.Dtos;
 using Application.Features.SurchargeFeature.Queries;
 using Application.Features.SurchargeFeature.Validators;
 using Application.Setting;
+using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -101,9 +102,9 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ResponseHttp>> GetSurchargesByType(string type)
+        public async Task<ActionResult<ResponseHttp>> GetSurchargesByType(SurchargeType type)
         {
-            var query = new GetSurchargesByTypeQuery(type);
+            var query = new GetSurchargesByTypeQuery(type.ToString());
             var result = await _mediator.Send(query);
 
             if (result.Status == StatusCodes.Status200OK)

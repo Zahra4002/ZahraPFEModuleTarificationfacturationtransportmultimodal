@@ -34,5 +34,5 @@ public class InvoiceDTO
 
     public decimal TotalTTC { get; set; }
 
-    public List<InvoiceLineDto> Lines { get; set; }
+    public List<InvoiceLineDto> Lines { get; set; } = new List<InvoiceLineDto>();
 }

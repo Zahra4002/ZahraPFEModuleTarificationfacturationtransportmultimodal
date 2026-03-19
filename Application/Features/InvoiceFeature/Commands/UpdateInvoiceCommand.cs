@@ -9,73 +9,89 @@ using Microsoft.AspNetCore.Http;
 namespace Application.Features.InvoiceFeature.Commands
 {
     public record UpdateInvoiceCommand(
-        Guid invoiceId,
-        Guid supplierId,
-        string invoiceNumber,
-        Guid clientId,
-        Guid? shipmentId,
-        DateTime issueDate,
-        DateTime dueDate,
-        Guid? currencyId,
-        decimal exchangeRate,
-        string? notes
-    ) : IRequest<ResponseHttp>
+        Guid InvoiceId,
+        Guid SupplierId,
+        string InvoiceNumber,
+        Guid ClientId,
+        Guid? ShipmentId,
+        DateTime IssueDate,
+        DateTime DueDate,
+        Guid? CurrencyId,
+        decimal ExchangeRate,
+        string? Notes
+    ) : IRequest<ResponseHttp>;
+
+    public class UpdateInvoiceCommandHandler
+        : IRequestHandler<UpdateInvoiceCommand, ResponseHttp>
     {
-        internal readonly object Id;
+        private readonly IInvoiceRepository _invoiceRepository;
+        private readonly IMapper _mapper;
 
-        public class UpdateInvoiceCommandHandler
-            : IRequestHandler<UpdateInvoiceCommand, ResponseHttp>
+        public UpdateInvoiceCommandHandler(
+            IInvoiceRepository invoiceRepository,
+            IMapper mapper)
         {
-            private readonly IInvoiceRepository invoiceRepository;
-            private readonly IMapper _mapper;
+            _invoiceRepository = invoiceRepository;
+            _mapper = mapper;
+        }
 
-            public UpdateInvoiceCommandHandler(
-                IInvoiceRepository invoiceRepository,
-                IMapper mapper)
+        public async Task<ResponseHttp> Handle(
+            UpdateInvoiceCommand request,
+            CancellationToken cancellationToken)
+        {
+            try
             {
-                this.invoiceRepository = invoiceRepository;
-                _mapper = mapper;
-            }
-
-            public async Task<ResponseHttp> Handle(
-                UpdateInvoiceCommand request,
-                CancellationToken cancellationToken)
-            {
-                Invoice? invoice = await invoiceRepository.GetById(request.invoiceId);
+                // ✅ Récupérer l'invoice avec PascalCase
+                Invoice? invoice = await _invoiceRepository.GetById(request.InvoiceId);
 
                 if (invoice == null)
                 {
                     return new ResponseHttp
                     {
-                        Resultat = _mapper.Map<InvoiceDTO>(invoice),
+                        Resultat = null,  // ✅ Pas de mapping quand null
                         Fail_Messages = "Invoice with this Id not found.",
-                        Status = StatusCodes.Status400BadRequest,
+                        Status = StatusCodes.Status404NotFound,  // ✅ 404 au lieu de 400
                     };
                 }
-                else
+
+                // ✅ Mise à jour des propriétés avec PascalCase
+                invoice.SupplierId = request.SupplierId;
+                invoice.InvoiceNumber = request.InvoiceNumber;
+                invoice.ClientId = request.ClientId;
+                invoice.ShipmentId = request.ShipmentId;
+                invoice.IssueDate = DateTime.SpecifyKind(request.IssueDate, DateTimeKind.Utc);
+                invoice.DueDate = DateTime.SpecifyKind(request.DueDate, DateTimeKind.Utc);
+                invoice.CurrencyId = request.CurrencyId;
+                invoice.ExchangeRate = request.ExchangeRate;
+                invoice.Notes = request.Notes;
+
+                // ✅ Ajouter les métadonnées
+                invoice.ModifiedDate = DateTime.UtcNow;
+                invoice.ModifiedBy = "System";
+
+                // ✅ Sauvegarder
+                await _invoiceRepository.Update(invoice);
+                await _invoiceRepository.SaveChange(cancellationToken);
+
+                // ✅ Recharger depuis la base pour récupérer les relations
+                var updatedInvoice = await _invoiceRepository.GetByIdWithDetailsAsync(invoice.Id, cancellationToken);
+
+                // ✅ Mapper et retourner
+                var invoiceToReturn = _mapper.Map<InvoiceDTO>(updatedInvoice);
+
+                return new ResponseHttp
                 {
-                    // Mise à jour des propriétés
-                    invoice.SupplierId = request.supplierId;
-                    invoice.InvoiceNumber = request.invoiceNumber;
-                    invoice.ClientId = request.clientId;
-                    invoice.ShipmentId = request.shipmentId;
-                    invoice.IssueDate = request.issueDate;
-                    invoice.DueDate = request.dueDate;
-                    invoice.CurrencyId = request.currencyId;
-                    invoice.ExchangeRate = request.exchangeRate;
-                    invoice.Notes = request.notes;
-
-                    await invoiceRepository.Update(invoice);
-                    await invoiceRepository.SaveChange(cancellationToken);
-
-                    var invoiceToReturn = _mapper.Map<InvoiceDTO>(invoice);
-
-                    return new ResponseHttp
-                    {
-                        Resultat = invoiceToReturn,
-                        Status = StatusCodes.Status200OK,
-                    };
-                }
+                    Resultat = invoiceToReturn,
+                    Status = StatusCodes.Status200OK,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResponseHttp
+                {
+                    Fail_Messages = ex.Message,
+                    Status = StatusCodes.Status400BadRequest,
+                };
             }
         }
     }

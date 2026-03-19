@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Http;
 namespace Application.Features.PaymentFeature.Commands
 {
     public record UpdatePaymentCommandNew(
-      Guid InvoiceId,
+        Guid PaymentId,
         DateTime paymentDate,
         decimal amount,
         PaymentMethod paymentMethod,
@@ -38,7 +38,7 @@ namespace Application.Features.PaymentFeature.Commands
 
             public async Task<ResponseHttp> Handle(UpdatePaymentCommandNew request, CancellationToken cancellationToken)
             {
-                Payment? payment = await paymentRepository.GetById(request.InvoiceId);
+                Payment? payment = await paymentRepository.GetById(request.PaymentId);
 
                 if (payment == null)
                 {
@@ -51,7 +51,7 @@ namespace Application.Features.PaymentFeature.Commands
                 }
                 else
                 {
-                    payment.Id = request.InvoiceId;
+                    payment.Id = request.PaymentId;
                     payment.PaymentDate = request.paymentDate;
                     payment.Amount = request.amount;
                     payment.PaymentMethod = request.paymentMethod;

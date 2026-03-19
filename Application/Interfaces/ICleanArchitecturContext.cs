@@ -9,6 +9,8 @@ namespace Application.Interfaces
         public DbSet<Domain.Entities.User> Users { get; set; }
 
         // Entités métier ajoutées
+
+        public DbSet<TariffGrid> TariffGrids { get; set; }
         public DbSet<Zone> Zones { get; set; }
         public DbSet<TariffLine> TariffLines { get; set; }
         public DbSet<Client> Clients { get; set; }

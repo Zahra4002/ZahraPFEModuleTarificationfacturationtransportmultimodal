@@ -12,8 +12,8 @@ using Persistance.Data;
 namespace Persistance.Migrations
 {
     [DbContext(typeof(CleanArchitecturContext))]
-    [Migration("20260313120940_RepaireSomeIssues1")]
-    partial class RepaireSomeIssues1
+    [Migration("20260318124130_firstMigr1")]
+    partial class firstMigr1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -511,36 +511,47 @@ namespace Persistance.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("55555555-5555-5555-5555-555555555555"),
+                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
                             Code = "EUR",
                             DecimalPlaces = 2,
                             IsActive = true,
-                            IsDefault = false,
+                            IsDefault = true,
                             IsDeleted = false,
                             Name = "Euro",
                             Symbol = "€"
                         },
                         new
                         {
-                            Id = new Guid("66666666-6666-6666-6666-666666666666"),
+                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
                             Code = "USD",
                             DecimalPlaces = 2,
                             IsActive = true,
                             IsDefault = false,
                             IsDeleted = false,
-                            Name = "US Dollar",
+                            Name = "Dollar américain",
                             Symbol = "$"
                         },
                         new
                         {
-                            Id = new Guid("77777777-7777-7777-7777-777777777777"),
-                            Code = "MAD",
+                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
+                            Code = "TND",
+                            DecimalPlaces = 3,
+                            IsActive = true,
+                            IsDefault = false,
+                            IsDeleted = false,
+                            Name = "Dinar tunisien",
+                            Symbol = "د.ت"
+                        },
+                        new
+                        {
+                            Id = new Guid("44444444-4444-4444-4444-444444444444"),
+                            Code = "GBP",
                             DecimalPlaces = 2,
                             IsActive = true,
                             IsDefault = false,
                             IsDeleted = false,
-                            Name = "Dirham Marocain",
-                            Symbol = "DH"
+                            Name = "Livre sterling",
+                            Symbol = "£"
                         });
                 });
 
@@ -1080,6 +1091,8 @@ namespace Persistance.Migrations
 
                     b.HasIndex("ClientId");
 
+                    b.HasIndex("MerchandiseTypeId");
+
                     b.HasIndex("QuoteId")
                         .IsUnique();
 
@@ -1147,6 +1160,18 @@ namespace Persistance.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Suppliers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                            Address = "N/A",
+                            Code = "DUMMY",
+                            DefaultCurrencyCode = "USD",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Unknown Supplier"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Surcharge", b =>
@@ -1360,7 +1385,7 @@ namespace Persistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TariffGrid");
+                    b.ToTable("TariffGrids");
                 });
 
             modelBuilder.Entity("Domain.Entities.TariffLine", b =>
@@ -1509,6 +1534,9 @@ namespace Persistance.Migrations
                     b.Property<decimal?>("SuperReducedRate")
                         .HasColumnType("numeric");
 
+                    b.Property<Guid?>("SurchargeId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("ValidFrom")
                         .HasColumnType("timestamp without time zone");
 
@@ -1520,7 +1548,130 @@ namespace Persistance.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("SurchargeId");
+
                     b.ToTable("TaxRules");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-1111-1111-1111-aaaaaaaaaaaa"),
+                            AllowExemption = false,
+                            Code = "VAT-FR-20",
+                            Country = "FR",
+                            CreatedBy = "Seed",
+                            CreatedDate = new DateTime(2026, 3, 18, 12, 41, 29, 568, DateTimeKind.Utc).AddTicks(3782),
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "TVA France 20%",
+                            ReducedRate = 5.5m,
+                            StandardRate = 20.0m,
+                            SuperReducedRate = 2.1m,
+                            ValidFrom = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ZeroRate = 0m
+                        },
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-2222-2222-2222-aaaaaaaaaaaa"),
+                            AllowExemption = false,
+                            Code = "VAT-FR-55",
+                            Country = "FR",
+                            CreatedBy = "Seed",
+                            CreatedDate = new DateTime(2026, 3, 18, 12, 41, 29, 568, DateTimeKind.Utc).AddTicks(3804),
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "TVA France 5.5% (réduit)",
+                            ReducedRate = 5.5m,
+                            StandardRate = 20.0m,
+                            SuperReducedRate = 2.1m,
+                            ValidFrom = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ZeroRate = 0m
+                        },
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-3333-3333-3333-aaaaaaaaaaaa"),
+                            AllowExemption = false,
+                            Code = "VAT-FR-21",
+                            Country = "FR",
+                            CreatedBy = "Seed",
+                            CreatedDate = new DateTime(2026, 3, 18, 12, 41, 29, 568, DateTimeKind.Utc).AddTicks(3811),
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "TVA France 2.1% (super réduit)",
+                            ReducedRate = 5.5m,
+                            StandardRate = 20.0m,
+                            SuperReducedRate = 2.1m,
+                            ValidFrom = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ZeroRate = 0m
+                        },
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-4444-4444-4444-aaaaaaaaaaaa"),
+                            AllowExemption = true,
+                            Code = "VAT-TN-19",
+                            Country = "TN",
+                            CreatedBy = "Seed",
+                            CreatedDate = new DateTime(2026, 3, 18, 12, 41, 29, 568, DateTimeKind.Utc).AddTicks(3818),
+                            ExemptionConditions = "{\"export\": true, \"sectors\": [\"agriculture\", \"education\"]}",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "TVA Tunisie 19%",
+                            ReducedRate = 7.0m,
+                            StandardRate = 19.0m,
+                            ValidFrom = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ZeroRate = 0m
+                        },
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-5555-5555-5555-aaaaaaaaaaaa"),
+                            AllowExemption = true,
+                            Code = "VAT-TN-07",
+                            Country = "TN",
+                            CreatedBy = "Seed",
+                            CreatedDate = new DateTime(2026, 3, 18, 12, 41, 29, 568, DateTimeKind.Utc).AddTicks(3922),
+                            ExemptionConditions = "{\"sectors\": [\"hotels\", \"restaurants\"]}",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "TVA Tunisie 7% (réduit)",
+                            ReducedRate = 7.0m,
+                            StandardRate = 19.0m,
+                            ValidFrom = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ZeroRate = 0m
+                        },
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-6666-6666-6666-aaaaaaaaaaaa"),
+                            AllowExemption = false,
+                            Code = "VAT-FR-196",
+                            Country = "FR",
+                            CreatedBy = "Seed",
+                            CreatedDate = new DateTime(2026, 3, 18, 12, 41, 29, 568, DateTimeKind.Utc).AddTicks(3931),
+                            IsActive = false,
+                            IsDeleted = false,
+                            Name = "Ancien taux TVA France 19.6%",
+                            ReducedRate = 5.5m,
+                            StandardRate = 19.6m,
+                            SuperReducedRate = 2.1m,
+                            ValidFrom = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ValidTo = new DateTime(2013, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ZeroRate = 0m
+                        },
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-7777-7777-7777-aaaaaaaaaaaa"),
+                            AllowExemption = true,
+                            Code = "VAT-EXPORT",
+                            Country = "FR",
+                            CreatedBy = "Seed",
+                            CreatedDate = new DateTime(2026, 3, 18, 12, 41, 29, 568, DateTimeKind.Utc).AddTicks(3948),
+                            ExemptionConditions = "{\"proofOfExport\": true, \"documents\": [\"EX1\", \"invoice\"]}",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Exportation hors UE",
+                            StandardRate = 20.0m,
+                            ValidFrom = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ZeroRate = 0m
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Test", b =>
@@ -1938,6 +2089,89 @@ namespace Persistance.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Zones");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("51111111-1111-1111-1111-111111111111"),
+                            Code = "DZA",
+                            Country = "Algérie",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Algérie"
+                        },
+                        new
+                        {
+                            Id = new Guid("61111111-1111-1111-1111-111111111111"),
+                            Code = "DEU",
+                            Country = "Allemagne",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Allemagne"
+                        },
+                        new
+                        {
+                            Id = new Guid("71111111-1111-1111-1111-111111111111"),
+                            Code = "CHN",
+                            Country = "Chine",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Chine"
+                        },
+                        new
+                        {
+                            Id = new Guid("81111111-1111-1111-1111-111111111111"),
+                            Code = "ESP",
+                            Country = "Espagne",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Espagne"
+                        },
+                        new
+                        {
+                            Id = new Guid("91111111-1111-1111-1111-111111111111"),
+                            Code = "USA",
+                            Country = "États-Unis",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "États-Unis"
+                        },
+                        new
+                        {
+                            Id = new Guid("10111111-1111-1111-1111-111111111111"),
+                            Code = "FRA",
+                            Country = "France",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "France"
+                        },
+                        new
+                        {
+                            Id = new Guid("12111111-1111-1111-1111-111111111111"),
+                            Code = "ITA",
+                            Country = "Italie",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Italie"
+                        },
+                        new
+                        {
+                            Id = new Guid("13111111-1111-1111-1111-111111111111"),
+                            Code = "LBY",
+                            Country = "Libye",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Libye"
+                        },
+                        new
+                        {
+                            Id = new Guid("14111111-1111-1111-1111-111111111111"),
+                            Code = "MAR",
+                            Country = "Maroc",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Name = "Maroc"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.ActivityLog", b =>
@@ -2169,7 +2403,7 @@ namespace Persistance.Migrations
             modelBuilder.Entity("Domain.Entities.Quote", b =>
                 {
                     b.HasOne("Domain.Entities.Client", "Client")
-                        .WithMany()
+                        .WithMany("Quotes")
                         .HasForeignKey("ClientId");
 
                     b.HasOne("Domain.Entities.MerchandiseType", "MerchandiseType")
@@ -2273,6 +2507,10 @@ namespace Persistance.Migrations
                         .WithMany("shipments")
                         .HasForeignKey("ClientId");
 
+                    b.HasOne("Domain.Entities.MerchandiseType", "MerchandiseType")
+                        .WithMany("Shipments")
+                        .HasForeignKey("MerchandiseTypeId");
+
                     b.HasOne("Domain.Entities.Quote", "Quote")
                         .WithOne("Shipment")
                         .HasForeignKey("Domain.Entities.Shipment", "QuoteId");
@@ -2362,6 +2600,8 @@ namespace Persistance.Migrations
                     b.Navigation("DestinationAddress")
                         .IsRequired();
 
+                    b.Navigation("MerchandiseType");
+
                     b.Navigation("OriginAddress")
                         .IsRequired();
 
@@ -2415,9 +2655,18 @@ namespace Persistance.Migrations
                     b.Navigation("ZoneTo");
                 });
 
+            modelBuilder.Entity("Domain.Entities.TaxRule", b =>
+                {
+                    b.HasOne("Domain.Entities.Surcharge", "Surcharge")
+                        .WithMany()
+                        .HasForeignKey("SurchargeId");
+
+                    b.Navigation("Surcharge");
+                });
+
             modelBuilder.Entity("Domain.Entities.TransportSegment", b =>
                 {
-                    b.HasOne("Domain.Entities.Shipment", null)
+                    b.HasOne("Domain.Entities.Shipment", "Shipment")
                         .WithMany("Segments")
                         .HasForeignKey("ShipmentId");
 
@@ -2432,6 +2681,8 @@ namespace Persistance.Migrations
                     b.HasOne("Domain.Entities.Zone", "ZoneTo")
                         .WithMany()
                         .HasForeignKey("ZoneToId");
+
+                    b.Navigation("Shipment");
 
                     b.Navigation("Supplier");
 
@@ -2454,6 +2705,8 @@ namespace Persistance.Migrations
             modelBuilder.Entity("Domain.Entities.Client", b =>
                 {
                     b.Navigation("Contracts");
+
+                    b.Navigation("Quotes");
 
                     b.Navigation("invoices");
 
@@ -2491,6 +2744,8 @@ namespace Persistance.Migrations
             modelBuilder.Entity("Domain.Entities.MerchandiseType", b =>
                 {
                     b.Navigation("Quotes");
+
+                    b.Navigation("Shipments");
                 });
 
             modelBuilder.Entity("Domain.Entities.Quote", b =>

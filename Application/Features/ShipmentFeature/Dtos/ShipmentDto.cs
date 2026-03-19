@@ -31,6 +31,7 @@ namespace Application.Features.ShipmentFeature.Dtos
         public string CurrencyCode { get; set; }
 
         public List<TransportSegmentDto> TransportSegments { get; set; }
+        public List<InvoiceDto> Invoices { get; set; }
 
         public ShipmentDto()
         {
@@ -58,6 +59,7 @@ namespace Application.Features.ShipmentFeature.Dtos
             TotalCostTTC = shipment.TotalCostTTC;
             CurrencyCode = shipment.CurrencyCode;
             TransportSegments = shipment.Segments?.Select(ts => new TransportSegmentDto(ts)).ToList() ?? new List<TransportSegmentDto>();
+            Invoices = shipment.Invoices?.Select(i => new InvoiceDto(i)).ToList() ?? new List<InvoiceDto>();
 
         }
     }

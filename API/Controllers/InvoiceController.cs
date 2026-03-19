@@ -3,6 +3,7 @@ using Application.Features.InvoiceFeature.Dtos;
 using Application.Features.InvoiceFeature.Queries;
 using Application.Features.InvoiceFeature.Validators;
 using Application.Setting;
+using Domain.Enums;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -171,9 +172,9 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] UpdateInvoiceStatusDto dto)
+        public async Task<IActionResult> UpdateStatus(Guid id, InvoiceStatus Status)
         {
-            var command = new UpdateInvoiceStatusCommand(id, dto.Status);
+            var command = new UpdateInvoiceStatusCommand(id, Status);
             var result = await _mediator.Send(command);
 
             return result.Status switch

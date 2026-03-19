@@ -14,11 +14,8 @@ namespace Application.Features.PaymentFeature.Validators
         public AddPaymentCommandNewValidator()
         {
             // invoice – référence à la facture (souvent un code ou un ID)
-            RuleFor(x => x.invoice)
-                .NotEmpty().WithMessage("La référence de la facture est obligatoire.")
-                .MaximumLength(50).WithMessage("La référence de la facture ne peut pas dépasser 50 caractères.")
-                // .Matches(@"^[A-Z0-9\-/]+$").WithMessage("La référence facture doit contenir uniquement lettres majuscules, chiffres, tirets ou slash.")  // optionnel
-                ;
+            RuleFor(x => x.invoiceId);
+                
 
             // paymentDate – date du paiement
             RuleFor(x => x.paymentDate)

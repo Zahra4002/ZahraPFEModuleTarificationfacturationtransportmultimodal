@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Persistance.Migrations
 {
     /// <inheritdoc />
-    public partial class InitCreate : Migration
+    public partial class firstMigr1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,7 +23,6 @@ namespace Persistance.Migrations
                     TaxId = table.Column<string>(type: "text", nullable: true),
                     Email = table.Column<string>(type: "text", nullable: true),
                     PhoneNumber = table.Column<string>(type: "text", nullable: true),
-                    Role = table.Column<int>(type: "integer", nullable: false),
                     Billing_Street = table.Column<string>(type: "text", nullable: false),
                     Billing_City = table.Column<string>(type: "text", nullable: false),
                     BullingAddress_PostalCode = table.Column<string>(type: "text", nullable: false),
@@ -159,7 +160,7 @@ namespace Persistance.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TariffGrid",
+                name: "TariffGrids",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -183,39 +184,7 @@ namespace Persistance.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TariffGrid", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TaxRules",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Code = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Country = table.Column<string>(type: "text", nullable: false),
-                    Region = table.Column<string>(type: "text", nullable: true),
-                    StandardRate = table.Column<decimal>(type: "numeric", nullable: false),
-                    ReducedRate = table.Column<decimal>(type: "numeric", nullable: true),
-                    SuperReducedRate = table.Column<decimal>(type: "numeric", nullable: true),
-                    ZeroRate = table.Column<decimal>(type: "numeric", nullable: true),
-                    AllowExemption = table.Column<bool>(type: "boolean", nullable: false),
-                    ExemptionConditions = table.Column<string>(type: "text", nullable: true),
-                    ValidFrom = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ValidTo = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    CreatedBy = table.Column<string>(type: "text", nullable: true),
-                    CreatedById = table.Column<string>(type: "text", nullable: true),
-                    ModifiedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    ModifiedBy = table.Column<string>(type: "text", nullable: true),
-                    ModifiedById = table.Column<string>(type: "text", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    DeletedDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TaxRules", x => x.Id);
+                    table.PrimaryKey("PK_TariffGrids", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -469,6 +438,44 @@ namespace Persistance.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TaxRules",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Code = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Country = table.Column<string>(type: "text", nullable: false),
+                    Region = table.Column<string>(type: "text", nullable: true),
+                    StandardRate = table.Column<decimal>(type: "numeric", nullable: false),
+                    ReducedRate = table.Column<decimal>(type: "numeric", nullable: true),
+                    SuperReducedRate = table.Column<decimal>(type: "numeric", nullable: true),
+                    ZeroRate = table.Column<decimal>(type: "numeric", nullable: true),
+                    AllowExemption = table.Column<bool>(type: "boolean", nullable: false),
+                    ExemptionConditions = table.Column<string>(type: "text", nullable: true),
+                    SurchargeId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ValidFrom = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ValidTo = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedById = table.Column<string>(type: "text", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    ModifiedById = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TaxRules", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TaxRules_Surcharges_SurchargeId",
+                        column: x => x.SurchargeId,
+                        principalTable: "Surcharges",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ActivityLogs",
                 columns: table => new
                 {
@@ -653,9 +660,9 @@ namespace Persistance.Migrations
                 {
                     table.PrimaryKey("PK_TariffLines", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TariffLines_TariffGrid_TariffGridId",
+                        name: "FK_TariffLines_TariffGrids_TariffGridId",
                         column: x => x.TariffGridId,
-                        principalTable: "TariffGrid",
+                        principalTable: "TariffGrids",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TariffLines_Zones_ZoneFromId",
@@ -721,6 +728,11 @@ namespace Persistance.Migrations
                         name: "FK_Shipments_Clients_ClientId",
                         column: x => x.ClientId,
                         principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Shipments_MerchandiseTypes_MerchandiseTypeId",
+                        column: x => x.MerchandiseTypeId,
+                        principalTable: "MerchandiseTypes",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Shipments_Quotes_QuoteId",
@@ -844,7 +856,6 @@ namespace Persistance.Migrations
                     TransportMode = table.Column<int>(type: "integer", nullable: false),
                     SupplierId = table.Column<Guid>(type: "uuid", nullable: true),
                     ZoneFromId = table.Column<Guid>(type: "uuid", nullable: true),
-                    ZoneFrometId = table.Column<Guid>(type: "uuid", nullable: false),
                     ZoneToId = table.Column<Guid>(type: "uuid", nullable: true),
                     DistanceKm = table.Column<decimal>(type: "numeric", nullable: true),
                     EstimatedTransitDays = table.Column<int>(type: "integer", nullable: true),
@@ -877,11 +888,10 @@ namespace Persistance.Migrations
                         principalTable: "Suppliers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_TransportSegments_Zones_ZoneFrometId",
-                        column: x => x.ZoneFrometId,
+                        name: "FK_TransportSegments_Zones_ZoneFromId",
+                        column: x => x.ZoneFromId,
                         principalTable: "Zones",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TransportSegments_Zones_ZoneToId",
                         column: x => x.ZoneToId,
@@ -987,6 +997,62 @@ namespace Persistance.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Currencies",
+                columns: new[] { "Id", "Code", "CreatedBy", "CreatedById", "CreatedDate", "DecimalPlaces", "DeletedDate", "IsActive", "IsDefault", "IsDeleted", "ModifiedBy", "ModifiedById", "ModifiedDate", "Name", "Symbol" },
+                values: new object[,]
+                {
+                    { new Guid("11111111-1111-1111-1111-111111111111"), "EUR", null, null, null, 2, null, true, true, false, null, null, null, "Euro", "€" },
+                    { new Guid("22222222-2222-2222-2222-222222222222"), "USD", null, null, null, 2, null, true, false, false, null, null, null, "Dollar américain", "$" },
+                    { new Guid("33333333-3333-3333-3333-333333333333"), "TND", null, null, null, 3, null, true, false, false, null, null, null, "Dinar tunisien", "د.ت" },
+                    { new Guid("44444444-4444-4444-4444-444444444444"), "GBP", null, null, null, 2, null, true, false, false, null, null, null, "Livre sterling", "£" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "MerchandiseTypes",
+                columns: new[] { "Id", "Code", "CreatedBy", "CreatedById", "CreatedDate", "DeletedDate", "Description", "HazardousLevel", "IsActive", "IsDeleted", "ModifiedBy", "ModifiedById", "ModifiedDate", "Name", "PriceMultiplier", "RequiresSpecialHandling" },
+                values: new object[,]
+                {
+                    { new Guid("88888888-8888-8888-8888-888888888888"), "GEN001", null, null, null, null, "Standard general cargo with no special requirements", 0, true, false, null, null, null, "General Cargo", 1.0m, false },
+                    { new Guid("99999999-9999-9999-9999-999999999999"), "PER002", null, null, null, null, "Temperature-sensitive goods requiring refrigeration or special handling", 0, true, false, null, null, null, "Perishable Goods", 1.5m, true },
+                    { new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "HAZ003", null, null, null, null, "Dangerous goods requiring special permits and handling procedures", 3, true, false, null, null, null, "Hazardous Materials", 2.0m, true }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Suppliers",
+                columns: new[] { "Id", "Address", "Code", "CreatedBy", "CreatedById", "CreatedDate", "DefaultCurrencyCode", "DeletedDate", "Email", "IsActive", "IsDeleted", "ModifiedBy", "ModifiedById", "ModifiedDate", "Name", "Phone", "TaxId" },
+                values: new object[] { new Guid("11111111-1111-1111-1111-111111111111"), "N/A", "DUMMY", null, null, null, "USD", null, null, true, false, null, null, null, "Unknown Supplier", null, null });
+
+            migrationBuilder.InsertData(
+                table: "TaxRules",
+                columns: new[] { "Id", "AllowExemption", "Code", "Country", "CreatedBy", "CreatedById", "CreatedDate", "DeletedDate", "ExemptionConditions", "IsActive", "IsDeleted", "ModifiedBy", "ModifiedById", "ModifiedDate", "Name", "ReducedRate", "Region", "StandardRate", "SuperReducedRate", "SurchargeId", "ValidFrom", "ValidTo", "ZeroRate" },
+                values: new object[,]
+                {
+                    { new Guid("aaaaaaaa-1111-1111-1111-aaaaaaaaaaaa"), false, "VAT-FR-20", "FR", "Seed", null, new DateTime(2026, 3, 18, 12, 41, 29, 568, DateTimeKind.Utc).AddTicks(3782), null, null, true, false, null, null, null, "TVA France 20%", 5.5m, null, 20.0m, 2.1m, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, 0m },
+                    { new Guid("aaaaaaaa-2222-2222-2222-aaaaaaaaaaaa"), false, "VAT-FR-55", "FR", "Seed", null, new DateTime(2026, 3, 18, 12, 41, 29, 568, DateTimeKind.Utc).AddTicks(3804), null, null, true, false, null, null, null, "TVA France 5.5% (réduit)", 5.5m, null, 20.0m, 2.1m, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, 0m },
+                    { new Guid("aaaaaaaa-3333-3333-3333-aaaaaaaaaaaa"), false, "VAT-FR-21", "FR", "Seed", null, new DateTime(2026, 3, 18, 12, 41, 29, 568, DateTimeKind.Utc).AddTicks(3811), null, null, true, false, null, null, null, "TVA France 2.1% (super réduit)", 5.5m, null, 20.0m, 2.1m, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, 0m },
+                    { new Guid("aaaaaaaa-4444-4444-4444-aaaaaaaaaaaa"), true, "VAT-TN-19", "TN", "Seed", null, new DateTime(2026, 3, 18, 12, 41, 29, 568, DateTimeKind.Utc).AddTicks(3818), null, "{\"export\": true, \"sectors\": [\"agriculture\", \"education\"]}", true, false, null, null, null, "TVA Tunisie 19%", 7.0m, null, 19.0m, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, 0m },
+                    { new Guid("aaaaaaaa-5555-5555-5555-aaaaaaaaaaaa"), true, "VAT-TN-07", "TN", "Seed", null, new DateTime(2026, 3, 18, 12, 41, 29, 568, DateTimeKind.Utc).AddTicks(3922), null, "{\"sectors\": [\"hotels\", \"restaurants\"]}", true, false, null, null, null, "TVA Tunisie 7% (réduit)", 7.0m, null, 19.0m, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, 0m },
+                    { new Guid("aaaaaaaa-6666-6666-6666-aaaaaaaaaaaa"), false, "VAT-FR-196", "FR", "Seed", null, new DateTime(2026, 3, 18, 12, 41, 29, 568, DateTimeKind.Utc).AddTicks(3931), null, null, false, false, null, null, null, "Ancien taux TVA France 19.6%", 5.5m, null, 19.6m, 2.1m, null, new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2013, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), 0m },
+                    { new Guid("aaaaaaaa-7777-7777-7777-aaaaaaaaaaaa"), true, "VAT-EXPORT", "FR", "Seed", null, new DateTime(2026, 3, 18, 12, 41, 29, 568, DateTimeKind.Utc).AddTicks(3948), null, "{\"proofOfExport\": true, \"documents\": [\"EX1\", \"invoice\"]}", true, false, null, null, null, "Exportation hors UE", null, null, 20.0m, null, null, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, 0m }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Zones",
+                columns: new[] { "Id", "Code", "Country", "CreatedBy", "CreatedById", "CreatedDate", "DeletedDate", "Description", "IsActive", "IsDeleted", "ModifiedBy", "ModifiedById", "ModifiedDate", "Name", "Region" },
+                values: new object[,]
+                {
+                    { new Guid("10111111-1111-1111-1111-111111111111"), "FRA", "France", null, null, null, null, null, true, false, null, null, null, "France", null },
+                    { new Guid("12111111-1111-1111-1111-111111111111"), "ITA", "Italie", null, null, null, null, null, true, false, null, null, null, "Italie", null },
+                    { new Guid("13111111-1111-1111-1111-111111111111"), "LBY", "Libye", null, null, null, null, null, true, false, null, null, null, "Libye", null },
+                    { new Guid("14111111-1111-1111-1111-111111111111"), "MAR", "Maroc", null, null, null, null, null, true, false, null, null, null, "Maroc", null },
+                    { new Guid("51111111-1111-1111-1111-111111111111"), "DZA", "Algérie", null, null, null, null, null, true, false, null, null, null, "Algérie", null },
+                    { new Guid("61111111-1111-1111-1111-111111111111"), "DEU", "Allemagne", null, null, null, null, null, true, false, null, null, null, "Allemagne", null },
+                    { new Guid("71111111-1111-1111-1111-111111111111"), "CHN", "Chine", null, null, null, null, null, true, false, null, null, null, "Chine", null },
+                    { new Guid("81111111-1111-1111-1111-111111111111"), "ESP", "Espagne", null, null, null, null, null, true, false, null, null, null, "Espagne", null },
+                    { new Guid("91111111-1111-1111-1111-111111111111"), "USA", "États-Unis", null, null, null, null, null, true, false, null, null, null, "États-Unis", null }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ActivityLogs_UserId",
                 table: "ActivityLogs",
@@ -1088,6 +1154,11 @@ namespace Persistance.Migrations
                 column: "ClientId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Shipments_MerchandiseTypeId",
+                table: "Shipments",
+                column: "MerchandiseTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Shipments_QuoteId",
                 table: "Shipments",
                 column: "QuoteId",
@@ -1130,6 +1201,11 @@ namespace Persistance.Migrations
                 column: "ZoneToId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TaxRules_SurchargeId",
+                table: "TaxRules",
+                column: "SurchargeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TransportSegments_ShipmentId",
                 table: "TransportSegments",
                 column: "ShipmentId");
@@ -1140,9 +1216,9 @@ namespace Persistance.Migrations
                 column: "SupplierId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TransportSegments_ZoneFrometId",
+                name: "IX_TransportSegments_ZoneFromId",
                 table: "TransportSegments",
-                column: "ZoneFrometId");
+                column: "ZoneFromId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TransportSegments_ZoneToId",
@@ -1204,10 +1280,10 @@ namespace Persistance.Migrations
                 name: "CreditNote");
 
             migrationBuilder.DropTable(
-                name: "Surcharges");
+                name: "TariffGrids");
 
             migrationBuilder.DropTable(
-                name: "TariffGrid");
+                name: "Surcharges");
 
             migrationBuilder.DropTable(
                 name: "Zones");

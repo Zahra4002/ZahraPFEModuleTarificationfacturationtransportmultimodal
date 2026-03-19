@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Features.ShipmentFeature.Dtos;
+using Application.Interfaces;
 using Application.Setting;
 using MediatR;
 
@@ -18,14 +19,15 @@ namespace Application.Features.ShipmentFeature.Queries
             {
                 try
                 {
-                    var shipmentDetails = await _shipmentRepository.GetByIdAsync(request.ShipmentId, cancellationToken);
+                    var shipmentDetails = await _shipmentRepository.GetShipmentByIdWithDetailsAsync(request.ShipmentId, cancellationToken);
+                    var result = new ShipmentDto(shipmentDetails);
                     if (shipmentDetails != null)
                     {
                         return new ResponseHttp
                         {
                             Status = 200,
                             Fail_Messages = null,
-                            Resultat = shipmentDetails
+                            Resultat = result
                         };
                     }
                     else

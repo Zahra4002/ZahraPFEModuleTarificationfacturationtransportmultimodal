@@ -41,9 +41,7 @@ namespace API.Controllers
                 dto.Phone,
                 dto.Address,
                 dto.DefaultCurrencyCode,
-                dto.IsActive,
-                dto.Contracts,
-                dto.TransportSegments
+                dto.IsActive
             );
 
             var result = await _mediator.Send(command);
@@ -81,9 +79,7 @@ namespace API.Controllers
                 dto.Phone,
                 dto.Address,
                 dto.DefaultCurrencyCode,
-                dto.IsActive,
-                dto.Contracts,
-                dto.TransportSegments
+                dto.IsActive
             );
 
             var result = await _mediator.Send(command);

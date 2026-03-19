@@ -14,7 +14,7 @@ namespace Application.Features.PaymentFeature.Validators
         public UpdatePaymentCommandNewValidator()
         {
             // paymentId – obligatoire pour identifier le paiement à modifier
-            RuleFor(x => x.InvoiceId)
+            RuleFor(x => x.PaymentId)
                 .NotEmpty().WithMessage("L'identifiant du paiement est obligatoire.")
                 .NotEqual(Guid.Empty).WithMessage("L'identifiant du paiement ne peut pas être vide.");
 

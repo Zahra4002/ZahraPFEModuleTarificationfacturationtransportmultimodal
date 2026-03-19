@@ -4,6 +4,7 @@ using Application.Features.TariffGridFeature.Dtos;
 using Application.Features.TariffGridFeature.Queries;
 using Application.Features.TariffGridFeature.Validators;
 using Application.Setting;
+using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -233,9 +234,9 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ResponseHttp>> GetTariffGridsByMode(string mode)
+        public async Task<ActionResult<ResponseHttp>> GetTariffGridsByMode(TransportMode mode)
         {
-            var query = new GetTariffGridsByModeQuery(mode);
+            var query = new GetTariffGridsByModeQuery(mode.ToString());
             var result = await _mediator.Send(query);
 
             if (result.Status == StatusCodes.Status200OK)

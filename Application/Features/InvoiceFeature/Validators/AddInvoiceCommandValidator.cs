@@ -13,9 +13,9 @@ namespace Application.Features.InvoiceFeature.Validators
                 .NotEmpty()
                 .WithMessage(ValidationConstants.InvoiceNumberMustHasValue);
 
-          //  RuleFor(v => v.ClientId)
-               // .NotEmpty()
-               // .WithMessage(ValidationConstants.ClientIdMustHasValue);
+           RuleFor(v => v.ClientId)
+               .NotEmpty()
+                .WithMessage(ValidationConstants.ClientIdMustHasValue);
 
             RuleFor(v => v.IssueDate)
                 .NotEmpty()

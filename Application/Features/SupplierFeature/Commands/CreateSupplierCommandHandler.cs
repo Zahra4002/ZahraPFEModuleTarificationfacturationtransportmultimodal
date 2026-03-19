@@ -6,6 +6,11 @@ using Domain.Entities;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Application.Features.SupplierFeature.Commands
 {
@@ -17,23 +22,26 @@ namespace Application.Features.SupplierFeature.Commands
         string? Phone,
         string Address,
         string DefaultCurrencyCode,
-        bool IsActive,
-        List<CreateContractDto>? Contracts,
-        List<CreateTransportSegmentDto>? TransportSegments
+        bool IsActive
+
     ) : IRequest<ResponseHttp>;
+
     public class CreateSupplierCommandHandler : IRequestHandler<CreateSupplierCommand, ResponseHttp>
     {
         private readonly ISupplierRepository _supplierRepository;
-        private readonly IZoneRepository _zoneRepository;
-        private readonly IMapper _mapper;   
+        private readonly IContractRepository _contractRepository;
+        private readonly ITransportSegmentRepository _transportSegmentRepository;
+        private readonly IMapper _mapper;
 
         public CreateSupplierCommandHandler(
             ISupplierRepository supplierRepository,
-            IZoneRepository zoneRepository,
+            IContractRepository contractRepository,
+            ITransportSegmentRepository transportSegmentRepository,
             IMapper mapper)
         {
             _supplierRepository = supplierRepository;
-            _zoneRepository = zoneRepository;
+            _contractRepository = contractRepository;
+            _transportSegmentRepository = transportSegmentRepository;
             _mapper = mapper;
         }
 
@@ -41,7 +49,7 @@ namespace Application.Features.SupplierFeature.Commands
         {
             try
             {
-                // Vérifier si le code existe déjà
+                // 1️⃣ Vérifier si le code existe déjà
                 var existingSupplier = await _supplierRepository.GetByCodeAsync(request.Code);
                 if (existingSupplier != null)
                 {
@@ -52,6 +60,7 @@ namespace Application.Features.SupplierFeature.Commands
                     };
                 }
 
+                // 2️⃣ Créer le fournisseur
                 var supplier = new Supplier
                 {
                     Id = Guid.NewGuid(),
@@ -65,89 +74,20 @@ namespace Application.Features.SupplierFeature.Commands
                     IsActive = request.IsActive,
                     CreatedDate = DateTime.UtcNow,
                     CreatedBy = "System",
-                    Contracts = new List<Contract>(),
-                    TransportSegments = new List<TransportSegment>()
+
                 };
 
-                // ✅ Créer les contrats associés
-                if (request.Contracts != null)
-                {
-                    foreach (var contractDto in request.Contracts)
-                    {
-                        var contract = new Contract
-                        {
-                            Id = Guid.NewGuid(),
-                            ContractNumber = contractDto.ContractNumber,
-                            Name = contractDto.Name,
-                            Type = (ContractType)contractDto.Type,
-                            ValidFrom = contractDto.ValidFrom,
-                            ValidTo = contractDto.ValidTo,
-                            Terms = contractDto.Terms,
-                            GlobalDiscountPercent = contractDto.GlobalDiscountPercent,
-                            IsActive = contractDto.IsActive,
-                            SupplierId = supplier.Id,
-                            CreatedDate = DateTime.UtcNow,
-                            CreatedBy = "System"
-                        };
-                        supplier.Contracts.Add(contract);
-                    }
-                }
+                // 3️⃣ Ajouter les contrats existants par leurs IDs
 
-                // ✅ Créer les segments associés
-                if (request.TransportSegments != null)
-                {
-                    foreach (var segmentDto in request.TransportSegments)
-                    {
-                        // Vérifier que les zones existent si fournies
-                        if (segmentDto.ZoneFromId.HasValue)
-                        {
-                            var zoneFrom = await _zoneRepository.GetByIdAsync(segmentDto.ZoneFromId.Value);
-                            if (zoneFrom == null)
-                            {
-                                return new ResponseHttp
-                                {
-                                    Status = StatusCodes.Status400BadRequest,
-                                    Fail_Messages = $"La zone d'origine avec ID {segmentDto.ZoneFromId} n'existe pas"
-                                };
-                            }
-                        }
 
-                        if (segmentDto.ZoneToId.HasValue)
-                        {
-                            var zoneTo = await _zoneRepository.GetByIdAsync(segmentDto.ZoneToId.Value);
-                            if (zoneTo == null)
-                            {
-                                return new ResponseHttp
-                                {
-                                    Status = StatusCodes.Status400BadRequest,
-                                    Fail_Messages = $"La zone de destination avec ID {segmentDto.ZoneToId} n'existe pas"
-                                };
-                            }
-                        }
+                // 4️⃣ Ajouter les segments existants par leurs IDs
 
-                        var segment = new TransportSegment
-                        {
-                            Id = Guid.NewGuid(),
-                            Sequence = segmentDto.Sequence,
-                            TransportMode = (TransportMode)segmentDto.TransportMode,
-                            ZoneFromId = segmentDto.ZoneFromId,
-                            ZoneToId = segmentDto.ZoneToId,
-                            DistanceKm = segmentDto.DistanceKm,
-                            BaseCost = segmentDto.BaseCost,
-                            CurrencyCode = segmentDto.CurrencyCode,
-                            SurchargesTotal = 0,
-                            TotalCost = segmentDto.BaseCost,
-                            SupplierId = supplier.Id,
-                            CreatedDate = DateTime.UtcNow,
-                            CreatedBy = "System"
-                        };
-                        supplier.TransportSegments.Add(segment);
-                    }
-                }
 
+                // 5️⃣ Sauvegarder le fournisseur (cela sauvegardera aussi les relations)
                 await _supplierRepository.AddAsync(supplier, cancellationToken);
                 await _supplierRepository.SaveChangesAsync(cancellationToken);
 
+                // 6️⃣ Retourner le fournisseur avec ses contrats et segments
                 var supplierDto = _mapper.Map<SupplierDto>(supplier);
 
                 return new ResponseHttp

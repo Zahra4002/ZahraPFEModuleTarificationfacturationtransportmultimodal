@@ -18,6 +18,7 @@ namespace Domain.Entities
         public Address OriginAddress { get; set; }
         public Address DestinationAddress { get; set; }
         public Guid? MerchandiseTypeId { get; set; }
+        public MerchandiseType? MerchandiseType { get; set; }
         public decimal? WeightKg { get; set; }
         public decimal? VolumeM3 { get; set; }
         public ContainerType? ContainerType { get; set; }

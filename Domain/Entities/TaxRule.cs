@@ -21,6 +21,10 @@ namespace Domain.Entities
         public bool AllowExemption { get; set; } = false;
         public string? ExemptionConditions { get; set; } // JSON avec conditions
 
+        public Surcharge? Surcharge { get; set; } // Surcharge associée (si applicable)
+
+        public Guid? SurchargeId { get; set; }
+
         public DateTime ValidFrom { get; set; }
         public DateTime? ValidTo { get; set; }
         public bool IsActive { get; set; } = true;

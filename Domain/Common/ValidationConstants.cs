@@ -7,8 +7,9 @@
         public const string CompanyNameMustHasValue = "CompanyName must have a value : ";
         public const string ContactMustHasValue = "Contact must have a value: ";
         public const string InvoiceNumberMustHasValue = "InvoiceNumber must have a value : ";
+       
 
-        // public const string ClientIdMustHasValue = "ClientId must have a value : ";
+        public const string ClientIdMustHasValue = "ClientId must have a value : ";
         public const string IssueDateMustHasValue = "IssueDate must have a value : ";
         public const string DueDateMustHasValue = "DueDate must have a value : ";
         public const string TotalTTCMustBeGreaterThanZero = "TotalTTC must be greater than zero : ";

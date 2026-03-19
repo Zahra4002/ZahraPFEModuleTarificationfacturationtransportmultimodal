@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Http;
 namespace Application.Features.PaymentFeature.Commands
 {
     public record AddPaymentCommandNew(
-        string invoice,
+        Guid? invoiceId,
         DateTime paymentDate,
         decimal amount,
         PaymentMethod paymentMethod,

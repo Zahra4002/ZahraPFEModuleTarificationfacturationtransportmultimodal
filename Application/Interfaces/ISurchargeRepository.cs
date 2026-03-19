@@ -31,5 +31,12 @@ namespace Application.Interfaces
         Task UpdateRuleAsync(SurchargeRule rule);
         Task<bool> DeleteRuleAsync(Guid ruleId);
         Task<bool> RuleExistsInSurchargeAsync(Guid surchargeId, string ruleName, Guid? excludeRuleId = null);
+
+            Task<List<Surcharge>> GetApplicableSurchargesAsync(
+                  TransportMode transportMode,
+                  DateTime date,
+                  Guid? zoneFromId,
+                  Guid? zoneToId,
+                  CancellationToken cancellationToken = default);
     }
 }

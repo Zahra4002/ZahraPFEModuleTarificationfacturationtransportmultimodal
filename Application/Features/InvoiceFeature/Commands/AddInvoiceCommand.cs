@@ -21,9 +21,8 @@ namespace Application.Features.InvoiceFeature.Commands
         DateTime IssueDate,
         DateTime DueDate,
         Guid? CurrencyId,
-        decimal ExchangeRate,
-        string? Notes,
-        List<InvoiceLineDto>? Lines
+        decimal? ExchangeRate,
+        string? Notes        
     ) : IRequest<ResponseHttp>;
 
     public class AddInvoiceCommandHandler
@@ -55,31 +54,7 @@ namespace Application.Features.InvoiceFeature.Commands
                 invoice.InvoiceDate = DateTime.SpecifyKind(request.IssueDate, DateTimeKind.Utc);
                 invoice.DueDate = DateTime.SpecifyKind(request.DueDate, DateTimeKind.Utc);
 
-                // 2️⃣ Initialiser les lignes si elles existent
-                if (request.Lines != null && request.Lines.Any())
-                {
-                    invoice.Lines = request.Lines
-                        .Select(lineDto =>
-                        {
-                            var line = _mapper.Map<InvoiceLine>(lineDto);
-                            line.Id = Guid.NewGuid();
-                            line.InvoiceId = invoice.Id;
-                            return line;
-                        })
-                        .ToList();
-
-                    // Calcul des totaux
-                    invoice.TotalHT = invoice.Lines.Sum(l => l.Quantity * l.UnitPriceHT);
-                    invoice.TotalVAT = invoice.Lines.Sum(l => l.Quantity * l.UnitPriceHT * (l.VATRate / 100));
-                    invoice.TotalTTC = invoice.TotalHT + invoice.TotalVAT;
-                }
-                else
-                {
-                    invoice.Lines = new System.Collections.Generic.List<InvoiceLine>();
-                    invoice.TotalHT = 0;
-                    invoice.TotalVAT = 0;
-                    invoice.TotalTTC = 0;
-                }
+                
 
                 // 3️⃣ Logique métier
                 invoice.Status = InvoiceStatus.Brouillon;
@@ -90,7 +65,7 @@ namespace Application.Features.InvoiceFeature.Commands
                 // 4️⃣ Sauvegarde
                 await _invoiceRepository.Post(invoice);
                 await _invoiceRepository.SaveChange(cancellationToken);
-                Console.WriteLine(invoice.Lines.First().Id);
+                
 
                 // 🔥 Recharge depuis la base
                 var savedInvoice = await _invoiceRepository

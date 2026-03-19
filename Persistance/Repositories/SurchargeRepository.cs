@@ -212,5 +212,35 @@ namespace Persistance.Repositories
         }
 
         #endregion
+
+        public async Task<List<Surcharge>> GetApplicableSurchargesAsync(TransportMode transportMode, DateTime date, Guid? zoneFromId, Guid? zoneToId, CancellationToken cancellationToken = default)
+        {
+            // Récupérer toutes les surcharges actives
+            var query = _context.Surcharges
+                .Include(s => s.Rules)
+                .Where(s => s.IsActive && !s.IsDeleted);
+            
+            var surcharges = await query.ToListAsync(cancellationToken);
+            
+            // Filtrer en mémoire car les règles peuvent contenir des conditions complexes
+            var applicableSurcharges = surcharges
+                .Where(s => IsSurchargeApplicable(s, transportMode, date, zoneFromId, zoneToId))
+                .ToList();
+            
+            return applicableSurcharges;
+        }
+
+        private bool IsSurchargeApplicable(Surcharge surcharge, TransportMode transportMode, DateTime date, Guid? zoneFromId, Guid? zoneToId)
+        {
+            // TODO: Implement your business logic here
+            // Example implementation:
+            if (!surcharge.Rules.Any())
+                return true;
+            
+            return surcharge.Rules.Any(rule => 
+                !rule.IsDeleted && 
+                // Add your rule evaluation logic here
+                true);
+        }
     }
 }

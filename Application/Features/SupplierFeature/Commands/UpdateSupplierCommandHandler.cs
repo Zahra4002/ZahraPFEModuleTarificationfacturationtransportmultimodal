@@ -18,9 +18,7 @@ namespace Application.Features.SupplierFeature.Commands
         string? Phone,
         string? Address,
         string? DefaultCurrencyCode,
-        bool? IsActive,
-        List<UpdateContractDto>? Contracts,
-        List<UpdateTransportSegmentDto>? TransportSegments
+        bool? IsActive
     ) : IRequest<ResponseHttp>;
     public class UpdateSupplierCommandHandler : IRequestHandler<UpdateSupplierCommand, ResponseHttp>
     {
@@ -75,93 +73,8 @@ namespace Application.Features.SupplierFeature.Commands
                 supplier.ModifiedDate = DateTime.UtcNow;
                 supplier.ModifiedBy = "System";
 
-                // =====================================================
-                // ✅ Gestion des CONTRATS (inchangée)
-                // =====================================================
-                if (request.Contracts != null)
-                {
-                    supplier.Contracts.Clear();
-
-                    foreach (var contractDto in request.Contracts)
-                    {
-                        supplier.Contracts.Add(new Contract
-                        {
-                            Id = Guid.NewGuid(),
-                            ContractNumber = contractDto.ContractNumber ?? $"CONT-{Guid.NewGuid():N}",
-                            Name = contractDto.Name ?? "Nouveau contrat",
-                            Type = contractDto.Type.HasValue
-                                ? (ContractType)contractDto.Type.Value
-                                : ContractType.Standard,
-                            ValidFrom = contractDto.ValidFrom ?? DateTime.UtcNow,
-                            ValidTo = contractDto.ValidTo ?? DateTime.UtcNow.AddYears(1),
-                            Terms = contractDto.Terms,
-                            GlobalDiscountPercent = contractDto.GlobalDiscountPercent ?? 0,
-                            IsActive = contractDto.IsActive ?? true,
-                            SupplierId = supplier.Id,
-                            CreatedDate = DateTime.UtcNow,
-                            CreatedBy = "System"
-                        });
-                    }
-                }
-
-                // =====================================================
-                // ✅ Gestion des SEGMENTS (inchangée)
-                // =====================================================
-                if (request.TransportSegments != null)
-                {
-                    supplier.TransportSegments.Clear();
-
-                    foreach (var segmentDto in request.TransportSegments)
-                    {
-                        // Vérifier existence zones (même code qu'avant)
-                        if (segmentDto.ZoneFromId.HasValue)
-                        {
-                            var zoneFrom = await _zoneRepository.GetByIdAsync(segmentDto.ZoneFromId.Value);
-                            if (zoneFrom == null)
-                            {
-                                return new ResponseHttp
-                                {
-                                    Status = StatusCodes.Status400BadRequest,
-                                    Fail_Messages = $"Zone origine {segmentDto.ZoneFromId} inexistante"
-                                };
-                            }
-                        }
-
-                        if (segmentDto.ZoneToId.HasValue)
-                        {
-                            var zoneTo = await _zoneRepository.GetByIdAsync(segmentDto.ZoneToId.Value);
-                            if (zoneTo == null)
-                            {
-                                return new ResponseHttp
-                                {
-                                    Status = StatusCodes.Status400BadRequest,
-                                    Fail_Messages = $"Zone destination {segmentDto.ZoneToId} inexistante"
-                                };
-                            }
-                        }
-
-                        supplier.TransportSegments.Add(new TransportSegment
-                        {
-                            Id = Guid.NewGuid(),
-                            Sequence = segmentDto.Sequence ?? 1,
-                            TransportMode = segmentDto.TransportMode.HasValue
-                                ? (TransportMode)segmentDto.TransportMode.Value
-                                : TransportMode.Routier,
-                            ZoneFromId = segmentDto.ZoneFromId,
-                            ZoneToId = segmentDto.ZoneToId,
-                            DistanceKm = segmentDto.DistanceKm,
-                            BaseCost = segmentDto.BaseCost ?? 0,
-                            CurrencyCode = segmentDto.CurrencyCode ?? "EUR",
-                            SurchargesTotal = 0,
-                            TotalCost = segmentDto.BaseCost ?? 0,
-                            SupplierId = supplier.Id,
-                            CreatedDate = DateTime.UtcNow,
-                            CreatedBy = "System"
-                        });
-                    }
-                }
-
-                await _supplierRepository.SaveChangesAsync(cancellationToken);
+                await _supplierRepository.UpdateAsync(supplier, cancellationToken);
+                await _supplierRepository.SaveChange(cancellationToken);
 
                 var supplierDto = _mapper.Map<SupplierDto>(supplier);
 

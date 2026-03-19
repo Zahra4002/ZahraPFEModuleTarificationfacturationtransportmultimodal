@@ -2720,27 +2720,15 @@
               "type": "string",
               "format": "uuid"
             }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateInvoiceStatusDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateInvoiceStatusDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateInvoiceStatusDto"
-              }
+          },
+          {
+            "name": "Status",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/InvoiceStatus"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -3634,12 +3622,68 @@
         "tags": [
           "PriceCalculator"
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalculatePriceCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalculatePriceCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalculatePriceCommand"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseHttp"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseHttp"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseHttp"
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "text/plain": {
                 "schema": {
@@ -3669,9 +3713,54 @@
         "tags": [
           "PriceCalculator"
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CalculatePriceCommand"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CalculatePriceCommand"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CalculatePriceCommand"
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseHttp"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseHttp"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseHttp"
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad Request",
@@ -5474,7 +5563,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/SurchargeType"
             }
           }
         ],
@@ -6979,7 +7068,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/TransportMode"
             }
           }
         ],
@@ -9710,17 +9799,11 @@
           },
           "exchangeRate": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "nullable": true
           },
           "notes": {
             "type": "string",
-            "nullable": true
-          },
-          "lines": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/InvoiceLineDto"
-            },
             "nullable": true
           }
         },
@@ -9782,8 +9865,9 @@
       "AddPaymentCommandNew": {
         "type": "object",
         "properties": {
-          "invoice": {
+          "invoiceId": {
             "type": "string",
+            "format": "uuid",
             "nullable": true
           },
           "paymentDate": {
@@ -9829,6 +9913,10 @@
           "zoneToId": {
             "type": "string",
             "format": "uuid"
+          },
+          "sequence": {
+            "type": "integer",
+            "format": "int32"
           },
           "distanceKm": {
             "type": "number",
@@ -10060,6 +10148,54 @@
         },
         "additionalProperties": false
       },
+      "CalculatePriceCommand": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "zoneFromId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "zoneToId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "transportMode": {
+            "type": "string",
+            "nullable": true
+          },
+          "weightKg": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "volumeM3": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "containerType": {
+            "type": "string",
+            "nullable": true
+          },
+          "containerCount": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "ChangePasswordRequestDTO": {
         "type": "object",
         "properties": {
@@ -10115,43 +10251,6 @@
           "date": {
             "type": "string",
             "format": "date-time"
-          }
-        },
-        "additionalProperties": false
-      },
-      "CreateContractDto": {
-        "type": "object",
-        "properties": {
-          "contractNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "type": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "validFrom": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "validTo": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "terms": {
-            "type": "string",
-            "nullable": true
-          },
-          "globalDiscountPercent": {
-            "type": "number",
-            "format": "double"
-          },
-          "isActive": {
-            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -10259,20 +10358,6 @@
           },
           "isActive": {
             "type": "boolean"
-          },
-          "contracts": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateContractDto"
-            },
-            "nullable": true
-          },
-          "transportSegments": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateTransportSegmentDto"
-            },
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -10496,43 +10581,6 @@
         },
         "additionalProperties": false
       },
-      "CreateTransportSegmentDto": {
-        "type": "object",
-        "properties": {
-          "sequence": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "transportMode": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "zoneFromId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "zoneToId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "distanceKm": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "baseCost": {
-            "type": "number",
-            "format": "double"
-          },
-          "currencyCode": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "CreateUserDTO": {
         "type": "object",
         "properties": {
@@ -10559,53 +10607,6 @@
           "role": {
             "type": "string",
             "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "InvoiceLineDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
-          "quantity": {
-            "type": "number",
-            "format": "double"
-          },
-          "unitPriceHT": {
-            "type": "number",
-            "format": "double"
-          },
-          "vatRate": {
-            "type": "number",
-            "format": "double"
-          },
-          "discountPercent": {
-            "type": "number",
-            "format": "double"
-          },
-          "transportSegmentId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "totalHT": {
-            "type": "number",
-            "format": "double"
-          },
-          "totalVAT": {
-            "type": "number",
-            "format": "double"
-          },
-          "totalTTC": {
-            "type": "number",
-            "format": "double"
           }
         },
         "additionalProperties": false
@@ -10716,6 +10717,17 @@
           "InTransit",
           "Delivered",
           "Cancelled"
+        ],
+        "type": "string"
+      },
+      "SurchargeType": {
+        "enum": [
+          "Carburant",
+          "CongestionPortuaire",
+          "Securite",
+          "Saisonnalite",
+          "MatieresDangereuses",
+          "HorsGabarit"
         ],
         "type": "string"
       },
@@ -10842,48 +10854,6 @@
           "renewalNoticeDays": {
             "type": "integer",
             "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
-      "UpdateContractDto": {
-        "type": "object",
-        "properties": {
-          "contractNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "type": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "validFrom": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "validTo": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "terms": {
-            "type": "string",
-            "nullable": true
-          },
-          "globalDiscountPercent": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "isActive": {
-            "type": "boolean",
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -11054,19 +11024,10 @@
         },
         "additionalProperties": false
       },
-      "UpdateInvoiceStatusDto": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "$ref": "#/components/schemas/InvoiceStatus"
-          }
-        },
-        "additionalProperties": false
-      },
       "UpdatePaymentCommandNew": {
         "type": "object",
         "properties": {
-          "invoiceId": {
+          "paymentId": {
             "type": "string",
             "format": "uuid"
           },
@@ -11333,20 +11294,6 @@
           "isActive": {
             "type": "boolean",
             "nullable": true
-          },
-          "contracts": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UpdateContractDto"
-            },
-            "nullable": true
-          },
-          "transportSegments": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UpdateTransportSegmentDto"
-            },
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -11552,46 +11499,6 @@
             "nullable": true
           },
           "contact": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "UpdateTransportSegmentDto": {
-        "type": "object",
-        "properties": {
-          "sequence": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "transportMode": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "zoneFromId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "zoneToId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "distanceKm": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "baseCost": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "currencyCode": {
             "type": "string",
             "nullable": true
           }
