@@ -6,8 +6,6 @@
         public string Password { get; set; } = string.Empty;
     }
 
-
-
     public class RefreshTokenRequestDTO
     {
         public string RefreshToken { get; set; } = string.Empty;
@@ -16,6 +14,25 @@
     public class ChangePasswordRequestDTO
     {
         public string CurrentPassword { get; set; } = string.Empty;
+        public string NewPassword { get; set; } = string.Empty;
+        public string ConfirmNewPassword { get; set; } = string.Empty;
+    }
+
+    public class ForgotPasswordRequestDTO
+    {
+        public string Email { get; set; } = string.Empty;
+    }
+
+    public class VerifyResetCodeRequestDTO
+    {
+        public string Email { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
+    }
+
+    public class ResetPasswordRequestDTO
+    {
+        public string Email { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
         public string NewPassword { get; set; } = string.Empty;
         public string ConfirmNewPassword { get; set; } = string.Empty;
     }

@@ -3,6 +3,7 @@ using Application.Features.QuoteFeature.Commands;
 using Application.Interfaces;
 using Application.Mappings;
 using Application.Security;
+using Application.Services;
 using Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -30,7 +31,7 @@ builder.Services.AddCors(options => options.AddPolicy("cors", builder =>
     .AllowAnyHeader()
     .AllowCredentials();
 }));
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
@@ -61,14 +62,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IPdfService, PdfService>();
+builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 builder.Services.AddAuthorization();
 builder.Services.AddDbContext<CleanArchitecturContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -77,11 +76,8 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.WriteIndented = true;
     });
 
-
-
 var app = builder.Build();
 app.UseRouting();
-// Configure the HTTP request pipeline.
 app.UseDeveloperExceptionPage();
 app.UseCors("cors");
 if (app.Environment.IsDevelopment())
@@ -93,6 +89,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
-
 
 app.Run();

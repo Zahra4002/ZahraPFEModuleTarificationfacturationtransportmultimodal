@@ -36,7 +36,25 @@ namespace API.Controllers
         {
             try
             {
-                var command = new LoginCommand(loginRequest);
+                if (string.IsNullOrWhiteSpace(loginRequest?.Email) || string.IsNullOrWhiteSpace(loginRequest?.Password))
+                {
+                    return BadRequest(new ResponseHttp
+                    {
+                        Fail_Messages = "Email and password are required",
+                        Status = StatusCodes.Status400BadRequest
+                    });
+                }
+
+                if (string.IsNullOrWhiteSpace(loginRequest?.Email) || string.IsNullOrWhiteSpace(loginRequest?.Password))
+                {
+                    return BadRequest(new ResponseHttp
+                    {
+                        Fail_Messages = "Email and password are required",
+                        Status = StatusCodes.Status400BadRequest
+                    });
+                }
+
+                   var command = new LoginCommand(loginRequest);
                 var validator = new LoginCommandValidator();
                 var validationResult = await validator.ValidateAsync(command);
 
@@ -65,8 +83,6 @@ namespace API.Controllers
                 });
             }
         }
-
-       
 
         /// <summary>
         /// Refreshes an expired JWT token
@@ -243,6 +259,126 @@ namespace API.Controllers
                     return NotFound(result);
 
                 return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseHttp
+                {
+                    Fail_Messages = ex.Message,
+                    Status = StatusCodes.Status400BadRequest
+                });
+            }
+        }
+
+        /// <summary>
+        /// Initiates password reset by sending a reset code to the user's email
+        /// </summary>
+        /// <param name="forgotPasswordRequest">User email address</param>
+        /// <returns>Success status</returns>
+        [HttpPost("forgot-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ResponseHttp>> ForgotPassword([FromBody] ForgotPasswordRequestDTO forgotPasswordRequest)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(forgotPasswordRequest?.Email))
+                {
+                    return BadRequest(new ResponseHttp
+                    {
+                        Fail_Messages = "Email is required",
+                        Status = StatusCodes.Status400BadRequest
+                    });
+                }
+
+                var command = new ForgotPasswordCommand(forgotPasswordRequest);
+                var result = await _mediator.Send(command);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseHttp
+                {
+                    Fail_Messages = ex.Message,
+                    Status = StatusCodes.Status400BadRequest
+                });
+            }
+        }
+
+        /// <summary>
+        /// Verifies the reset code sent to user's email
+        /// </summary>
+        /// <param name="verifyResetCodeRequest">Email and reset code</param>
+        /// <returns>Verification result</returns>
+        [HttpPost("verify-reset-code")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ResponseHttp>> VerifyResetCode([FromBody] VerifyResetCodeRequestDTO verifyResetCodeRequest)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(verifyResetCodeRequest?.Email) || string.IsNullOrWhiteSpace(verifyResetCodeRequest?.Code))
+                {
+                    return BadRequest(new ResponseHttp
+                    {
+                        Fail_Messages = "Email and code are required",
+                        Status = StatusCodes.Status400BadRequest
+                    });
+                }
+
+                var command = new VerifyResetCodeCommand(verifyResetCodeRequest);
+                var result = await _mediator.Send(command);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseHttp
+                {
+                    Fail_Messages = ex.Message,
+                    Status = StatusCodes.Status400BadRequest
+                });
+            }
+        }
+
+        /// <summary>
+        /// Resets the user's password using the reset code
+        /// </summary>
+        /// <param name="resetPasswordRequest">Email, reset code, and new password</param>
+        /// <returns>Success status</returns>
+        [HttpPost("reset-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ResponseHttp>> ResetPassword([FromBody] ResetPasswordRequestDTO resetPasswordRequest)
+        {
+            try
+            {
+                if (resetPasswordRequest?.NewPassword != resetPasswordRequest?.ConfirmNewPassword)
+                {
+                    return BadRequest(new ResponseHttp
+                    {
+                        Fail_Messages = "New password and confirmation do not match",
+                        Status = StatusCodes.Status400BadRequest
+                    });
+                }
+
+                if (string.IsNullOrWhiteSpace(resetPasswordRequest?.Email) || string.IsNullOrWhiteSpace(resetPasswordRequest?.Code))
+                {
+                    return BadRequest(new ResponseHttp
+                    {
+                        Fail_Messages = "Email and code are required",
+                        Status = StatusCodes.Status400BadRequest
+                    });
+                }
+
+                var command = new ResetPasswordCommand(resetPasswordRequest);
+                var result = await _mediator.Send(command);
+
+                return Ok(result);
             }
             catch (Exception ex)
             {

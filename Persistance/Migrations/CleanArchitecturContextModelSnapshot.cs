@@ -1557,7 +1557,7 @@ namespace Persistance.Migrations
                             Code = "VAT-FR-20",
                             Country = "FR",
                             CreatedBy = "Seed",
-                            CreatedDate = new DateTime(2026, 3, 19, 8, 51, 47, 521, DateTimeKind.Utc).AddTicks(597),
+                            CreatedDate = new DateTime(2026, 3, 23, 15, 58, 30, 313, DateTimeKind.Utc).AddTicks(3130),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "TVA France 20%",
@@ -1574,7 +1574,7 @@ namespace Persistance.Migrations
                             Code = "VAT-FR-55",
                             Country = "FR",
                             CreatedBy = "Seed",
-                            CreatedDate = new DateTime(2026, 3, 19, 8, 51, 47, 521, DateTimeKind.Utc).AddTicks(610),
+                            CreatedDate = new DateTime(2026, 3, 23, 15, 58, 30, 313, DateTimeKind.Utc).AddTicks(3150),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "TVA France 5.5% (réduit)",
@@ -1591,7 +1591,7 @@ namespace Persistance.Migrations
                             Code = "VAT-FR-21",
                             Country = "FR",
                             CreatedBy = "Seed",
-                            CreatedDate = new DateTime(2026, 3, 19, 8, 51, 47, 521, DateTimeKind.Utc).AddTicks(615),
+                            CreatedDate = new DateTime(2026, 3, 23, 15, 58, 30, 313, DateTimeKind.Utc).AddTicks(3155),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "TVA France 2.1% (super réduit)",
@@ -1608,7 +1608,7 @@ namespace Persistance.Migrations
                             Code = "VAT-TN-19",
                             Country = "TN",
                             CreatedBy = "Seed",
-                            CreatedDate = new DateTime(2026, 3, 19, 8, 51, 47, 521, DateTimeKind.Utc).AddTicks(620),
+                            CreatedDate = new DateTime(2026, 3, 23, 15, 58, 30, 313, DateTimeKind.Utc).AddTicks(3161),
                             ExemptionConditions = "{\"export\": true, \"sectors\": [\"agriculture\", \"education\"]}",
                             IsActive = true,
                             IsDeleted = false,
@@ -1625,7 +1625,7 @@ namespace Persistance.Migrations
                             Code = "VAT-TN-07",
                             Country = "TN",
                             CreatedBy = "Seed",
-                            CreatedDate = new DateTime(2026, 3, 19, 8, 51, 47, 521, DateTimeKind.Utc).AddTicks(625),
+                            CreatedDate = new DateTime(2026, 3, 23, 15, 58, 30, 313, DateTimeKind.Utc).AddTicks(3167),
                             ExemptionConditions = "{\"sectors\": [\"hotels\", \"restaurants\"]}",
                             IsActive = true,
                             IsDeleted = false,
@@ -1642,7 +1642,7 @@ namespace Persistance.Migrations
                             Code = "VAT-FR-196",
                             Country = "FR",
                             CreatedBy = "Seed",
-                            CreatedDate = new DateTime(2026, 3, 19, 8, 51, 47, 521, DateTimeKind.Utc).AddTicks(633),
+                            CreatedDate = new DateTime(2026, 3, 23, 15, 58, 30, 313, DateTimeKind.Utc).AddTicks(3174),
                             IsActive = false,
                             IsDeleted = false,
                             Name = "Ancien taux TVA France 19.6%",
@@ -1660,7 +1660,7 @@ namespace Persistance.Migrations
                             Code = "VAT-EXPORT",
                             Country = "FR",
                             CreatedBy = "Seed",
-                            CreatedDate = new DateTime(2026, 3, 19, 8, 51, 47, 521, DateTimeKind.Utc).AddTicks(641),
+                            CreatedDate = new DateTime(2026, 3, 23, 15, 58, 30, 313, DateTimeKind.Utc).AddTicks(3179),
                             ExemptionConditions = "{\"proofOfExport\": true, \"documents\": [\"EX1\", \"invoice\"]}",
                             IsActive = true,
                             IsDeleted = false,
@@ -1863,6 +1863,12 @@ namespace Persistance.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("PasswordResetCodeExpiryUtc")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("PasswordResetCodeHash")
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
