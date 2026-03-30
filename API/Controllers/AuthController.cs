@@ -28,6 +28,7 @@ namespace API.Controllers
         /// <param name="loginRequest">Login credentials</param>
         /// <returns>JWT token and user information</returns>
         [HttpPost("login")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -45,16 +46,7 @@ namespace API.Controllers
                     });
                 }
 
-                if (string.IsNullOrWhiteSpace(loginRequest?.Email) || string.IsNullOrWhiteSpace(loginRequest?.Password))
-                {
-                    return BadRequest(new ResponseHttp
-                    {
-                        Fail_Messages = "Email and password are required",
-                        Status = StatusCodes.Status400BadRequest
-                    });
-                }
-
-                   var command = new LoginCommand(loginRequest);
+                var command = new LoginCommand(loginRequest);
                 var validator = new LoginCommandValidator();
                 var validationResult = await validator.ValidateAsync(command);
 
@@ -90,6 +82,7 @@ namespace API.Controllers
         /// <param name="refreshRequest">Refresh token</param>
         /// <returns>New JWT token and refresh token</returns>
         [HttpPost("refresh")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -117,7 +110,7 @@ namespace API.Controllers
         }
 
         /// <summary>
-        /// Logs out the current user
+        /// Logs out the current user - requires authentication
         /// </summary>
         /// <returns>Success status</returns>
         [HttpPost("logout")]
@@ -156,36 +149,50 @@ namespace API.Controllers
         }
 
         /// <summary>
-        /// Changes the current user's password
+        /// Changes the current user's password - requires authentication
+        /// Users can only change their own password. The Email in the request must match the authenticated user's email.
         /// </summary>
-        /// <param name="changePasswordRequest">Password change information</param>
+        /// <param name="changePasswordRequest">Password change information with user email for verification</param>
         /// <returns>Success status</returns>
         [HttpPost("change-password")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ResponseHttp>> ChangePassword([FromBody] ChangePasswordRequestDTO changePasswordRequest)
         {
             try
             {
+                // Get current authenticated user's email
+                var currentUserEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+                var userId = GetCurrentUserId();
+
+                // Verify user is authenticated
+                if (userId == null || string.IsNullOrEmpty(currentUserEmail))
+                {
+                    return Unauthorized(new ResponseHttp
+                    {
+                        Fail_Messages = "User not authenticated",
+                        Status = StatusCodes.Status401Unauthorized
+                    });
+                }
+
+                // SECURITY: Verify that the user can only change their own password
+                // The email in the request must match the authenticated user's email
+                if (!currentUserEmail.Equals(changePasswordRequest.Email, StringComparison.OrdinalIgnoreCase))
+                {
+                    return Forbid();
+                }
+
+                // Validate passwords match
                 if (changePasswordRequest.NewPassword != changePasswordRequest.ConfirmNewPassword)
                 {
                     return BadRequest(new ResponseHttp
                     {
                         Fail_Messages = "New password and confirmation do not match",
                         Status = StatusCodes.Status400BadRequest
-                    });
-                }
-
-                var userId = GetCurrentUserId();
-                if (userId == null)
-                {
-                    return Unauthorized(new ResponseHttp
-                    {
-                        Fail_Messages = "User not authenticated",
-                        Status = StatusCodes.Status401Unauthorized
                     });
                 }
 
@@ -225,7 +232,7 @@ namespace API.Controllers
         }
 
         /// <summary>
-        /// Gets the currently authenticated user's information
+        /// Gets the currently authenticated user's information - requires authentication
         /// </summary>
         /// <returns>Current user information</returns>
         [HttpGet("me")]
@@ -272,10 +279,12 @@ namespace API.Controllers
 
         /// <summary>
         /// Initiates password reset by sending a reset code to the user's email
+        /// This is an anonymous endpoint for users who forgot their password
         /// </summary>
         /// <param name="forgotPasswordRequest">User email address</param>
         /// <returns>Success status</returns>
         [HttpPost("forgot-password")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -309,10 +318,12 @@ namespace API.Controllers
 
         /// <summary>
         /// Verifies the reset code sent to user's email
+        /// This is an anonymous endpoint used before resetting password
         /// </summary>
         /// <param name="verifyResetCodeRequest">Email and reset code</param>
         /// <returns>Verification result</returns>
         [HttpPost("verify-reset-code")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -346,10 +357,12 @@ namespace API.Controllers
 
         /// <summary>
         /// Resets the user's password using the reset code
+        /// This is an anonymous endpoint for users who forgot their password
         /// </summary>
         /// <param name="resetPasswordRequest">Email, reset code, and new password</param>
         /// <returns>Success status</returns>
         [HttpPost("reset-password")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -390,6 +403,10 @@ namespace API.Controllers
             }
         }
 
+        /// <summary>
+        /// Extracts the current authenticated user's ID from JWT claims
+        /// </summary>
+        /// <returns>User ID if authenticated, null otherwise</returns>
         private Guid? GetCurrentUserId()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
