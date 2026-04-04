@@ -17,7 +17,10 @@ namespace Application.Features.TariffGridFeature.Dtos
         public DateTime? ValidTo { get; set; }
         public bool IsActive { get; set; }
         public string CurrencyCode { get; set; } = string.Empty;
-        public int TariffLinesCount { get; set; }
+
+        // ✅ Cette propriété doit être calculée
+        public int TariffLinesCount { get; set; }  // Compte des TariffLines
+
         public DateTime CreatedAt { get; set; }
     }
 
@@ -52,6 +55,7 @@ namespace Application.Features.TariffGridFeature.Dtos
     {
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
+        public string TransportMode { get; set; } = string.Empty;
         public DateTime ValidFrom { get; set; }
         public DateTime? ValidTo { get; set; }
         public bool IsActive { get; set; }

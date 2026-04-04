@@ -49,6 +49,13 @@ namespace Application.Features.TariffGridFeature.Queries
 
                 var gridDtos = _mapper.Map<IEnumerable<TariffGridDTO>>(tariffGrids.Items);
 
+                // Calculate TariffLinesCount for each grid
+                foreach (var gridDto in gridDtos)
+                {
+                    var tariffLines = await _tariffGridRepository.GetLinesByGridIdAsync(gridDto.Id, cancellationToken);
+                    gridDto.TariffLinesCount = tariffLines?.Count() ?? 0;
+                }
+
                 var gridsToReturn = new PagedList<TariffGridDTO>(
                     gridDtos,
                     tariffGrids.TotalCount,

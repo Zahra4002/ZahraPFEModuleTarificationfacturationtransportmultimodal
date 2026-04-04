@@ -34,10 +34,10 @@ namespace Application.Features.TariffGridFeature.Queries
                     };
                 }
 
-                var lineCount = await _tariffGridRepository.GetLinesByGridIdAsync(request.Id, cancellationToken);
+                var tariffLines = await _tariffGridRepository.GetLinesByGridIdAsync(request.Id, cancellationToken);
 
                 var result = _mapper.Map<TariffGridDTO>(tariffGrid);
-                result.TariffLinesCount = lineCount.Count();
+                result.TariffLinesCount = tariffLines?.Count() ?? 0;
 
                 return new ResponseHttp
                 {

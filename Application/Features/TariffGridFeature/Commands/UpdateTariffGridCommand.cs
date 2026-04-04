@@ -34,11 +34,9 @@ namespace Application.Features.TariffGridFeature.Commands
                     };
                 }
 
-                // Check if grid is editable (not published/archived in a real scenario)
-                // For now, we'll allow updates
-
                 tariffGrid.Name = request.TariffGridDto.Name;
                 tariffGrid.Description = request.TariffGridDto.Description;
+                tariffGrid.TransportMode = System.Enum.Parse<Domain.Enums.TransportMode>(request.TariffGridDto.TransportMode, true);
                 tariffGrid.ValidFrom = request.TariffGridDto.ValidFrom;
                 tariffGrid.ValidTo = request.TariffGridDto.ValidTo;
                 tariffGrid.IsActive = request.TariffGridDto.IsActive;
@@ -50,10 +48,10 @@ namespace Application.Features.TariffGridFeature.Commands
 
                 // Get updated grid with line count
                 var updatedGrid = await _tariffGridRepository.GetByIdAsync(request.Id, cancellationToken);
-                var lineCount = await _tariffGridRepository.GetLinesByGridIdAsync(request.Id, cancellationToken);
+                var tariffLines = await _tariffGridRepository.GetLinesByGridIdAsync(request.Id, cancellationToken);
 
                 var result = _mapper.Map<TariffGridDTO>(updatedGrid);
-                result.TariffLinesCount = lineCount.Count();
+                result.TariffLinesCount = tariffLines?.Count() ?? 0;
 
                 return new ResponseHttp
                 {
