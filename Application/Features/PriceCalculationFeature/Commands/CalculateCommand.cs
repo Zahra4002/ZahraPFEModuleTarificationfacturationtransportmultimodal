@@ -1,4 +1,5 @@
-﻿using Application.Features.PriceCalculationFeature.Dtos;
+﻿using Application.Extensions;
+using Application.Features.PriceCalculationFeature.Dtos;
 using Application.Interfaces;
 using Application.Setting;
 using AutoMapper;
@@ -35,7 +36,6 @@ namespace Application.Features.PriceCalculationFeature.Commands
             private readonly ISurchargeRepository _surchargeRepository;
             private readonly ITaxRuleRepository _taxRuleRepository;
             private readonly IZoneRepository _zoneRepository;
-           
             private readonly IMapper _mapper;
 
             public CalculateCommandHandler(
@@ -70,13 +70,13 @@ namespace Application.Features.PriceCalculationFeature.Commands
                     var contract = await _contractRepository.GetActiveContractForClientAsync(request.ClientId, cancellationToken);
                     string destinationCountry = await GetDestinationCountry(request.ZoneToId, cancellationToken);
                     
-                    // Déterminer le mode de transport
-                    if (!Enum.TryParse<TransportMode>(request.TransportMode, true, out var transportMode))
+                    // Déterminer le mode de transport (accepte français et enum)
+                    if (!TransportModeExtensions.TryParseTransportMode(request.TransportMode, out var transportMode))
                     {
                         return new ResponseHttp
                         {
                             Status = StatusCodes.Status400BadRequest,
-                            Fail_Messages = $"Mode de transport invalide: {request.TransportMode}"
+                            Fail_Messages = $"Mode de transport invalide: {request.TransportMode}. Modes acceptés: Maritime, Aérien, Routier, Ferroviaire, Fluvial"
                         };
                     }
 

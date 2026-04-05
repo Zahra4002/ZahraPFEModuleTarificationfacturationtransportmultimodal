@@ -1,4 +1,5 @@
-﻿using Application.Features.DashboardFeature.Dtos;
+﻿using Application.Extensions;
+using Application.Features.DashboardFeature.Dtos;
 using Application.Interfaces;
 using Application.Setting;
 using AutoMapper;
@@ -88,12 +89,12 @@ namespace Application.Features.DashboardFeature.Queries
                     }
                 }
 
-                // 5️⃣ Convertir en liste de DTO
+                // 5️⃣ Convertir en liste de DTO avec labels français
                 var revenueByMode = modeRevenue
                     .Where(kv => kv.Value.Revenue > 0 || kv.Value.ShipmentIds.Count > 0)
                     .Select(kv => new RevenueByModeDto
                     {
-                        TransportMode = kv.Key.ToString(),
+                        TransportMode = kv.Key.ToFrench(),
                         Revenue = Math.Round(kv.Value.Revenue, 2),
                         ShipmentCount = kv.Value.ShipmentIds.Count,
                         Percentage = totalRevenue > 0

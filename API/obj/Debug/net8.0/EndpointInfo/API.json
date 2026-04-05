@@ -11657,6 +11657,10 @@
             "type": "string",
             "nullable": true
           },
+          "transportMode": {
+            "type": "string",
+            "nullable": true
+          },
           "validFrom": {
             "type": "string",
             "format": "date-time"

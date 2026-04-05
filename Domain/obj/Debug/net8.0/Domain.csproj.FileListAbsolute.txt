@@ -130,3 +130,15 @@ C:\Users\riyem\Source\Repos\backendPFEzahra\Domain\obj\Debug\net8.0\Domain.dll
 C:\Users\riyem\Source\Repos\backendPFEzahra\Domain\obj\Debug\net8.0\refint\Domain.dll
 C:\Users\riyem\Source\Repos\backendPFEzahra\Domain\obj\Debug\net8.0\Domain.pdb
 C:\Users\riyem\Source\Repos\backendPFEzahra\Domain\obj\Debug\net8.0\ref\Domain.dll
+C:\Users\riyem\source\repos\backendzahratest1\Domain\bin\Debug\net8.0\Domain.deps.json
+C:\Users\riyem\source\repos\backendzahratest1\Domain\bin\Debug\net8.0\Domain.dll
+C:\Users\riyem\source\repos\backendzahratest1\Domain\bin\Debug\net8.0\Domain.pdb
+C:\Users\riyem\source\repos\backendzahratest1\Domain\obj\Debug\net8.0\Domain.csproj.AssemblyReference.cache
+C:\Users\riyem\source\repos\backendzahratest1\Domain\obj\Debug\net8.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\riyem\source\repos\backendzahratest1\Domain\obj\Debug\net8.0\Domain.AssemblyInfoInputs.cache
+C:\Users\riyem\source\repos\backendzahratest1\Domain\obj\Debug\net8.0\Domain.AssemblyInfo.cs
+C:\Users\riyem\source\repos\backendzahratest1\Domain\obj\Debug\net8.0\Domain.csproj.CoreCompileInputs.cache
+C:\Users\riyem\source\repos\backendzahratest1\Domain\obj\Debug\net8.0\Domain.dll
+C:\Users\riyem\source\repos\backendzahratest1\Domain\obj\Debug\net8.0\refint\Domain.dll
+C:\Users\riyem\source\repos\backendzahratest1\Domain\obj\Debug\net8.0\Domain.pdb
+C:\Users\riyem\source\repos\backendzahratest1\Domain\obj\Debug\net8.0\ref\Domain.dll

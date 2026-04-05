@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Xep/IgFE3FE=",
+  "dgSpecHash": "vztiKWqCVcQ=",
   "success": true,
-  "projectFilePath": "C:\\Users\\riyem\\Source\\Repos\\backendPFEzahra\\API\\API.csproj",
+  "projectFilePath": "C:\\Users\\riyem\\source\\repos\\backendzahratest1\\API\\API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\riyem\\.nuget\\packages\\automapper\\16.1.1\\automapper.16.1.1.nupkg.sha512",
     "C:\\Users\\riyem\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
