@@ -105,6 +105,7 @@ namespace Application.Features.PriceCalculationFeature.Commands
                         baseCost = Math.Round(basePrice, 2),
                         surchargesTotal = Math.Round(surchargesTotal, 2),
                         subtotal = Math.Round(subtotal, 2),
+                        taxTotal = Math.Round(taxTotal, 2),
                         currencyCode = currencyCode,
                         breakDown = new BreakDown
                         {
@@ -325,7 +326,7 @@ namespace Application.Features.PriceCalculationFeature.Commands
                         calculationbasis = $"{amount:F2} € × {taxRule.StandardRate}%",
                         reference = taxRule.Id.ToString()
                     });
-                    total = taxAmount;
+                    total += taxAmount;
                 }
                 else
                 {
@@ -340,7 +341,7 @@ namespace Application.Features.PriceCalculationFeature.Commands
                         calculationbasis = $"{amount:F2} € × {defaultRate}%",
                         reference = "DEFAULT"
                     });
-                    total = taxAmount;
+                    total += taxAmount;
                 }
 
                 return (total, components);
