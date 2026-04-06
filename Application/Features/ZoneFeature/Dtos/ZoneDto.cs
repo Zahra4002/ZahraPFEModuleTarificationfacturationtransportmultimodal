@@ -19,6 +19,8 @@ namespace Application.Features.ZoneFeature.Dtos
 
         public string? Description { get; set; }
 
+        public decimal? TaxRate { get; set; }
+
         public bool IsActive { get; set; } = true;
 
         public ZoneDto(Zone zone)
@@ -29,6 +31,7 @@ namespace Application.Features.ZoneFeature.Dtos
             this.Country = zone.Country;
             this.Region = zone.Region;
             this.Description = zone.Description;
+            this.TaxRate = zone.TaxRate;
             this.IsActive = zone.IsActive;
         }
 

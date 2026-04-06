@@ -9,6 +9,7 @@ namespace Domain.Entities
         public string Country { get; set; } = string.Empty;
         public string? Region { get; set; }
         public string? Description { get; set; }
+        public decimal? TaxRate { get; set; }
         public bool IsActive { get; set; } = true;
         // Navigation properties
         public virtual ICollection<TariffLine> TariffLinesFrom { get; set; } = new List<TariffLine>();

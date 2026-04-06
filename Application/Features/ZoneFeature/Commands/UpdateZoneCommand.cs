@@ -15,6 +15,7 @@ namespace Application.Features.ZoneFeature.Commands
         string Country,
         string? Region,
         string? Description,
+        decimal? TaxRate,
         bool IsActive
     ) : IRequest<ResponseHttp>
     {

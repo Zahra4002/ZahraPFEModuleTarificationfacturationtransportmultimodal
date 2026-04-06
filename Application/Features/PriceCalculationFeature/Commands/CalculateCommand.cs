@@ -1,5 +1,4 @@
-﻿using Application.Extensions;
-using Application.Features.PriceCalculationFeature.Dtos;
+﻿using Application.Features.PriceCalculationFeature.Dtos;
 using Application.Interfaces;
 using Application.Setting;
 using AutoMapper;
@@ -36,6 +35,7 @@ namespace Application.Features.PriceCalculationFeature.Commands
             private readonly ISurchargeRepository _surchargeRepository;
             private readonly ITaxRuleRepository _taxRuleRepository;
             private readonly IZoneRepository _zoneRepository;
+           
             private readonly IMapper _mapper;
 
             public CalculateCommandHandler(
@@ -70,42 +70,59 @@ namespace Application.Features.PriceCalculationFeature.Commands
                     var contract = await _contractRepository.GetActiveContractForClientAsync(request.ClientId, cancellationToken);
                     string destinationCountry = await GetDestinationCountry(request.ZoneToId, cancellationToken);
                     
-                    // Déterminer le mode de transport (accepte français et enum)
-                    if (!TransportModeExtensions.TryParseTransportMode(request.TransportMode, out var transportMode))
+                    // Déterminer le mode de transport
+                    if (!Enum.TryParse<TransportMode>(request.TransportMode, true, out var transportMode))
                     {
                         return new ResponseHttp
                         {
                             Status = StatusCodes.Status400BadRequest,
-                            Fail_Messages = $"Mode de transport invalide: {request.TransportMode}. Modes acceptés: Maritime, Aérien, Routier, Ferroviaire, Fluvial"
+                            Fail_Messages = $"Mode de transport invalide: {request.TransportMode}"
                         };
                     }
 
-                    // 3️⃣ Calculer le prix de base
-                    var (basePrice, baseComponents) = await CalculateBasePrice(
-                        request, transportMode, client, cancellationToken);
+                    // 3️⃣ Récupérer le tariff grid avec ses lignes
+                    var tariffGrid = await _tariffRepository.GetApplicableTariffGridAsync(
+                        transportMode,
+                        request.Date ?? DateTime.UtcNow,
+                        cancellationToken);
 
-                    // 4️⃣ Calculer les surcharges
+                    if (tariffGrid == null)
+                    {
+                        return new ResponseHttp
+                        {
+                            Status = StatusCodes.Status404NotFound,
+                            Fail_Messages = $"Aucune grille tarifaire applicable trouvée pour le mode {request.TransportMode}"
+                        };
+                    }
+
+                    // Charger les lignes du tariff grid
+                    var tariffLines = (await _tariffRepository.GetLinesByGridIdAsync(tariffGrid.Id, cancellationToken)).ToList();
+
+                    // 4️⃣ Calculer le prix de base
+                    var (basePrice, baseComponents) = await CalculateBasePrice(
+                        request, tariffGrid, tariffLines, client, cancellationToken);
+
+                    // 5️⃣ Calculer les surcharges
                     var (surchargesTotal, surchargeComponents) = await CalculateSurcharges(
                         request, basePrice, transportMode, cancellationToken);
 
                     var subtotal = basePrice + surchargesTotal;
 
-                    // 5️⃣ Calculer les taxes
+                    // 6️⃣ Calculer les taxes
                     var (taxTotal, taxComponents) = await CalculateTaxes(
                         destinationCountry, subtotal, request.Date ?? DateTime.UtcNow, cancellationToken);
 
                     var totalCost = subtotal + taxTotal;
 
-                    // 6️⃣ Déterminer la devise
-                    var currencyCode = client?.DefaultCurrencyCode ?? "EUR";
+                    // 7️⃣ Déterminer la devise
+                    var currencyCode = client?.DefaultCurrencyCode ?? tariffGrid.CurrencyCode ?? "EUR";
 
-                    // 7️⃣ Construire le résultat détaillé
+                    // 8️⃣ Construire le résultat détaillé
                     var result = new ResultDto
                     {
                         baseCost = Math.Round(basePrice, 2),
                         surchargesTotal = Math.Round(surchargesTotal, 2),
                         subtotal = Math.Round(subtotal, 2),
-                        taxTotal = Math.Round(taxTotal, 2),
                         currencyCode = currencyCode,
                         breakDown = new BreakDown
                         {
@@ -114,7 +131,7 @@ namespace Application.Features.PriceCalculationFeature.Commands
                             Taxes = taxComponents
                         },
                         appliedContractNumber = contract?.ContractNumber ?? "N/A",
-                        appliedTariffGrid = await GetAppliedTariffGridCode(request, transportMode, cancellationToken),
+                        appliedTariffGrid = tariffGrid.Code,
                         calculatedAtDate = DateTime.UtcNow
                     };
 
@@ -171,80 +188,162 @@ namespace Application.Features.PriceCalculationFeature.Commands
 
             private async Task<(decimal total, List<BaseCompoment> components)> CalculateBasePrice(
                 CalculatePriceCommand request,
-                TransportMode transportMode,
+                TariffGrid tariffGrid,
+                List<TariffLine> tariffLines,
                 Client? client,
                 CancellationToken cancellationToken)
             {
                 var components = new List<BaseCompoment>();
                 decimal total = 0;
 
-                var tariffGrid = await _tariffRepository.GetApplicableTariffGridAsync(
-                    transportMode, 
-                    request.Date ?? DateTime.UtcNow, 
-                    cancellationToken);
+                // Sélectionner la ligne tarifaire applicable
+                var applicableLine = SelectApplicableTariffLine(request, tariffLines);
 
-                string tariffCode = tariffGrid?.Code ?? "TARIF-STANDARD";
-
-                if (request.WeightKg.HasValue && request.WeightKg.Value > 0)
+                if (applicableLine == null)
                 {
-                    var ratePerKg = 2.5m;
+                    return new(0, new List<BaseCompoment>
+                    {
+                        new BaseCompoment
+                        {
+                            Code = "NO_TARIFF",
+                            description = "Aucune ligne tarifaire applicable trouvée",
+                            amout = 0,
+                            currencyCode = tariffGrid.CurrencyCode,
+                            calculationbasis = "N/A",
+                            reference = tariffGrid.Code
+                        }
+                    });
+                }
+
+                // Calcul au poids
+                if (request.WeightKg.HasValue && request.WeightKg.Value > 0 && applicableLine.PricePerKg.HasValue)
+                {
+                    var ratePerKg = applicableLine.PricePerKg.Value;
                     var amount = request.WeightKg.Value * ratePerKg;
                     components.Add(new BaseCompoment
                     {
                         Code = "BASE_WT",
-                        description = $"Prix base au poids ({request.WeightKg:F0} kg x {ratePerKg:F2} €/kg)",
+                        description = $"Prix base au poids ({request.WeightKg:F2} kg × {ratePerKg:F4} {tariffGrid.CurrencyCode}/kg)",
                         amout = amount,
-                        currencyCode = "EUR",
-                        calculationbasis = $"{request.WeightKg:F0} kg",
-                        reference = tariffCode
+                        currencyCode = tariffGrid.CurrencyCode,
+                        calculationbasis = $"{request.WeightKg:F2} kg",
+                        reference = tariffGrid.Code
                     });
                     total += amount;
                 }
 
-                if (request.VolumeM3.HasValue && request.VolumeM3.Value > 0 && total == 0)
+                // Calcul au volume
+                if (request.VolumeM3.HasValue && request.VolumeM3.Value > 0 && total == 0 && applicableLine.PricePerM3.HasValue)
                 {
-                    var ratePerM3 = 50m;
+                    var ratePerM3 = applicableLine.PricePerM3.Value;
                     var amount = request.VolumeM3.Value * ratePerM3;
                     components.Add(new BaseCompoment
                     {
                         Code = "BASE_VOL",
-                        description = $"Prix base au volume ({request.VolumeM3:F2} m³ x {ratePerM3:F2} €/m³)",
+                        description = $"Prix base au volume ({request.VolumeM3:F2} m³ × {ratePerM3:F2} {tariffGrid.CurrencyCode}/m³)",
                         amout = amount,
-                        currencyCode = "EUR",
+                        currencyCode = tariffGrid.CurrencyCode,
                         calculationbasis = $"{request.VolumeM3:F2} m³",
-                        reference = tariffCode
+                        reference = tariffGrid.Code
                     });
                     total += amount;
                 }
 
+                // Calcul par conteneur
                 if (!string.IsNullOrEmpty(request.ContainerType) && request.ContainerCount.HasValue)
                 {
-                    var pricePerContainer = GetPricePerContainer(request.ContainerType);
-                    var amount = pricePerContainer * request.ContainerCount.Value;
+                    var pricePerContainer = GetContainerPrice(request.ContainerType, applicableLine, tariffGrid.CurrencyCode);
+                    if (pricePerContainer > 0)
+                    {
+                        var amount = pricePerContainer * request.ContainerCount.Value;
+                        components.Add(new BaseCompoment
+                        {
+                            Code = "BASE_CNT",
+                            description = $"Prix base conteneurs ({request.ContainerCount} × {request.ContainerType} @ {pricePerContainer:F2} {tariffGrid.CurrencyCode}/unité)",
+                            amout = amount,
+                            currencyCode = tariffGrid.CurrencyCode,
+                            calculationbasis = $"{request.ContainerCount} conteneurs",
+                            reference = tariffGrid.Code
+                        });
+                        total += amount;
+                    }
+                }
+
+                // Appliquer le prix de base si aucun calcul n'a été effectué
+                if (total == 0 && applicableLine.BasePrice.HasValue && applicableLine.BasePrice.Value > 0)
+                {
                     components.Add(new BaseCompoment
                     {
-                        Code = "BASE_CNT",
-                        description = $"Prix base conteneurs ({request.ContainerCount} x {request.ContainerType})",
-                        amout = amount,
-                        currencyCode = "EUR",
-                        calculationbasis = $"{request.ContainerCount} conteneurs",
-                        reference = tariffCode
+                        Code = "BASE_FLAT",
+                        description = "Prix forfaitaire",
+                        amout = applicableLine.BasePrice.Value,
+                        currencyCode = tariffGrid.CurrencyCode,
+                        calculationbasis = "Forfait",
+                        reference = tariffGrid.Code
                     });
-                    total += amount;
+                    total = applicableLine.BasePrice.Value;
                 }
 
                 return (total, components);
             }
 
-            private decimal GetPricePerContainer(string containerType)
+            private TariffLine? SelectApplicableTariffLine(CalculatePriceCommand request, List<TariffLine> tariffLines)
+            {
+                var candidates = tariffLines.Where(line =>
+                    // Vérifier les zones
+                    (!request.ZoneFromId.HasValue || line.ZoneFromId == request.ZoneFromId || line.ZoneFromId == null) &&
+                    (!request.ZoneToId.HasValue || line.ZoneToId == request.ZoneToId || line.ZoneToId == null)
+                ).ToList();
+
+                if (!candidates.Any())
+                    return null;
+
+                // Prioriser : lignes avec zones spécifiques > lignes génériques
+                var withSpecificZones = candidates
+                    .Where(line => line.ZoneFromId.HasValue && line.ZoneToId.HasValue)
+                    .FirstOrDefault();
+
+                if (withSpecificZones != null)
+                    return withSpecificZones;
+
+                // Chercher une ligne compatible avec les plages de poids/volume
+                if (request.WeightKg.HasValue && request.WeightKg.Value > 0)
+                {
+                    var weightMatch = candidates
+                        .Where(line =>
+                            !line.MinWeight.HasValue || request.WeightKg.Value >= line.MinWeight.Value &&
+                            !line.MaxWeight.HasValue || request.WeightKg.Value <= line.MaxWeight.Value)
+                        .FirstOrDefault();
+
+                    if (weightMatch != null)
+                        return weightMatch;
+                }
+
+                if (request.VolumeM3.HasValue && request.VolumeM3.Value > 0)
+                {
+                    var volumeMatch = candidates
+                        .Where(line =>
+                            !line.MinVolume.HasValue || request.VolumeM3.Value >= line.MinVolume.Value &&
+                            !line.MaxVolume.HasValue || request.VolumeM3.Value <= line.MaxVolume.Value)
+                        .FirstOrDefault();
+
+                    if (volumeMatch != null)
+                        return volumeMatch;
+                }
+
+                // Retourner la première ligne applicable
+                return candidates.FirstOrDefault();
+            }
+
+            private decimal GetContainerPrice(string containerType, TariffLine tariffLine, string currencyCode)
             {
                 return containerType.ToLower() switch
                 {
-                    "container20ft" => 1000m,
-                    "container40ft" => 1800m,
-                    "reefer20ft" => 1500m,
-                    "reefer40ft" => 2500m,
-                    _ => 1000m
+                    "container20ft" => tariffLine.PricePerContainer20ft ?? 0,
+                    "container40ft" => tariffLine.PricePerContainer40ft ?? 0,
+                    "reefer20ft" => tariffLine.PricePerContainer20ft ?? 0,
+                    "reefer40ft" => tariffLine.PricePerContainer40ft ?? 0,
+                    _ => tariffLine.BasePrice ?? 0
                 };
             }
 
@@ -326,7 +425,7 @@ namespace Application.Features.PriceCalculationFeature.Commands
                         calculationbasis = $"{amount:F2} € × {taxRule.StandardRate}%",
                         reference = taxRule.Id.ToString()
                     });
-                    total += taxAmount;
+                    total = taxAmount;
                 }
                 else
                 {
@@ -341,20 +440,10 @@ namespace Application.Features.PriceCalculationFeature.Commands
                         calculationbasis = $"{amount:F2} € × {defaultRate}%",
                         reference = "DEFAULT"
                     });
-                    total += taxAmount;
+                    total = taxAmount;
                 }
 
                 return (total, components);
-            }
-
-            private async Task<string> GetAppliedTariffGridCode(CalculatePriceCommand request, TransportMode transportMode, CancellationToken cancellationToken)
-            {
-                var tariffGrid = await _tariffRepository.GetApplicableTariffGridAsync(
-                    transportMode, 
-                    request.Date ?? DateTime.UtcNow, 
-                    cancellationToken);
-
-                return tariffGrid?.Code ?? "TARIF-STANDARD";
             }
         }
     }

@@ -10298,6 +10298,11 @@
             "type": "string",
             "nullable": true
           },
+          "taxRate": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
           "isActive": {
             "type": "boolean"
           }
@@ -11846,6 +11851,11 @@
           },
           "description": {
             "type": "string",
+            "nullable": true
+          },
+          "taxRate": {
+            "type": "number",
+            "format": "double",
             "nullable": true
           },
           "isActive": {
