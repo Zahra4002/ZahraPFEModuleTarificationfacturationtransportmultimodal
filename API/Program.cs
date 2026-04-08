@@ -4,6 +4,7 @@ using Application.Interfaces;
 using Application.Mappings;
 using Application.Security;
 using Application.Services;
+using Infrastructure.Persistance.Repositories;
 using Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -65,6 +66,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
+
+// ==================== ⭐ AJOUTER LES REPOSITORIES ICI ⭐ ====================
+
+// Repository générique (si vous avez une classe GenericRepository)
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+// Repository spécifique pour MerchandiseType
+builder.Services.AddScoped<IMerchandiseTypeRepository, MerchandiseTypeRepository>();
+
+// Si vous avez d'autres repositories, ajoutez-les aussi :
+// builder.Services.AddScoped<IClientRepository, ClientRepository>();
+// builder.Services.AddScoped<IContractRepository, ContractRepository>();
+// etc.
+
+// ===========================================================================
+
 builder.Services.AddAuthorization();
 builder.Services.AddDbContext<CleanArchitecturContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

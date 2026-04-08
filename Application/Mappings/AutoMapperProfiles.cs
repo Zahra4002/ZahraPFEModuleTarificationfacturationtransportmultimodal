@@ -5,6 +5,8 @@ using Application.Features.CurrencyFeature.Commands;
 using Application.Features.CurrencyFeature.Dtos;
 using Application.Features.InvoiceFeature.Commands;
 using Application.Features.InvoiceFeature.Dtos;
+using Application.Features.MerchandiseTypeFeature.Commands;
+using Application.Features.MerchandiseTypeFeature.Dtos;
 using Application.Features.PaymentFeature.Commands;
 using Application.Features.PaymentFeature.Dtos;
 using Application.Features.QuoteFeature.Commands;
@@ -911,6 +913,45 @@ CreateMap<PagedList<Contract>, PagedList<ContractDTO>>()
                 .ForMember(dest => dest.PaymentMethod, opt => opt.MapFrom(src => src.PaymentMethod))
                 .ForMember(dest => dest.Reference, opt => opt.MapFrom(src => src.Reference))
                 .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes));
+
+
+
+
+            // ============================
+            // MERCHANDISE TYPE MAPPINGS
+            // ============================
+
+            // Entity -> DTO
+            CreateMap<MerchandiseType, MerchandiseTypeDto>()
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
+                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.ModifiedDate));
+
+            // Command -> Entity (Create)
+            CreateMap<CreateMerchandiseTypeCommand, MerchandiseType>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.Quotes, opt => opt.Ignore())
+                .ForMember(dest => dest.Shipments, opt => opt.Ignore());
+
+            // Command -> Entity (Update)
+            CreateMap<UpdateMerchandiseTypeCommand, MerchandiseType>()
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.Quotes, opt => opt.Ignore())
+                .ForMember(dest => dest.Shipments, opt => opt.Ignore());
 
             // PagedList support pour Payment
             CreateMap<PagedList<Payment>, PagedList<PaymentDTO>>()

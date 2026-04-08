@@ -27,6 +27,9 @@ namespace Application.Features.QuoteFeature.Validators
             RuleFor(v => v.TotalTTC)
                 .GreaterThanOrEqualTo(0)
                 .WithMessage("Le total TTC doit être supérieur ou égal à 0");
+
+            RuleFor(x => x.MerchandiseTypeId)
+                .NotEmpty().WithMessage("Le type de marchandise est obligatoire.");
         }
     }
 }
