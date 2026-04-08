@@ -67,18 +67,17 @@ builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 
-// ==================== ⭐ AJOUTER LES REPOSITORIES ICI ⭐ ====================
-
-// Repository générique (si vous avez une classe GenericRepository)
+// ==================== REPOSITORIES ====================
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
-// Repository spécifique pour MerchandiseType
 builder.Services.AddScoped<IMerchandiseTypeRepository, MerchandiseTypeRepository>();
+builder.Services.AddScoped<ICurrencyRepository, CurrencyRepository>();
 
-// Si vous avez d'autres repositories, ajoutez-les aussi :
+// ==================== EXCHANGERATE.HOST SERVICE ====================
+builder.Services.AddHttpClient<IExchangeRateHostService, ExchangeRateHostService>();
+builder.Services.AddScoped<IExchangeRateHostService, ExchangeRateHostService>();
+// ==================== AUTRES REPOSITORIES ====================
 // builder.Services.AddScoped<IClientRepository, ClientRepository>();
 // builder.Services.AddScoped<IContractRepository, ContractRepository>();
-// etc.
 
 // ===========================================================================
 

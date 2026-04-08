@@ -240,6 +240,32 @@ namespace API.Controllers
             }
         }
 
+        /// <summary>
+        /// Importe automatiquement toutes les devises depuis exchangerate.host
+        /// </summary>
+        [HttpPost("fetch-currencies")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> FetchCurrenciesFromExchangeRateHost()
+        {
+            var command = new FetchCurrenciesFromExchangeRateHostCommand();
+            var result = await _mediator.Send(command);
+            return StatusCode(result.Status, result);
+        }
+        /// <summary>
+        /// Importe automatiquement les taux depuis exchangerate.host
+        /// </summary>
+        [HttpPost("fetch-from-exchangerate")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> FetchFromExchangeRateHost([FromQuery] string baseCurrency = "EUR")
+        {
+            var command = new FetchRatesFromExchangeRateHostCommand(baseCurrency);
+            var result = await _mediator.Send(command);
+            return StatusCode(result.Status, result);
+        }
+
         [HttpPost("convert")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
