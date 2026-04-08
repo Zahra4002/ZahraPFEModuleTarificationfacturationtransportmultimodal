@@ -10,6 +10,7 @@ namespace Domain.Entities
         public string Code { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
+        public string? CountryCode { get; set; } = string.Empty;  // ← AJOUTER
         public string? Region { get; set; }
 
         public decimal StandardRate { get; set; } // Taux standard en %
@@ -21,8 +22,7 @@ namespace Domain.Entities
         public bool AllowExemption { get; set; } = false;
         public string? ExemptionConditions { get; set; } // JSON avec conditions
 
-        public Surcharge? Surcharge { get; set; } // Surcharge associée (si applicable)
-
+        public Surcharge? Surcharge { get; set; }
         public Guid? SurchargeId { get; set; }
 
         public DateTime ValidFrom { get; set; }

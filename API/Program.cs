@@ -92,6 +92,15 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.WriteIndented = true;
     });
 
+builder.Services.AddHttpClient<ICountryService, CountryService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
+
+
+
+// ==================== VAT SENSE SERVICE ====================
+builder.Services.AddHttpClient<IVatRateService, VatSenseService>();
+builder.Services.AddScoped<IVatRateService, VatSenseService>();
+builder.Services.AddScoped<ITaxRuleRepository, TaxRuleRepository>();
 var app = builder.Build();
 app.UseRouting();
 app.UseDeveloperExceptionPage();

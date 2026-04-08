@@ -14,16 +14,13 @@ namespace Application.Features.QuoteFeature.Commands
     public class CreateQuoteCommandHandler : IRequestHandler<CreateQuoteCommand, ResponseHttp>
     {
         private readonly IQuoteRepository _quoteRepository;
-        // private readonly IClientRepository _clientRepository; // ❌ Commenté temporairement
         private readonly IMapper _mapper;
 
         public CreateQuoteCommandHandler(
             IQuoteRepository quoteRepository,
-            // IClientRepository clientRepository, // ❌ Commenté temporairement
             IMapper mapper)
         {
             _quoteRepository = quoteRepository;
-            // _clientRepository = clientRepository;
             _mapper = mapper;
         }
 
@@ -31,22 +28,16 @@ namespace Application.Features.QuoteFeature.Commands
         {
             try
             {
-                // ✅ Temporairement, on ne vérifie pas l'existence du client
-                // if (client == null)
-                // {
-                //     return new ResponseHttp
-                //     {
-                //         Status = StatusCodes.Status400BadRequest,
-                //         Fail_Messages = $"Client avec ID {request.ClientId} non trouvé"
-                //     };
-                // }
+                // Générer le numéro de devis automatiquement si non fourni
+                var quoteNumber = !string.IsNullOrWhiteSpace(request.QuoteNumber)
+                    ? request.QuoteNumber
+                    : $"DEV-{Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper()}";
 
-                // Créer l'entité Quote
                 var quote = new Quote
                 {
                     Id = Guid.NewGuid(),
-                    QuoteNumber = request.QuoteNumber,
-                    ClientId = request.ClientId, // On suppose que le client existe
+                    QuoteNumber = quoteNumber,
+                    ClientId = request.ClientId,
                     OriginAddress = request.OriginAddress,
                     DestinationAddress = request.DestinationAddress,
                     WeightKg = request.WeightKg,
@@ -62,11 +53,9 @@ namespace Application.Features.QuoteFeature.Commands
                     CreatedBy = "System"
                 };
 
-                // Sauvegarder
-                await _quoteRepository.AddAsync(quote, cancellationToken); // ✅ Ajout cancellationToken
+                await _quoteRepository.AddAsync(quote, cancellationToken);
                 await _quoteRepository.SaveChangesAsync(cancellationToken);
 
-                // Retourner le DTO
                 var quoteDto = _mapper.Map<QuoteDto>(quote);
 
                 return new ResponseHttp

@@ -236,16 +236,17 @@ namespace Application.Mappings
             // Entity -> DTO
             CreateMap<Quote, QuoteDto>()
                 .ForMember(dest => dest.ClientName,
-                    opt => opt.MapFrom(src => src.Client != null ? src.Client.Name : null))
+                 opt => opt.MapFrom(src => src.Client != null ? src.Client.Name : null))
                 .ForMember(dest => dest.MerchandiseTypeName,
-                    opt => opt.MapFrom(src => src.MerchandiseType != null ? src.MerchandiseType.Name : null))
+                opt => opt.MapFrom(src => src.MerchandiseType != null ? src.MerchandiseType.Name : null))
+                .ForMember(dest => dest.MerchandiseTypeCode,      // ← ajouter
+                 opt => opt.MapFrom(src => src.MerchandiseType != null ? src.MerchandiseType.Code : null))
                 .ForMember(dest => dest.IsValid,
-                    opt => opt.MapFrom(src => !src.IsAccepted && DateTime.UtcNow <= src.ValidUntil))
-                .ForMember(dest => dest.OriginAddress,
-                    opt => opt.MapFrom(src => src.OriginAddress))
-               .ForMember(dest => dest.DestinationAddress,
-                    opt => opt.MapFrom(src => src.DestinationAddress));
-
+                opt => opt.MapFrom(src => !src.IsAccepted && DateTime.UtcNow <= src.ValidUntil))
+               .ForMember(dest => dest.OriginAddress,
+                opt => opt.MapFrom(src => src.OriginAddress))
+                .ForMember(dest => dest.DestinationAddress,
+                opt => opt.MapFrom(src => src.DestinationAddress));
             // Command -> Entity (pour Create)
             CreateMap<CreateQuoteCommand, Quote>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())

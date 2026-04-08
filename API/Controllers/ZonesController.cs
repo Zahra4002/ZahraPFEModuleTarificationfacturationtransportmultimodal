@@ -42,6 +42,19 @@ namespace API.Controllers
         }
 
         /// <summary>
+        /// Récupère tous les pays pour la liste déroulante
+        /// </summary>
+        [HttpGet("countries")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ResponseHttp>> GetCountries()
+        {
+            var query = new GetCountriesQuery();
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Ajoute une nouvelle zone.
         /// </summary>
         /// <param name="command">Détails de la zone à ajouter.</param>

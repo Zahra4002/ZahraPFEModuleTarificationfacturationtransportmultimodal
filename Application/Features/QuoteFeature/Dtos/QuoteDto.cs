@@ -18,7 +18,7 @@ namespace Application.Features.QuoteFeature.Dtos
         public decimal? VolumeM3 { get; set; }
         public Guid? MerchandiseTypeId { get; set; }
         public string? MerchandiseTypeName { get; set; }
-
+        public string? MerchandiseTypeCode { get; set; }
         // Tarification
         public decimal TotalHT { get; set; }
         public decimal TotalTTC { get; set; }
