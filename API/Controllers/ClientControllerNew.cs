@@ -175,10 +175,28 @@ namespace API.Controllers
             return Ok(result);
         }
 
-            /// <summary>
-            /// Récupère tous les contrats associés à un client donné
-            /// </summary>
-            [HttpGet("{id}/contracts")]
+
+
+
+
+        // API/Controllers/ClientController.cs - Ajouter cette méthode
+        [HttpPost("{id}/resend-credentials")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ResendCredentials(Guid id)
+        {
+            var result = await _mediator.Send(new ResendClientCredentialsCommand(id));
+            return StatusCode(result.Status, result);
+        }
+
+
+
+
+        /// <summary>
+        /// Récupère tous les contrats associés à un client donné
+        /// </summary>
+        [HttpGet("{id}/contracts")]
             [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status200OK)]
             [ProducesResponseType(typeof(ResponseHttp), StatusCodes.Status404NotFound)]
             [ProducesResponseType(StatusCodes.Status500InternalServerError)]

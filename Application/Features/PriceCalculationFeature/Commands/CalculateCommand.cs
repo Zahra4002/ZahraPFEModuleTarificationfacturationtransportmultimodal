@@ -35,7 +35,7 @@ namespace Application.Features.PriceCalculationFeature.Commands
             private readonly ISurchargeRepository _surchargeRepository;
             private readonly ITaxRuleRepository _taxRuleRepository;
             private readonly IZoneRepository _zoneRepository;
-           
+
             private readonly IMapper _mapper;
 
             public CalculateCommandHandler(
@@ -69,7 +69,7 @@ namespace Application.Features.PriceCalculationFeature.Commands
                     var client = await _clientRepository.GetByIdAsync(request.ClientId, cancellationToken);
                     var contract = await _contractRepository.GetActiveContractForClientAsync(request.ClientId, cancellationToken);
                     string destinationCountry = await GetDestinationCountry(request.ZoneToId, cancellationToken);
-                    
+
                     // Déterminer le mode de transport
                     if (!Enum.TryParse<TransportMode>(request.TransportMode, true, out var transportMode))
                     {
@@ -98,31 +98,33 @@ namespace Application.Features.PriceCalculationFeature.Commands
                     // Charger les lignes du tariff grid
                     var tariffLines = (await _tariffRepository.GetLinesByGridIdAsync(tariffGrid.Id, cancellationToken)).ToList();
 
+                    // ✅ DÉTERMINER LA DEVISE UNE FOIS POUR TOUTES
+                    string currencyCode = DetermineCurrency(client, tariffGrid);
+                    string currencySymbol = GetCurrencySymbol(currencyCode);
+
                     // 4️⃣ Calculer le prix de base
                     var (basePrice, baseComponents) = await CalculateBasePrice(
-                        request, tariffGrid, tariffLines, client, cancellationToken);
+                        request, tariffGrid, tariffLines, client, currencyCode, cancellationToken);
 
-                    // 5️⃣ Calculer les surcharges
+                    // 5️⃣ Calculer les surcharges (PASSER LA DEVISE)
                     var (surchargesTotal, surchargeComponents) = await CalculateSurcharges(
-                        request, basePrice, transportMode, cancellationToken);
+                        request, basePrice, transportMode, currencyCode, currencySymbol, cancellationToken);
 
                     var subtotal = basePrice + surchargesTotal;
 
-                    // 6️⃣ Calculer les taxes
+                    // 6️⃣ Calculer les taxes (PASSER LA DEVISE)
                     var (taxTotal, taxComponents) = await CalculateTaxes(
-                        destinationCountry, subtotal, request.Date ?? DateTime.UtcNow, cancellationToken);
+                        destinationCountry, subtotal, request.Date ?? DateTime.UtcNow, currencyCode, currencySymbol, cancellationToken);
 
                     var totalCost = subtotal + taxTotal;
 
-                    // 7️⃣ Déterminer la devise
-                    var currencyCode = client?.DefaultCurrencyCode ?? tariffGrid.CurrencyCode ?? "EUR";
-
-                    // 8️⃣ Construire le résultat détaillé
+                    // 7️⃣ Construire le résultat détaillé
                     var result = new ResultDto
                     {
                         baseCost = Math.Round(basePrice, 2),
                         surchargesTotal = Math.Round(surchargesTotal, 2),
                         subtotal = Math.Round(subtotal, 2),
+                        taxTotal = Math.Round(taxTotal, 2),  // ✅ AJOUTER taxTotal
                         currencyCode = currencyCode,
                         breakDown = new BreakDown
                         {
@@ -142,7 +144,7 @@ namespace Application.Features.PriceCalculationFeature.Commands
                         Fail_Messages = null
                     };
                 }
-                catch (Exception ex)    
+                catch (Exception ex)
                 {
                     return new ResponseHttp
                     {
@@ -150,6 +152,42 @@ namespace Application.Features.PriceCalculationFeature.Commands
                         Status = 500
                     };
                 }
+            }
+
+            // ✅ NOUVELLE MÉTHODE POUR DÉTERMINER LA DEVISE
+            private string DetermineCurrency(Client? client, TariffGrid? tariffGrid)
+            {
+                // Priorité 1: Devise par défaut du client
+                if (client != null && !string.IsNullOrEmpty(client.DefaultCurrencyCode))
+                {
+                    return client.DefaultCurrencyCode.ToUpper();
+                }
+
+                // Priorité 2: Devise de la grille tarifaire
+                if (tariffGrid != null && !string.IsNullOrEmpty(tariffGrid.CurrencyCode))
+                {
+                    return tariffGrid.CurrencyCode.ToUpper();
+                }
+
+                // Priorité 3: Devise par défaut (EUR)
+                return "EUR";
+            }
+
+            // ✅ NOUVELLE MÉTHODE POUR LE SYMBOLE DE DEVISE
+            private string GetCurrencySymbol(string currencyCode)
+            {
+                return currencyCode switch
+                {
+                    "EUR" => "€",
+                    "USD" => "$",
+                    "GBP" => "£",
+                    "TND" => "DT",
+                    "JPY" => "¥",
+                    "CHF" => "CHF",
+                    "CAD" => "C$",
+                    "AUD" => "A$",
+                    _ => currencyCode
+                };
             }
 
             private async Task<ResponseHttp?> ValidateRequest(CalculatePriceCommand request, CancellationToken cancellationToken)
@@ -164,7 +202,7 @@ namespace Application.Features.PriceCalculationFeature.Commands
                     };
                 }
 
-                if (!request.WeightKg.HasValue && !request.VolumeM3.HasValue && 
+                if (!request.WeightKg.HasValue && !request.VolumeM3.HasValue &&
                     (!request.ContainerCount.HasValue || string.IsNullOrEmpty(request.ContainerType)))
                 {
                     return new ResponseHttp
@@ -191,6 +229,7 @@ namespace Application.Features.PriceCalculationFeature.Commands
                 TariffGrid tariffGrid,
                 List<TariffLine> tariffLines,
                 Client? client,
+                string currencyCode,  // ✅ AJOUTER currencyCode
                 CancellationToken cancellationToken)
             {
                 var components = new List<BaseCompoment>();
@@ -208,7 +247,7 @@ namespace Application.Features.PriceCalculationFeature.Commands
                             Code = "NO_TARIFF",
                             description = "Aucune ligne tarifaire applicable trouvée",
                             amout = 0,
-                            currencyCode = tariffGrid.CurrencyCode,
+                            currencyCode = currencyCode,  // ✅ Utiliser la devise
                             calculationbasis = "N/A",
                             reference = tariffGrid.Code
                         }
@@ -223,9 +262,9 @@ namespace Application.Features.PriceCalculationFeature.Commands
                     components.Add(new BaseCompoment
                     {
                         Code = "BASE_WT",
-                        description = $"Prix base au poids ({request.WeightKg:F2} kg × {ratePerKg:F4} {tariffGrid.CurrencyCode}/kg)",
+                        description = $"Prix base au poids ({request.WeightKg:F2} kg × {ratePerKg:F4} {currencyCode}/kg)",
                         amout = amount,
-                        currencyCode = tariffGrid.CurrencyCode,
+                        currencyCode = currencyCode,  // ✅ Utiliser la devise
                         calculationbasis = $"{request.WeightKg:F2} kg",
                         reference = tariffGrid.Code
                     });
@@ -240,9 +279,9 @@ namespace Application.Features.PriceCalculationFeature.Commands
                     components.Add(new BaseCompoment
                     {
                         Code = "BASE_VOL",
-                        description = $"Prix base au volume ({request.VolumeM3:F2} m³ × {ratePerM3:F2} {tariffGrid.CurrencyCode}/m³)",
+                        description = $"Prix base au volume ({request.VolumeM3:F2} m³ × {ratePerM3:F2} {currencyCode}/m³)",
                         amout = amount,
-                        currencyCode = tariffGrid.CurrencyCode,
+                        currencyCode = currencyCode,  // ✅ Utiliser la devise
                         calculationbasis = $"{request.VolumeM3:F2} m³",
                         reference = tariffGrid.Code
                     });
@@ -252,16 +291,16 @@ namespace Application.Features.PriceCalculationFeature.Commands
                 // Calcul par conteneur
                 if (!string.IsNullOrEmpty(request.ContainerType) && request.ContainerCount.HasValue)
                 {
-                    var pricePerContainer = GetContainerPrice(request.ContainerType, applicableLine, tariffGrid.CurrencyCode);
+                    var pricePerContainer = GetContainerPrice(request.ContainerType, applicableLine);
                     if (pricePerContainer > 0)
                     {
                         var amount = pricePerContainer * request.ContainerCount.Value;
                         components.Add(new BaseCompoment
                         {
                             Code = "BASE_CNT",
-                            description = $"Prix base conteneurs ({request.ContainerCount} × {request.ContainerType} @ {pricePerContainer:F2} {tariffGrid.CurrencyCode}/unité)",
+                            description = $"Prix base conteneurs ({request.ContainerCount} × {request.ContainerType} @ {pricePerContainer:F2} {currencyCode}/unité)",
                             amout = amount,
-                            currencyCode = tariffGrid.CurrencyCode,
+                            currencyCode = currencyCode,  // ✅ Utiliser la devise
                             calculationbasis = $"{request.ContainerCount} conteneurs",
                             reference = tariffGrid.Code
                         });
@@ -277,7 +316,7 @@ namespace Application.Features.PriceCalculationFeature.Commands
                         Code = "BASE_FLAT",
                         description = "Prix forfaitaire",
                         amout = applicableLine.BasePrice.Value,
-                        currencyCode = tariffGrid.CurrencyCode,
+                        currencyCode = currencyCode,  // ✅ Utiliser la devise
                         calculationbasis = "Forfait",
                         reference = tariffGrid.Code
                     });
@@ -290,7 +329,6 @@ namespace Application.Features.PriceCalculationFeature.Commands
             private TariffLine? SelectApplicableTariffLine(CalculatePriceCommand request, List<TariffLine> tariffLines)
             {
                 var candidates = tariffLines.Where(line =>
-                    // Vérifier les zones
                     (!request.ZoneFromId.HasValue || line.ZoneFromId == request.ZoneFromId || line.ZoneFromId == null) &&
                     (!request.ZoneToId.HasValue || line.ZoneToId == request.ZoneToId || line.ZoneToId == null)
                 ).ToList();
@@ -298,7 +336,6 @@ namespace Application.Features.PriceCalculationFeature.Commands
                 if (!candidates.Any())
                     return null;
 
-                // Prioriser : lignes avec zones spécifiques > lignes génériques
                 var withSpecificZones = candidates
                     .Where(line => line.ZoneFromId.HasValue && line.ZoneToId.HasValue)
                     .FirstOrDefault();
@@ -306,7 +343,6 @@ namespace Application.Features.PriceCalculationFeature.Commands
                 if (withSpecificZones != null)
                     return withSpecificZones;
 
-                // Chercher une ligne compatible avec les plages de poids/volume
                 if (request.WeightKg.HasValue && request.WeightKg.Value > 0)
                 {
                     var weightMatch = candidates
@@ -331,11 +367,10 @@ namespace Application.Features.PriceCalculationFeature.Commands
                         return volumeMatch;
                 }
 
-                // Retourner la première ligne applicable
                 return candidates.FirstOrDefault();
             }
 
-            private decimal GetContainerPrice(string containerType, TariffLine tariffLine, string currencyCode)
+            private decimal GetContainerPrice(string containerType, TariffLine tariffLine)
             {
                 return containerType.ToLower() switch
                 {
@@ -347,10 +382,13 @@ namespace Application.Features.PriceCalculationFeature.Commands
                 };
             }
 
+            // ✅ CORRIGÉ: Ajout des paramètres currencyCode et currencySymbol
             private async Task<(decimal total, List<BaseCompoment> components)> CalculateSurcharges(
                 CalculatePriceCommand request,
                 decimal basePrice,
                 TransportMode transportMode,
+                string currencyCode,      // ✅ AJOUTÉ
+                string currencySymbol,    // ✅ AJOUTÉ
                 CancellationToken cancellationToken)
             {
                 var components = new List<BaseCompoment>();
@@ -374,9 +412,9 @@ namespace Application.Features.PriceCalculationFeature.Commands
                         Code = surcharge.Code,
                         description = surcharge.Name,
                         amout = amount,
-                        currencyCode = "EUR",
+                        currencyCode = currencyCode,  // ✅ Utiliser la devise
                         calculationbasis = surcharge.CalculationType == CalculationType.Percentage
-                            ? $"{basePrice:F2} € × {surcharge.Value}%"
+                            ? $"{basePrice:F2} {currencySymbol} × {surcharge.Value}%"
                             : "Forfait",
                         reference = surcharge.Id.ToString()
                     });
@@ -384,6 +422,7 @@ namespace Application.Features.PriceCalculationFeature.Commands
                     total += amount;
                 }
 
+                // Surcharge carburant par défaut si aucune surcharge trouvée
                 if (!components.Any())
                 {
                     var fuelSurcharge = basePrice * 0.10m;
@@ -392,8 +431,8 @@ namespace Application.Features.PriceCalculationFeature.Commands
                         Code = "SRG_FUEL",
                         description = "Surcharge carburant (10%)",
                         amout = fuelSurcharge,
-                        currencyCode = "EUR",
-                        calculationbasis = $"{basePrice:F2} € × 10%",
+                        currencyCode = currencyCode,  // ✅ Utiliser la devise
+                        calculationbasis = $"{basePrice:F2} {currencySymbol} × 10%",
                         reference = "FUEL-INDEX"
                     });
                     total += fuelSurcharge;
@@ -402,10 +441,13 @@ namespace Application.Features.PriceCalculationFeature.Commands
                 return (total, components);
             }
 
+            // ✅ CORRIGÉ: Ajout des paramètres currencyCode et currencySymbol
             private async Task<(decimal total, List<BaseCompoment> components)> CalculateTaxes(
                 string country,
                 decimal amount,
                 DateTime date,
+                string currencyCode,      // ✅ AJOUTÉ
+                string currencySymbol,    // ✅ AJOUTÉ
                 CancellationToken cancellationToken)
             {
                 var components = new List<BaseCompoment>();
@@ -421,8 +463,8 @@ namespace Application.Features.PriceCalculationFeature.Commands
                         Code = taxRule.Code,
                         description = $"{taxRule.Name} ({taxRule.StandardRate}%)",
                         amout = taxAmount,
-                        currencyCode = "EUR",
-                        calculationbasis = $"{amount:F2} € × {taxRule.StandardRate}%",
+                        currencyCode = currencyCode,  // ✅ Utiliser la devise
+                        calculationbasis = $"{amount:F2} {currencySymbol} × {taxRule.StandardRate}%",
                         reference = taxRule.Id.ToString()
                     });
                     total = taxAmount;
@@ -436,8 +478,8 @@ namespace Application.Features.PriceCalculationFeature.Commands
                         Code = "VAT",
                         description = $"TVA par défaut ({defaultRate}%)",
                         amout = taxAmount,
-                        currencyCode = "EUR",
-                        calculationbasis = $"{amount:F2} € × {defaultRate}%",
+                        currencyCode = currencyCode,  // ✅ Utiliser la devise
+                        calculationbasis = $"{amount:F2} {currencySymbol} × {defaultRate}%",
                         reference = "DEFAULT"
                     });
                     total = taxAmount;

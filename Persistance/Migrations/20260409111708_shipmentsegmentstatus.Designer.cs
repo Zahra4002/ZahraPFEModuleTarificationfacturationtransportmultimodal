@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Persistance.Data;
@@ -11,9 +12,11 @@ using Persistance.Data;
 namespace Persistance.Migrations
 {
     [DbContext(typeof(CleanArchitecturContext))]
-    partial class CleanArchitecturContextModelSnapshot : ModelSnapshot
+    [Migration("20260409111708_shipmentsegmentstatus")]
+    partial class shipmentsegmentstatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1561,7 +1564,7 @@ namespace Persistance.Migrations
                             Country = "FR",
                             CountryCode = "",
                             CreatedBy = "Seed",
-                            CreatedDate = new DateTime(2026, 4, 10, 19, 50, 29, 821, DateTimeKind.Utc).AddTicks(4902),
+                            CreatedDate = new DateTime(2026, 4, 9, 11, 17, 6, 626, DateTimeKind.Utc).AddTicks(9033),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "TVA France 20%",
@@ -1579,7 +1582,7 @@ namespace Persistance.Migrations
                             Country = "FR",
                             CountryCode = "",
                             CreatedBy = "Seed",
-                            CreatedDate = new DateTime(2026, 4, 10, 19, 50, 29, 821, DateTimeKind.Utc).AddTicks(4913),
+                            CreatedDate = new DateTime(2026, 4, 9, 11, 17, 6, 626, DateTimeKind.Utc).AddTicks(9047),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "TVA France 5.5% (réduit)",
@@ -1597,7 +1600,7 @@ namespace Persistance.Migrations
                             Country = "FR",
                             CountryCode = "",
                             CreatedBy = "Seed",
-                            CreatedDate = new DateTime(2026, 4, 10, 19, 50, 29, 821, DateTimeKind.Utc).AddTicks(4918),
+                            CreatedDate = new DateTime(2026, 4, 9, 11, 17, 6, 626, DateTimeKind.Utc).AddTicks(9058),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "TVA France 2.1% (super réduit)",
@@ -1615,7 +1618,7 @@ namespace Persistance.Migrations
                             Country = "TN",
                             CountryCode = "",
                             CreatedBy = "Seed",
-                            CreatedDate = new DateTime(2026, 4, 10, 19, 50, 29, 821, DateTimeKind.Utc).AddTicks(4923),
+                            CreatedDate = new DateTime(2026, 4, 9, 11, 17, 6, 626, DateTimeKind.Utc).AddTicks(9066),
                             ExemptionConditions = "{\"export\": true, \"sectors\": [\"agriculture\", \"education\"]}",
                             IsActive = true,
                             IsDeleted = false,
@@ -1633,7 +1636,7 @@ namespace Persistance.Migrations
                             Country = "TN",
                             CountryCode = "",
                             CreatedBy = "Seed",
-                            CreatedDate = new DateTime(2026, 4, 10, 19, 50, 29, 821, DateTimeKind.Utc).AddTicks(4927),
+                            CreatedDate = new DateTime(2026, 4, 9, 11, 17, 6, 626, DateTimeKind.Utc).AddTicks(9072),
                             ExemptionConditions = "{\"sectors\": [\"hotels\", \"restaurants\"]}",
                             IsActive = true,
                             IsDeleted = false,
@@ -1651,7 +1654,7 @@ namespace Persistance.Migrations
                             Country = "FR",
                             CountryCode = "",
                             CreatedBy = "Seed",
-                            CreatedDate = new DateTime(2026, 4, 10, 19, 50, 29, 821, DateTimeKind.Utc).AddTicks(4932),
+                            CreatedDate = new DateTime(2026, 4, 9, 11, 17, 6, 626, DateTimeKind.Utc).AddTicks(9078),
                             IsActive = false,
                             IsDeleted = false,
                             Name = "Ancien taux TVA France 19.6%",
@@ -1670,7 +1673,7 @@ namespace Persistance.Migrations
                             Country = "FR",
                             CountryCode = "",
                             CreatedBy = "Seed",
-                            CreatedDate = new DateTime(2026, 4, 10, 19, 50, 29, 821, DateTimeKind.Utc).AddTicks(4937),
+                            CreatedDate = new DateTime(2026, 4, 9, 11, 17, 6, 626, DateTimeKind.Utc).AddTicks(9082),
                             ExemptionConditions = "{\"proofOfExport\": true, \"documents\": [\"EX1\", \"invoice\"]}",
                             IsActive = true,
                             IsDeleted = false,

@@ -315,6 +315,31 @@ namespace API.Controllers
             };
 
         }
+        // API/Controllers/InvoiceController.cs
+        // Ajouter cette méthode
+
+        // ================================
+        // REFRESH LINES FROM SHIPMENT
+        // ================================
+        [HttpPost("{id}/refresh-lines")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> RefreshLinesFromShipment(Guid id)
+        {
+            var command = new RefreshInvoiceLinesCommand(id);
+            var result = await _mediator.Send(command);
+
+            return result.Status switch
+            {
+                200 => Ok(result),
+                404 => NotFound(result),
+                _ => BadRequest(result)
+            };
+        }
+
+
+
         // ================================
         // DELETE INVOICE LINE
         // ================================

@@ -1,10 +1,12 @@
-﻿using Application.Interfaces;
+﻿// Infrastructure/Persistance/Repositories/InvoiceLineRepository.cs
+using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistance.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Persistance.Repositories
@@ -18,19 +20,16 @@ namespace Persistance.Repositories
             _context = context;
         }
 
-        // ✅ Ajouter AddAsync
         public async Task AddAsync(InvoiceLine line)
         {
             await _context.InvoiceLines.AddAsync(line);
         }
 
-        // ✅ Ajouter SaveChangesAsync
         public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        // ✅ Ajouter GetByIdWithDetailsAsync
         public async Task<InvoiceLine?> GetByIdWithDetailsAsync(Guid id)
         {
             return await _context.InvoiceLines
@@ -52,6 +51,7 @@ namespace Persistance.Repositories
             _context.InvoiceLines.RemoveRange(lines);
             await Task.CompletedTask;
         }
+
         public async Task<InvoiceLine?> GetByIdAsync(Guid id)
         {
             return await _context.InvoiceLines
@@ -63,18 +63,22 @@ namespace Persistance.Repositories
             _context.InvoiceLines.Update(line);
             await Task.CompletedTask;
         }
+
         public async Task<Invoice?> GetByIdWithLinesAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _context.Invoices
                 .Include(x => x.Lines)
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
+
+        // ✅ IMPLÉMENTATION DE DeleteAsync
         public async Task DeleteAsync(InvoiceLine line)
         {
+            if (line == null)
+                return;
+
             _context.InvoiceLines.Remove(line);
             await Task.CompletedTask;
         }
-
-
     }
 }

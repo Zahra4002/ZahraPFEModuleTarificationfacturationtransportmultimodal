@@ -94,7 +94,7 @@ builder.Services.AddControllers()
 
 builder.Services.AddHttpClient<ICountryService, CountryService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
-
+builder.Services.AddScoped<ICleanArchitecturContext, CleanArchitecturContext>();
 
 
 // ==================== VAT SENSE SERVICE ====================

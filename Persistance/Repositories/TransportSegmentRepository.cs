@@ -7,11 +7,21 @@ namespace Persistance.Repositories
 {
     public class TransportSegmentRepository : GenericRepository<TransportSegment>, ITransportSegmentRepository
     {
-        
+        private readonly CleanArchitecturContext _context;
+        private readonly DbSet<TransportSegment> _dbSet;
 
         public TransportSegmentRepository(CleanArchitecturContext context) : base(context)
         {
-           
+            _context = context;
+            _dbSet = context.Set<TransportSegment>();
+        }
+
+        public async Task<List<TransportSegment>> GetByShipmentIdAsync(Guid shipmentId, CancellationToken cancellationToken = default)
+        {
+            return await _dbSet
+                .Where(s => s.ShipmentId == shipmentId && !s.IsDeleted)
+                .OrderBy(s => s.Sequence)
+                .ToListAsync(cancellationToken);
         }
 
         public async Task Delete(TransportSegment segment)
@@ -19,6 +29,7 @@ namespace Persistance.Repositories
             _context.TransportSegments.Remove(segment);
             await Task.CompletedTask;
         }
+
         public async Task<Dictionary<bool, string>> IsExitAsync(Guid ShipmentId, Guid SupplierId, Guid ZoneFromId, Guid ZoneToId)
         {
             bool shipmentFound = await _context.Shipments.AnyAsync(s => s.Id == ShipmentId);
@@ -55,13 +66,18 @@ namespace Persistance.Repositories
             bool shipmentFound = await _context.Shipments.AnyAsync(s => s.Id == ShipmentId);
             if (!shipmentFound)
                 return new Dictionary<bool, string> { { false, $"Shipment with ID: {ShipmentId} not found." } };
+
             bool segmentFound = await _context.TransportSegments.AnyAsync(s => s.Id == SegmentId);
             if (!segmentFound)
                 return new Dictionary<bool, string> { { false, $"Transport Segment with ID: {SegmentId} not found." } };
 
-            return new Dictionary<bool, string> { { true, "Transport Segment already exists." } };
-
+            return new Dictionary<bool, string> { { true, "Transport Segment found." } };
         }
 
+        public async Task<TransportSegment?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await _dbSet
+                .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted, cancellationToken);
+        }
     }
 }

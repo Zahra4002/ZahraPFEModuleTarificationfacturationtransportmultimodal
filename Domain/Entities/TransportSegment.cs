@@ -27,5 +27,6 @@ namespace Domain.Entities
         public decimal SurchargesTotal { get; set; }
         public decimal TotalCost { get; set; }
         public string CurrencyCode { get; set; }
+        public SegmentStatus Status { get; set; } = SegmentStatus.Planned;
     }
 }

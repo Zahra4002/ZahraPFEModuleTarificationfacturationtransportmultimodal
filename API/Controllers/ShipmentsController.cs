@@ -1,15 +1,13 @@
 ﻿using Application.Features.ShipmentFeature.Commands;
 using Application.Features.ShipmentFeature.Queries;
 using Application.Features.ShipmentFeature.Validators;
+using Application.Setting;
 using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    /// <summary>
-    /// API pour la gestion des expéditions (shipments).
-    /// </summary>
     [Route("api/shipments")]
     [ApiController]
     public class ShipmentsController : ControllerBase
@@ -21,13 +19,9 @@ namespace API.Controllers
             _mediator = mediator;
         }
 
-        /// <summary>
-        /// Récupère toutes les expéditions avec pagination, tri et recherche optionnels.
-        /// </summary>
+        // ==================== GET ====================
+
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetShipments(
             int? pageNumber,
             int? pageSize,
@@ -37,262 +31,200 @@ namespace API.Controllers
         {
             var query = new GetAllShipmentsQuery(pageNumber, pageSize, sortBy, sortDescending, searchTerm);
             var result = await _mediator.Send(query);
-
-            return result.Status switch
-            {
-                200 => Ok(result),
-                404 => NotFound(result),
-                _ => StatusCode(StatusCodes.Status500InternalServerError, result)
-            };
+            return StatusCode(result.Status, result);
         }
 
-        /// <summary>
-        /// Ajoute une nouvelle expédition.
-        /// </summary>
-        [HttpPost]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetShipmentById(Guid id)
+        {
+            var query = new GetShipmentById(id);
+            var result = await _mediator.Send(query);
+            return StatusCode(result.Status, result);
+        }
+
+        [HttpGet("{id}/Details")]
+        public async Task<IActionResult> GetShipmentDetailsById(Guid id)
+        {
+            var query = new GetShipmentDetailsById(id);
+            var result = await _mediator.Send(query);
+            return StatusCode(result.Status, result);
+        }
+
+        [HttpGet("{shipmentId}/Segments")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ResponseHttp>> GetSegmentsByShipmentId(Guid shipmentId)
+        {
+            var query = new GetSegmentsByShipmentIdQuery(shipmentId);
+            var result = await _mediator.Send(query);
+            return StatusCode(result.Status, result);
+        }
+
+        [HttpGet("{shipmentId}/Segments/{segmentId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ResponseHttp>> GetSegmentById(Guid shipmentId, Guid segmentId)
+        {
+            var query = new GetSegmentByIdQuery(shipmentId, segmentId);
+            var result = await _mediator.Send(query);
+            return StatusCode(result.Status, result);
+        }
+
+        [HttpGet("Status/{status}")]
+        public async Task<IActionResult> GetShipmentsByStatus(ShipmentStatus status)
+        {
+            var query = new GetShipmentsByStatus(status);
+            var result = await _mediator.Send(query);
+            return StatusCode(result.Status, result);
+        }
+
+        [HttpGet("Client/{clientId}")]
+        public async Task<IActionResult> GetShipmentsByClientId(Guid clientId)
+        {
+            var query = new GetShipmntById(clientId);
+            var result = await _mediator.Send(query);
+            return StatusCode(result.Status, result);
+        }
+
+        // ==================== POST ====================
+
+        [HttpPost]
         public async Task<IActionResult> AddShipment(AddShipmentCommand command)
         {
             var validator = new AddShipmentValidator();
             var validationResult = await validator.ValidateAsync(command);
             if (!validationResult.IsValid)
+            {
                 return BadRequest(new { Message = "Validation failed.", Errors = validationResult.Errors });
-
+            }
             var result = await _mediator.Send(command);
-            return result.Status switch
-            {
-                200 => Ok(result),
-                _ => StatusCode(StatusCodes.Status500InternalServerError, result)
-            };
+            return StatusCode(result.Status, result);
         }
 
-        /// <summary>
-        /// Récupère les expéditions par statut.
-        /// </summary>
-        [HttpGet("Status/{Status}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetShipmentsByStatus(ShipmentStatus Status)
+        [HttpPost("{shipmentId}/Segments")]
+        public async Task<IActionResult> AddSegmentToShipment(Guid shipmentId, AddSegmentToShipementCommand command)
         {
-            var query = new GetShipmentsByStatus(Status);
-            var result = await _mediator.Send(query);
-            return result.Status switch
+            if (shipmentId != command.ShipmentId)
             {
-                200 => Ok(result),
-                404 => NotFound(result),
-                _ => StatusCode(StatusCodes.Status500InternalServerError, result)
-            };
-        }
-
-        /// <summary>
-        /// Récupère les expéditions pour un client donné.
-        /// </summary>
-        [HttpGet("Client/{CLientId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetShipmentsByClientId(Guid CLientId)
-        {
-            var query = new GetShipmentById(CLientId);
-            var result = await _mediator.Send(query);
-            return result.Status switch
-            {
-                200 => Ok(result),
-                404 => NotFound(result),
-                _ => StatusCode(StatusCodes.Status500InternalServerError, result)
-            };
-        }
-
-        /// <summary>
-        /// Récupère une expédition par ID.
-        /// </summary>
-        [HttpGet("{Id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetShipementById(Guid Id)
-        {
-            var query = new GetShipmentById(Id);
-            var result = await _mediator.Send(query);
-            return result.Status switch
-            {
-                200 => Ok(result),
-                404 => NotFound(result),
-                _ => StatusCode(StatusCodes.Status500InternalServerError, result)
-            };
-        }
-
-        /// <summary>
-        /// Met à jour une expédition.
-        /// </summary>
-        [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateShipment(Guid id, UpdateShipmentCommand command)
-        {
-            if (id != command.ShipmentId)
-                return BadRequest(new { Message = "Route id and command ShipmentId do not match." });
-
-            var validator = new UpdateShipementValidator();
+                return BadRequest(new { Message = "ShipmentId in URL does not match command." });
+            }
+            var validator = new AddSegmentToShipmentValidatorCommand();
             var validationResult = await validator.ValidateAsync(command);
             if (!validationResult.IsValid)
+            {
                 return BadRequest(new { Message = "Validation failed.", Errors = validationResult.Errors });
-
+            }
             var result = await _mediator.Send(command);
-            return result.Status switch
-            {
-                200 => Ok(result),
-                404 => NotFound(result),
-                _ => StatusCode(StatusCodes.Status500InternalServerError, result)
-            };
+            return StatusCode(result.Status, result);
         }
 
-        /// <summary>
-        /// Supprime une expédition.
-        /// </summary>
-        [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteShipment(Guid id)
-        {
-            var command = new DeleteShipmentCommand(id);
-            var result = await _mediator.Send(command);
-            return result.Status switch
-            {
-                200 => Ok(result),
-                404 => NotFound(result),
-                _ => StatusCode(StatusCodes.Status500InternalServerError, result)
-            };
-        }
-
-        /// <summary>
-        /// Récupère les détails d'une expédition.
-        /// </summary>
-        [HttpGet("{id}/Details")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetShipmentDetailsById(Guid id)
-        {
-            var query = new GetShipmentDetailsById(id);
-            var result = await _mediator.Send(query);
-            return result.Status switch
-            {
-                200 => Ok(result),
-                404 => NotFound(result),
-                _ => StatusCode(StatusCodes.Status500InternalServerError, result)
-            };
-        }
-
-        /// <summary>
-        /// Met à jour le statut d'une expédition.
-        /// </summary>
-        [HttpPut("{id}/Status")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateShipmentStatus(Guid id, ShipmentStatus status)
-        {
-            var command = new UpdateShipmentStatusCommand(id, status);
-            var result = await _mediator.Send(command);
-            return result.Status switch
-            {
-                200 => Ok(result),
-                404 => NotFound(result),
-                _ => StatusCode(StatusCodes.Status500InternalServerError, result)
-            };
-        }
-
-        /// <summary>
-        /// Recalcule une expédition.
-        /// </summary>
         [HttpPost("{id}/Recalculate")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RecalculateShipment(Guid id)
         {
             var command = new RecalculateShipmentCommands(id);
             var result = await _mediator.Send(command);
-            return result.Status switch
-            {
-                200 => Ok(result),
-                404 => NotFound(result),
-                _ => StatusCode(StatusCodes.Status500InternalServerError, result)
-            };
+            return StatusCode(result.Status, result);
         }
 
-        /// <summary>
-        /// Ajoute un segment à une expédition.
-        /// </summary>
-        [HttpPost("{ShipmentId}/Segments")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddSegmentToShipement(Guid ShipmentId, AddSegmentToShipementCommand command)
+        // ==================== PUT ====================
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateShipment(UpdateShipmentCommand command)
         {
-            var validator = new AddSegmentToShipmentValidatorCommand();
+            var validator = new UpdateShipementValidator();
             var validationResult = await validator.ValidateAsync(command);
             if (!validationResult.IsValid)
-                return BadRequest(new { Message = "Validation failed.", Errors = validationResult.Errors });
-
-            var result = await _mediator.Send(command);
-            return result.Status switch
             {
-                200 => Ok(result),
-                404 => NotFound(result),
-                _ => StatusCode(StatusCodes.Status500InternalServerError, result)
-            };
+                return BadRequest(new { Message = "Validation failed.", Errors = validationResult.Errors });
+            }
+            var result = await _mediator.Send(command);
+            return StatusCode(result.Status, result);
         }
 
-        /// <summary>
-        /// Met à jour un segment d'une expédition.
-        /// </summary>
-        [HttpPut("{ShipmentId}/Segments/{SegmentId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateSegmentOfShipement(Guid ShipmentId, Guid SegmentId, UpdateSegmentOfShipementCommand command)
+        [HttpPut("{id}/Status")]
+        public async Task<IActionResult> UpdateShipmentStatus(Guid id, ShipmentStatus status)
         {
-            if (ShipmentId != command.ShipmentId || SegmentId != command.SegmentId)
-                return BadRequest(new { Message = "Route ids and command ids do not match." });
+            var command = new UpdateShipmentStatusCommand(id, status);
+            var result = await _mediator.Send(command);
+            return StatusCode(result.Status, result);
+        }
 
+        [HttpPut("{shipmentId}/Segments/{segmentId}")]
+        public async Task<IActionResult> UpdateSegmentOfShipment(Guid shipmentId, Guid segmentId, UpdateSegmentOfShipementCommand command)
+        {
+            if (shipmentId != command.ShipmentId || segmentId != command.SegmentId)
+            {
+                return BadRequest(new { Message = "Ids in URL do not match command." });
+            }
             var validator = new UpdateSegmentOfShipmentCommandValidator();
             var validationResult = await validator.ValidateAsync(command);
             if (!validationResult.IsValid)
-                return BadRequest(new { Message = "Validation failed.", Errors = validationResult.Errors });
-
-            var result = await _mediator.Send(command);
-            return result.Status switch
             {
-                200 => Ok(result),
-                404 => NotFound(result),
-                _ => StatusCode(StatusCodes.Status500InternalServerError, result)
-            };
+                return BadRequest(new { Message = "Validation failed.", Errors = validationResult.Errors });
+            }
+            var result = await _mediator.Send(command);
+            return StatusCode(result.Status, result);
         }
 
         /// <summary>
-        /// Supprime un segment d'une expédition.
+        /// Met à jour uniquement le statut d'un segment
         /// </summary>
-        [HttpDelete("{ShipmentId}/Segments/{SegmentId}")]
+        [HttpPut("{shipmentId}/Segments/{segmentId}/status")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteSegmentOfShipement(Guid ShipmentId, Guid SegmentId)
+        public async Task<ActionResult<ResponseHttp>> UpdateSegmentStatus(
+            Guid shipmentId,
+            Guid segmentId,
+            [FromBody] UpdateSegmentStatusRequest request)
         {
-            var command = new DeleteSegmentOfShipementCommand(ShipmentId, SegmentId);
+            var command = new UpdateSegmentOfShipementCommand(
+                ShipmentId: shipmentId,
+                SegmentId: segmentId,
+                Sequence: null,
+                TransportMode: null,
+                SupplierId: null,
+                ZoneFromId: null,
+                ZoneToId: null,
+                DistanceKm: null,
+                EstimatedTransitDays: null,
+                DepartureDate: null,
+                ArrivalDate: null,
+                BaseCost: null,
+                SurchargesTotal: null,
+                TotalCost: null,
+                CurrencyCode: null,
+                Status: request.Status
+            );
+
             var result = await _mediator.Send(command);
-            return result.Status switch
-            {
-                200 => Ok(result),
-                404 => NotFound(result),
-                _ => StatusCode(StatusCodes.Status500InternalServerError, result)
-            };
+            return StatusCode(result.Status, result);
         }
+
+        // ==================== DELETE ====================
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteShipment(Guid id)
+        {
+            var command = new DeleteShipmentCommand(id);
+            var result = await _mediator.Send(command);
+            return StatusCode(result.Status, result);
+        }
+
+        [HttpDelete("{shipmentId}/Segments/{segmentId}")]
+        public async Task<IActionResult> DeleteSegmentOfShipment(Guid shipmentId, Guid segmentId)
+        {
+            var command = new DeleteSegmentOfShipementCommand(shipmentId, segmentId);
+            var result = await _mediator.Send(command);
+            return StatusCode(result.Status, result);
+        }
+    }
+
+    /// <summary>
+    /// Requête pour mettre à jour le statut d'un segment
+    /// </summary>
+    public class UpdateSegmentStatusRequest
+    {
+        public SegmentStatus Status { get; set; }
     }
 }
