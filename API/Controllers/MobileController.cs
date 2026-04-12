@@ -307,6 +307,65 @@ namespace API.Controllers
             });
         }
 
+
+
+
+        // API/Controllers/MobileController.cs
+        // Ajouter cette méthode après GetClientInvoices
+
+        // ==================== DÉTAIL FACTURE CLIENT ====================
+
+        [HttpGet("client/invoices/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetClientInvoiceDetail(Guid id, CancellationToken cancellationToken)
+        {
+            // 1️⃣ Récupérer le client connecté
+            var client = await GetCurrentClientAsync(cancellationToken);
+            if (client == null)
+                return Unauthorized(new { message = "Client non trouvé" });
+
+            // 2️⃣ Récupérer la facture du client avec ses lignes
+            var invoice = await _context.Invoices
+                .Include(i => i.Lines)
+                .FirstOrDefaultAsync(i => i.Id == id && i.ClientId == client.Id && !i.IsDeleted, cancellationToken);
+
+            if (invoice == null)
+                return NotFound(new { message = "Facture non trouvée" });
+
+            // 3️⃣ Construire la réponse
+            var result = new
+            {
+                invoice.Id,
+                invoice.InvoiceNumber,
+                invoice.InvoiceDate,
+                invoice.DueDate,
+                invoice.TotalHT,
+                invoice.TotalTTC,
+                invoice.AmountPaid,
+                invoice.CurrencyCode,
+                Status = invoice.Status.ToString(),
+                Balance = invoice.TotalTTC - invoice.AmountPaid,
+                IsOverdue = invoice.DueDate < DateTime.UtcNow && invoice.Status != InvoiceStatus.Payee,
+                Lines = invoice.Lines.Select(l => new
+                {
+                    l.Id,
+                    l.Description,
+                    l.Quantity,
+                    l.UnitPriceHT,
+                    VATRate = l.VATRate,
+                    TotalHT = l.Quantity * l.UnitPriceHT,
+                    TotalTTC = l.Quantity * l.UnitPriceHT * (1 + l.VATRate / 100)
+                })
+            };
+
+            return Ok(new ResponseHttp
+            {
+                Resultat = result,
+                Status = 200
+            });
+        }
         [HttpGet("invoices/{id}/pdf")]
         public async Task<IActionResult> GetInvoicePdf(Guid id, CancellationToken cancellationToken)
         {
