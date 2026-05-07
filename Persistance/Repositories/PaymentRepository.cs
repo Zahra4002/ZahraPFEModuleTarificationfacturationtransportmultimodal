@@ -17,19 +17,34 @@ namespace Persistance.Repositories
         {
         }
 
+        // ✅ AJOUTER: GetByIdAsync avec chargement des relations - OVERRIDE pour charger Invoice + Client
+        public virtual Task<Payment?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return _context.Payments
+                .AsNoTracking()
+                .Include(p => p.Invoice)
+                    .ThenInclude(i => i.Client)  // Charger le client via l'invoice
+                .FirstOrDefaultAsync(p => p.Id == id && p.IsDeleted == false, cancellationToken);
+        }
+
         public async Task<PagedList<Payment>> GetAllWithTypesAsync(int? pageNumber, int? pageSize, CancellationToken cancellationToken)
         {
-            var query = await _context.Payments
-                                        .AsQueryable()
-                                        .AsNoTracking()
-                                        .Where(e => e.IsDeleted == false)
-                                        .ToListAsync(cancellationToken);
-            int totalRows = query.AsEnumerable().Count();
-            var customer = query
-           .Skip(pageNumber.HasValue ? (pageNumber.Value - 1) * pageSize.GetValueOrDefault(1) : 0)
-           .Take(pageSize.GetValueOrDefault(int.MaxValue)).ToList();
+            var query = _context.Payments
+                .AsNoTracking()
+                .Include(p => p.Invoice)
+                    .ThenInclude(i => i.Client)  // ✅ Charger le client
+                .Where(e => e.IsDeleted == false)
+                .AsQueryable();
 
-            return new PagedList<Payment>(customer, totalRows, pageNumber, pageSize);
+            int totalRows = await query.CountAsync(cancellationToken);
+            
+            var payments = await query
+                .OrderByDescending(p => p.PaymentDate)
+                .Skip(pageNumber.HasValue ? (pageNumber.Value - 1) * pageSize.GetValueOrDefault(10) : 0)
+                .Take(pageSize.GetValueOrDefault(int.MaxValue))
+                .ToListAsync(cancellationToken);
+
+            return new PagedList<Payment>(payments, totalRows, pageNumber, pageSize);
         }
         public async Task<IReadOnlyList<Payment>> GetByInvoiceAsync(string invoiceNumber, CancellationToken ct = default)
         {

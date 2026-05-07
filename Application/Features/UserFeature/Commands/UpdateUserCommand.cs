@@ -63,6 +63,7 @@ namespace Application.Features.UserFeature.Commands
                 user.FirstName = request.UserDto.FirstName;
                 user.LastName = request.UserDto.LastName;
                 user.PhoneNumber = request.UserDto.PhoneNumber;
+                user.ProfilePicture = request.UserDto.ProfilePicture;
                 user.Role = role;
                 user.IsActive = request.UserDto.IsActive;
                 user.UpdatedAt = DateTime.UtcNow;

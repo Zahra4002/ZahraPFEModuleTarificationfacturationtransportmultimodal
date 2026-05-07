@@ -7,6 +7,7 @@ namespace Application.Features.UserFeature.Dtos
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
+        public string? ProfilePicture { get; set; }
         public string Role { get; set; } = string.Empty;
         public bool IsActive { get; set; }
         public DateTime? LastLoginAt { get; set; }
@@ -20,6 +21,7 @@ namespace Application.Features.UserFeature.Dtos
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
+        public string? ProfilePicture { get; set; }
         public string Role { get; set; } = string.Empty;
     }
 
@@ -30,6 +32,7 @@ namespace Application.Features.UserFeature.Dtos
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
+        public string? ProfilePicture { get; set; }
         public string Role { get; set; } = string.Empty;
         public bool IsActive { get; set; }
     }

@@ -36,27 +36,33 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Add(AddPaymentCommandNew cmd)
+        public async Task<ActionResult> Add([FromBody] AddPaymentCommandNew cmd)
         {
             try
             {
-                ResponseHttp AddCustomerResult;
                 AddPaymentCommandNewValidator validator = new();
+                var validationResult = await validator.ValidateAsync(new ValidationContext<AddPaymentCommandNew>(cmd));
 
-                AddCustomerResult = validator.Validate(new ValidationContext<AddPaymentCommandNew>(cmd));
-
-                if (AddCustomerResult.Status == StatusCodes.Status400BadRequest)
+                if (!validationResult.IsValid)
                 {
-                    return BadRequest(AddCustomerResult);
+                    var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                    return BadRequest(new ResponseHttp
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Fail_Messages = string.Join(" | ", errors)
+                    });
                 }
 
-                AddCustomerResult = await _mediator.Send(cmd);
-
-                return Ok(AddCustomerResult);
+                var result = await _mediator.Send(cmd);
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ResponseHttp
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Fail_Messages = $"Erreur création paiement: {ex.Message}"
+                });
             }
         }
         /// <summary>
@@ -79,26 +85,35 @@ namespace API.Controllers
         {
             try
             {
-                ResponseHttp updateCustomerResult;
+                // ✅ CORRECTION: Utiliser le bon validateur
                 UpdatePaymentCommandNewValidator validator = new();
+                var validationResult = await validator.ValidateAsync(new ValidationContext<UpdatePaymentCommandNew>(cmd));
 
-                updateCustomerResult = validator.Validate(new ValidationContext<UpdatePaymentCommandNew>(cmd));
-
-                if (updateCustomerResult.Status == StatusCodes.Status400BadRequest)
+                // ✅ CORRECTION: Vérifier IsValid au lieu de Status
+                if (!validationResult.IsValid)
                 {
-                    return BadRequest(updateCustomerResult);
+                    var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                    return BadRequest(new ResponseHttp
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Fail_Messages = string.Join(" | ", errors)
+                    });
                 }
 
-                updateCustomerResult = await _mediator.Send(cmd);
-
-                return Ok(updateCustomerResult);
+                var result = await _mediator.Send(cmd);
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ResponseHttp
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Fail_Messages = $"Erreur mise à jour paiement: {ex.Message}"
+                });
             }
-
         }
+
+        
 
         /// <summary>
         /// Deletes the resource identified by the specified ID.
@@ -126,14 +141,32 @@ namespace API.Controllers
         /// <returns>An <see cref="ActionResult"/> containing the resource if found, or an appropriate HTTP response if not.</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Get(Guid id)
         {
-            GetPaymByIdNewQuery qr = new(id);
-            var result = await _mediator.Send(qr);
+            try
+            {
+                GetPaymByIdNewQuery qr = new(id);
+                var result = await _mediator.Send(qr);
 
-            return Ok(result);
+                if (result.Status == 404)
+                    return NotFound(result);
+
+                if (result.Status >= 400)
+                    return BadRequest(result);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseHttp
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Fail_Messages = ex.Message
+                });
+            }
         }
 
         /// <summary>

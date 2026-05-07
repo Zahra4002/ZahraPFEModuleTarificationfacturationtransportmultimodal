@@ -31,7 +31,8 @@ namespace Application.Features.ContractFeature.Commands
         string minimumVolumeUnit,
         bool IsActive,
         bool AutoRenew,
-        int RenewalNoticeDays
+        int RenewalNoticeDays,
+        decimal GlobalDiscountPercent
         ) : IRequest<ResponseHttp>
     {
         public class AddContractCommandNewHandler : IRequestHandler<AddContractCommandNew, ResponseHttp>
@@ -50,7 +51,7 @@ namespace Application.Features.ContractFeature.Commands
                 try
                 {
                     var contract = _mapper.Map<Contract>(request);
-
+                    contract.GlobalDiscountPercent = request.GlobalDiscountPercent;
                     contract = await contractRepository.Post(contract);
                     await contractRepository.SaveChange(cancellationToken);
 

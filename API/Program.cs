@@ -8,12 +8,15 @@ using Infrastructure.Persistance.Repositories;
 using Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Server.IIS;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Persistance.Data;
 using Persistance.Repositories;
 using System.Text;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -96,8 +99,25 @@ builder.Services.AddHttpClient<ICountryService, CountryService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<ICleanArchitecturContext, CleanArchitecturContext>();
 
+// ==================== REQUEST SIZE LIMITS ====================
+// Increase request body size to support large file uploads (up to 500 MB)
+builder.Services.Configure<IISServerOptions>(options =>
+{
+    options.MaxRequestBodySize = 500 * 1024 * 1024; // 500 MB
+});
 
-// ==================== VAT SENSE SERVICE ====================
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.Limits.MaxRequestBodySize = 500 * 1024 * 1024; // 500 MB
+});
+
+// Configure multipart form data limits
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.ValueLengthLimit = 500 * 1024 * 1024; // 500 MB
+    options.MultipartBodyLengthLimit = 500 * 1024 * 1024; // 500 MB
+    options.MultipartHeadersLengthLimit = 16 * 1024 * 1024; // 16 MB
+});
 builder.Services.AddHttpClient<IVatRateService, VatSenseService>();
 builder.Services.AddScoped<IVatRateService, VatSenseService>();
 builder.Services.AddScoped<ITaxRuleRepository, TaxRuleRepository>();

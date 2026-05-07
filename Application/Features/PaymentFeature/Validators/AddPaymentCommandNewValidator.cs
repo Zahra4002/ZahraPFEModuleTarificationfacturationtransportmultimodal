@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.Common.Validator;
 using Application.Features.PaymentFeature.Commands;
+using Domain.Enums;  // ✅ AJOUTER
 using FluentValidation;
 
 namespace Application.Features.PaymentFeature.Validators
@@ -13,9 +14,10 @@ namespace Application.Features.PaymentFeature.Validators
     {
         public AddPaymentCommandNewValidator()
         {
-            // invoice – référence à la facture (souvent un code ou un ID)
-            RuleFor(x => x.invoiceId);
-                
+            // ✅ CORRECTION: invoiceId – OBLIGATOIRE si facture doit être liée
+            RuleFor(x => x.invoiceId)
+                .NotEmpty().WithMessage("L'ID de la facture est obligatoire.")
+                .Must(id => id != Guid.Empty).WithMessage("L'ID de la facture doit être valide.");
 
             // paymentDate – date du paiement
             RuleFor(x => x.paymentDate)
@@ -30,8 +32,15 @@ namespace Application.Features.PaymentFeature.Validators
                 .PrecisionScale(18, 2, false).WithMessage("Le montant ne peut pas avoir plus de 2 décimales.")
                 .LessThanOrEqualTo(999999999999m).WithMessage("Le montant semble excessivement élevé (limite technique).");
 
-            // paymentMethod – mode de paiement (ex: Virement, Carte, Espèces, Chèque...)
-           
+            // ✅ CORRECTION: paymentMethod – mode de paiement OBLIGATOIRE
+            RuleFor(x => x.paymentMethod)
+                .NotEmpty().WithMessage("Le mode de paiement est obligatoire.")
+                .Must(BeAValidPaymentMethod).WithMessage("Le mode de paiement est invalide.");
+
+            // reference – optionnel
+            RuleFor(x => x.reference)
+                .MaximumLength(100).WithMessage("La référence ne peut pas dépasser 100 caractères.")
+                .When(x => !string.IsNullOrWhiteSpace(x.reference));
 
             // notes – optionnel
             RuleFor(x => x.notes)
@@ -39,15 +48,11 @@ namespace Application.Features.PaymentFeature.Validators
                 .When(x => !string.IsNullOrWhiteSpace(x.notes));
         }
 
-        // Méthode d'aide pour valider les modes de paiement acceptés
-        private bool BeAValidPaymentMethod(string paymentMethod)
+        // ✅ CORRECTION: Méthode pour valider les modes de paiement
+        private bool BeAValidPaymentMethod(PaymentMethod paymentMethod)
         {
-            var validMethods = new[]
-            {
-                "Virement", "Carte", "Espèces", "Chèque", "Prélèvement", "PayPal", "Autre"
-            };  // ← adapte selon tes besoins réels
-
-            return validMethods.Contains(paymentMethod, StringComparer.OrdinalIgnoreCase);
+            // Les valeurs enum valides sont: 1, 2, 3, 4, 5
+            return Enum.IsDefined(typeof(PaymentMethod), paymentMethod);
         }
     }
 }

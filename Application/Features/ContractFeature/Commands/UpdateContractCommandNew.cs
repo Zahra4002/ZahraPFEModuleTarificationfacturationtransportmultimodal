@@ -31,7 +31,8 @@ namespace Application.Features.ContractFeature.Commands
         string minimumVolumeUnit,
         bool IsActive,
         bool AutoRenew,
-        int RenewalNoticeDays
+        int RenewalNoticeDays,
+        decimal GlobalDiscountPercent
 
         ) : IRequest<ResponseHttp>
     {

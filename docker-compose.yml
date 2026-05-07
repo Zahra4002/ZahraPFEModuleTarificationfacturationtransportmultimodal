@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: tarification_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 0000
+      POSTGRES_DB: TarificationFacturation_BDF
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tarification-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tarification_api
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=TarificationFacturation_BDF;Username=postgres;Password=0000"
+      Jwt__Key: "your-super-secret-key-with-at-least-32-characters"
+      Jwt__Issuer: "TarificationApp"
+      Jwt__Audience: "TarificationClient"
+      Jwt__ExpiryInMinutes: "60"
+      Email__SmtpServer: "smtp.gmail.com"
+      Email__SmtpPort: "587"
+      Email__SmtpUser: "addinncheckmail@gmail.com"
+      Email__SmtpPassword: "kldg plyq tkft ybtn"
+      Email__FromEmail: "addinncheckmail@gmail.com"
+      Email__FromName: "Tarification App"
+      ExchangeRateHost__ApiKey: "caaad440dd7183bbcf50857c1ba0ba60"
+      ExchangeRateHost__BaseUrl: "https://api.exchangerate.host"
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - tarification-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  tarification-network:
+    driver: bridge

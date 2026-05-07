@@ -300,5 +300,160 @@ namespace API.Controllers
 
             return BadRequest(result);
         }
+
+        /// <summary>
+        /// Updates user profile with optional profile picture (FormData endpoint for file upload)
+        /// </summary>
+        /// <param name="id">User ID</param>
+        /// <returns>Updated user</returns>
+        [HttpPut("{id}/profile")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status413PayloadTooLarge)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ResponseHttp>> UpdateUserProfile(Guid id)
+        {
+            try
+            {
+                // Read form data
+                var form = await Request.ReadFormAsync();
+                
+                // Extract fields from form
+                var idStr = form["Id"].ToString();
+                var firstName = form["FirstName"].ToString();
+                var lastName = form["LastName"].ToString();
+                var email = form["Email"].ToString();
+                var phoneNumber = form["PhoneNumber"].ToString();
+                var isActiveStr = form["IsActive"].ToString();
+
+                // Validate required fields
+                if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || 
+                    string.IsNullOrWhiteSpace(email))
+                {
+                    return BadRequest(new ResponseHttp
+                    {
+                        Fail_Messages = "First name, last name, and email are required",
+                        Status = StatusCodes.Status400BadRequest
+                    });
+                }
+
+                // Validate ID matches
+                if (!Guid.TryParse(idStr, out var parsedId) || parsedId != id)
+                {
+                    return BadRequest(new ResponseHttp
+                    {
+                        Fail_Messages = "ID in URL does not match ID in body",
+                        Status = StatusCodes.Status400BadRequest
+                    });
+                }
+
+                // Get current user to preserve their existing role
+                var getUserQuery = new GetUserByIdQuery(parsedId);
+                var getUserResult = await _mediator.Send(getUserQuery);
+                if (getUserResult?.Status != StatusCodes.Status200OK)
+                {
+                    return NotFound(new ResponseHttp
+                    {
+                        Fail_Messages = "User not found",
+                        Status = StatusCodes.Status404NotFound
+                    });
+                }
+
+                var existingUserData = getUserResult.Resultat as UserDTO;
+                var currentRole = existingUserData?.Role ?? "Lecture";
+
+                // Create update DTO with current role preserved
+                var updateDto = new UpdateUserDTO
+                {
+                    Id = parsedId,
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Email = email,
+                    PhoneNumber = phoneNumber,
+                    IsActive = bool.TryParse(isActiveStr, out var isActive) && isActive,
+                    Role = currentRole // Preserve existing role during profile update
+                };
+
+                // Handle profile picture file if provided
+                var profilePictureFile = form.Files.GetFile("ProfilePicture");
+                if (profilePictureFile != null && profilePictureFile.Length > 0)
+                {
+                    // Validate file size (max 500 MB)
+                    const long maxFileSize = 500 * 1024 * 1024;
+                    if (profilePictureFile.Length > maxFileSize)
+                    {
+                        return BadRequest(new ResponseHttp
+                        {
+                            Fail_Messages = $"Profile picture must be less than 500 MB (current: {(profilePictureFile.Length / (1024.0 * 1024)).ToString("F2")} MB)",
+                            Status = StatusCodes.Status400BadRequest
+                        });
+                    }
+
+                    // Validate file type
+                    var allowedContentTypes = new[] { "image/jpeg", "image/png", "image/webp", "image/gif" };
+                    if (!allowedContentTypes.Contains(profilePictureFile.ContentType.ToLower()))
+                    {
+                        return BadRequest(new ResponseHttp
+                        {
+                            Fail_Messages = $"Invalid file type. Allowed types: JPG, PNG, WebP, GIF",
+                            Status = StatusCodes.Status400BadRequest
+                        });
+                    }
+
+                    // Convert file to base64
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await profilePictureFile.CopyToAsync(memoryStream);
+                        var fileBytes = memoryStream.ToArray();
+                        var base64String = Convert.ToBase64String(fileBytes);
+                        updateDto.ProfilePicture = $"data:{profilePictureFile.ContentType};base64,{base64String}";
+                    }
+                }
+
+                // Send update command
+                var command = new UpdateUserCommand(updateDto);
+                var validator = new UpdateUserCommandValidator();
+                var validationResult = await validator.ValidateAsync(command);
+
+                if (!validationResult.IsValid)
+                {
+                    return BadRequest(new ResponseHttp
+                    {
+                        Fail_Messages = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)),
+                        Status = StatusCodes.Status400BadRequest
+                    });
+                }
+
+                var result = await _mediator.Send(command);
+
+                if (result.Status == StatusCodes.Status200OK)
+                    return Ok(result);
+
+                if (result.Status == StatusCodes.Status404NotFound)
+                    return NotFound(result);
+
+                return BadRequest(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Request body too large
+                return StatusCode(StatusCodes.Status413PayloadTooLarge, new ResponseHttp
+                {
+                    Fail_Messages = "Request body is too large. Maximum 100 MB allowed.",
+                    Status = StatusCodes.Status413PayloadTooLarge
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHttp
+                {
+                    Fail_Messages = $"Error updating profile: {ex.Message}",
+                    Status = StatusCodes.Status500InternalServerError
+                });
+            }
+        }
     }
 }

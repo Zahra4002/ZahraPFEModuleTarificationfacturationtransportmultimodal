@@ -1,0 +1,69 @@
+// Configuration pour ApplicationDbContext - Ajouter AuditLogs
+
+// Dans votre ApplicationDbContext, ajoutez:
+
+// Persistance/Data/ApplicationDbContext.cs (ajouter cette ligne):
+
+/*
+public class ApplicationDbContext : DbContext
+{
+    // ... vos autres DbSets ...
+    
+    // Ajouter cette ligne:
+    public DbSet<AuditLog> AuditLogs { get; set; }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        
+        // Configuration de la table AuditLogs
+        modelBuilder.Entity<AuditLog>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            
+            entity.Property(e => e.Id)
+                .HasMaxLength(450);
+            
+            entity.Property(e => e.Action)
+                .IsRequired()
+                .HasMaxLength(50);
+            
+            entity.Property(e => e.ActionDescription)
+                .HasMaxLength(255);
+            
+            entity.Property(e => e.EntityType)
+                .IsRequired()
+                .HasMaxLength(100);
+            
+            entity.Property(e => e.EntityId)
+                .IsRequired()
+                .HasMaxLength(450);
+            
+            entity.Property(e => e.EntityName)
+                .HasMaxLength(255);
+            
+            entity.Property(e => e.PerformedBy)
+                .IsRequired()
+                .HasMaxLength(100);
+            
+            entity.Property(e => e.PerformedByRole)
+                .HasMaxLength(100);
+            
+            entity.Property(e => e.Result)
+                .IsRequired()
+                .HasMaxLength(20)
+                .HasDefaultValue("SUCCESS");
+            
+            entity.Property(e => e.IpAddress)
+                .HasMaxLength(45);
+            
+            // Index pour les recherches
+            entity.HasIndex(e => e.Timestamp).IsDescending();
+            entity.HasIndex(e => new { e.EntityType, e.EntityId });
+            entity.HasIndex(e => e.Action);
+            entity.HasIndex(e => e.PerformedBy);
+            entity.HasIndex(e => e.Result);
+        });
+    }
+}
+*/

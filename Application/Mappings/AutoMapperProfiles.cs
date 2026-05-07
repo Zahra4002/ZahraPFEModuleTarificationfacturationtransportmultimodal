@@ -136,24 +136,16 @@ namespace Application.Mappings
             // ============================
 
             CreateMap<Invoice, InvoiceDTO>()
-
-   .ForMember(dest => dest.ClientName,
-
-       opt => opt.MapFrom(src => src.Client != null ? src.Client.Name : null))
-
-
-   .ForMember(dest => dest.SupplierName,
-
-     opt => opt.MapFrom(src => src.Supplier != null ? src.Supplier.Name : null))
-
-       .ForMember(dest => dest.ShipmentNumber,
-
-     opt => opt.MapFrom(src => src.Shipment != null ? src.Shipment.ShipmentNumber : null))
-
-
- .ForMember(dest => dest.CurrencyCode,
-
-     opt => opt.MapFrom(src => src.Currency != null ? src.Currency.Code : null));
+                .ForMember(dest => dest.ClientName,
+                    opt => opt.MapFrom(src => src.Client != null ? src.Client.Name : null))
+                .ForMember(dest => dest.SupplierName,
+                    opt => opt.MapFrom(src => src.Supplier != null ? src.Supplier.Name : null))
+                .ForMember(dest => dest.ShipmentNumber,
+                    opt => opt.MapFrom(src => src.Shipment != null ? src.Shipment.ShipmentNumber : null))
+                .ForMember(dest => dest.CurrencyCode,
+                    opt => opt.MapFrom(src => src.Currency != null ? src.Currency.Code : null))
+                .ForMember(dest => dest.Lines,
+                    opt => opt.MapFrom(src => src.Lines.Where(l => !l.IsDeleted).ToList()));  // ✅ AJOUTER: Mapper les lignes
 
 
 
@@ -510,37 +502,38 @@ namespace Application.Mappings
             // CONTRACT MAPPINGS
             // ============================
 
-// Command → Entity (pour la création)
-CreateMap<AddContractCommandNew, Contract>()
-    .ForMember(dest => dest.Id, opt => opt.Ignore())
-    .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
-    .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
-    .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
-    .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
-    .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
-    .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
-    .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
-    .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
-    .ForMember(dest => dest.GlobalDiscountPercent, opt => opt.Ignore())
-    .ForMember(dest => dest.Client, opt => opt.Ignore())
-    .ForMember(dest => dest.Supplier, opt => opt.Ignore())
-    .ForMember(dest => dest.ContractPricings, opt => opt.Ignore())
-    // Mapping spécifique pour les noms différents
-    .ForMember(dest => dest.ContractNumber, opt => opt.MapFrom(src => src.contractNumber))
-    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.name))
-    .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
-    .ForMember(dest => dest.ValidFrom, opt => opt.MapFrom(src => src.validForm))
-    .ForMember(dest => dest.ValidTo, opt => opt.MapFrom(src => src.validTo))
-    .ForMember(dest => dest.ClientId, opt => opt.MapFrom(src => src.ClientId))
-    .ForMember(dest => dest.SupplierId, opt => opt.MapFrom(src => src.SupplierId))
-    .ForMember(dest => dest.Terms, opt => opt.MapFrom(src => src.terms))
-    .ForMember(dest => dest.TermsAccepted, opt => opt.MapFrom(src => src.termsAccepted))
-    .ForMember(dest => dest.TermsAcceptedAt, opt => opt.MapFrom(src => src.termsAccptedAt))
-    .ForMember(dest => dest.MinimumVolume, opt => opt.MapFrom(src => src.minimumVolume))
-    .ForMember(dest => dest.MinimumVolumeUnit, opt => opt.MapFrom(src => src.minimumVolumeUnit))
-    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
-    .ForMember(dest => dest.AutoRenew, opt => opt.MapFrom(src => src.AutoRenew))
-    .ForMember(dest => dest.RenewalNoticeDays, opt => opt.MapFrom(src => src.RenewalNoticeDays));
+            // Command → Entity (pour la création)
+            CreateMap<AddContractCommandNew, Contract>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedBy, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedById, opt => opt.Ignore())
+                .ForMember(dest => dest.ModifiedById, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.GlobalDiscountPercent, opt => opt.Ignore())
+                .ForMember(dest => dest.Client, opt => opt.Ignore())
+                .ForMember(dest => dest.Supplier, opt => opt.Ignore())
+                .ForMember(dest => dest.ContractPricings, opt => opt.Ignore())
+                // Mapping spécifique pour les noms différents
+                .ForMember(dest => dest.ContractNumber, opt => opt.MapFrom(src => src.contractNumber))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.name))
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
+                .ForMember(dest => dest.ValidFrom, opt => opt.MapFrom(src => src.validForm))
+                .ForMember(dest => dest.ValidTo, opt => opt.MapFrom(src => src.validTo))
+                .ForMember(dest => dest.ClientId, opt => opt.MapFrom(src => src.ClientId))
+                .ForMember(dest => dest.SupplierId, opt => opt.MapFrom(src => src.SupplierId))
+                .ForMember(dest => dest.Terms, opt => opt.MapFrom(src => src.terms))
+                .ForMember(dest => dest.TermsAccepted, opt => opt.MapFrom(src => src.termsAccepted))
+                .ForMember(dest => dest.TermsAcceptedAt, opt => opt.MapFrom(src => src.termsAccptedAt))
+                .ForMember(dest => dest.MinimumVolume, opt => opt.MapFrom(src => src.minimumVolume))
+                .ForMember(dest => dest.MinimumVolumeUnit, opt => opt.MapFrom(src => src.minimumVolumeUnit))
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
+                .ForMember(dest => dest.AutoRenew, opt => opt.MapFrom(src => src.AutoRenew))
+                .ForMember(dest => dest.RenewalNoticeDays, opt => opt.MapFrom(src => src.RenewalNoticeDays))
+                .ForMember(dest => dest.GlobalDiscountPercent, opt => opt.MapFrom(src => src.GlobalDiscountPercent));
 
 // Entity → DTO (pour les réponses)
 CreateMap<Contract, ContractDTO>()
@@ -632,7 +625,8 @@ CreateMap<PagedList<Contract>, PagedList<ContractDTO>>()
     .ForMember(dest => dest.MinimumVolumeUnit, opt => opt.MapFrom(src => src.minimumVolumeUnit))
     .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
     .ForMember(dest => dest.AutoRenew, opt => opt.MapFrom(src => src.AutoRenew))
-    .ForMember(dest => dest.RenewalNoticeDays, opt => opt.MapFrom(src => src.RenewalNoticeDays));
+    .ForMember(dest => dest.RenewalNoticeDays, opt => opt.MapFrom(src => src.RenewalNoticeDays))
+    .ForMember(dest => dest.GlobalDiscountPercent, opt => opt.MapFrom(src => src.GlobalDiscountPercent));
 
             CreateMap<ContractPricing, ContractPricingDto>()
     .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
@@ -913,7 +907,14 @@ CreateMap<PagedList<Contract>, PagedList<ContractDTO>>()
                 .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount))
                 .ForMember(dest => dest.PaymentMethod, opt => opt.MapFrom(src => src.PaymentMethod))
                 .ForMember(dest => dest.Reference, opt => opt.MapFrom(src => src.Reference))
-                .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes));
+                .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
+                // ✅ AJOUTER: Mapper les informations de la facture
+                .ForMember(dest => dest.InvoiceNumber, 
+                    opt => opt.MapFrom(src => src.Invoice != null ? src.Invoice.InvoiceNumber : null))
+                .ForMember(dest => dest.ClientName, 
+                    opt => opt.MapFrom(src => src.Invoice != null && src.Invoice.Client != null ? src.Invoice.Client.Name : null))
+                .ForMember(dest => dest.CreatedAt,
+                    opt => opt.MapFrom(src => src.CreatedDate));
 
 
 

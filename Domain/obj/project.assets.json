@@ -6674,11 +6674,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\riyem\\source\\repos\\backendzahratest1\\Domain\\Domain.csproj",
+      "projectUniqueName": "C:\\Users\\riyem\\source\\repos\\backendzahratest1\\backendzahratest1\\Domain\\Domain.csproj",
       "projectName": "Domain",
-      "projectPath": "C:\\Users\\riyem\\source\\repos\\backendzahratest1\\Domain\\Domain.csproj",
+      "projectPath": "C:\\Users\\riyem\\source\\repos\\backendzahratest1\\backendzahratest1\\Domain\\Domain.csproj",
       "packagesPath": "C:\\Users\\riyem\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\riyem\\source\\repos\\backendzahratest1\\Domain\\obj\\",
+      "outputPath": "C:\\Users\\riyem\\source\\repos\\backendzahratest1\\backendzahratest1\\Domain\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -54,6 +54,7 @@ namespace Application.Features.UserFeature.Commands
                     FirstName = request.UserDto.FirstName,
                     LastName = request.UserDto.LastName,
                     PhoneNumber = request.UserDto.PhoneNumber,
+                    ProfilePicture = request.UserDto.ProfilePicture,
                     Role = role,
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow

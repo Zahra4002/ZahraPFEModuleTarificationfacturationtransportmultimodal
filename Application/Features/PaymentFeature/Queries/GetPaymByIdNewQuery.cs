@@ -14,8 +14,8 @@ using Microsoft.AspNetCore.Http;
 namespace Application.Features.PaymentFeature.Queries
 {
     public record GetPaymByIdNewQuery(
-         Guid InvoiceId
-         ) : IRequest<ResponseHttp>
+        Guid PaymentId  // ✅ CORRECTION: Renommer de InvoiceId à PaymentId
+    ) : IRequest<ResponseHttp>
     {
         public class GetPaymByIdNewQueryHandler : IRequestHandler<GetPaymByIdNewQuery, ResponseHttp>
         {
@@ -32,18 +32,18 @@ namespace Application.Features.PaymentFeature.Queries
             {
                 try
                 {
-                    var payment = await paymentRepository.GetByIdAsync(request.InvoiceId, cancellationToken);
+                    // ✅ CORRECTION: Utiliser PaymentId au lieu de InvoiceId
+                    var payment = await paymentRepository.GetByIdAsync(request.PaymentId, cancellationToken);
 
                     if (payment == null)
                         return new ResponseHttp()
                         {
                             Status = 404,
-                            Fail_Messages = "payment not found !"
+                            Fail_Messages = "Paiement non trouvé!"
                         };
 
                     return new ResponseHttp()
                     {
-
                         Resultat = _mapper.Map<PaymentDTO>(payment),
                         Status = 200
                     };
@@ -55,9 +55,7 @@ namespace Application.Features.PaymentFeature.Queries
                         Fail_Messages = ex.Message,
                         Status = StatusCodes.Status400BadRequest,
                     };
-
                 }
-
             }
         }
     }

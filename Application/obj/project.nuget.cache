@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "vJtPLaH+Ab8=",
+  "dgSpecHash": "TwYgzAJcod4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\riyem\\source\\repos\\backendzahratest1\\Application\\Application.csproj",
+  "projectFilePath": "C:\\Users\\riyem\\source\\repos\\backendzahratest1\\backendzahratest1\\Application\\Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\riyem\\.nuget\\packages\\automapper\\16.1.1\\automapper.16.1.1.nupkg.sha512",
     "C:\\Users\\riyem\\.nuget\\packages\\bcrypt.net-next\\4.1.0\\bcrypt.net-next.4.1.0.nupkg.sha512",
@@ -157,5 +157,18 @@
     "C:\\Users\\riyem\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
     "C:\\Users\\riyem\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1902",
+      "level": "Warning",
+      "message": "Le package 'MailKit' 4.15.1 présente une vulnérabilité de gravité moyenne connue, https://github.com/advisories/GHSA-9j88-vvj5-vhgr.",
+      "projectPath": "C:\\Users\\riyem\\source\\repos\\backendzahratest1\\backendzahratest1\\Application\\Application.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\riyem\\source\\repos\\backendzahratest1\\backendzahratest1\\Application\\Application.csproj",
+      "libraryId": "MailKit",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
 }

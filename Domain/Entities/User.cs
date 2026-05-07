@@ -11,6 +11,7 @@ namespace Domain.Entities
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
+        public string? ProfilePicture { get; set; }
         public UserRole Role { get; set; }
         public bool IsActive { get; set; } = true;
         public DateTime? LastLoginAt { get; set; }

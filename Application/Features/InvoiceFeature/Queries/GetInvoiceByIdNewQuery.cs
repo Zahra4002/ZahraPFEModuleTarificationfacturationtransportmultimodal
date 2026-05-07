@@ -27,8 +27,8 @@ namespace Application.Features.InvoiceFeature.Queries
             {
                 try
                 {
-                    // Récupérer la facture par Id via repository
-                    var invoice = await _invoiceRepository.GetByIdAsync(request.InvoiceId, cancellationToken);
+                    // ✅ CORRECTION: Utiliser GetByIdWithDetailsAsync pour inclure les lignes
+                    var invoice = await _invoiceRepository.GetByIdWithDetailsAsync(request.InvoiceId, cancellationToken);
 
                     if (invoice == null)
                         return new ResponseHttp()

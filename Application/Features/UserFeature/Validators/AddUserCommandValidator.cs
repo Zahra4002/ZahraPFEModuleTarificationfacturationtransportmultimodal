@@ -14,7 +14,10 @@ namespace Application.Features.UserFeature.Validators
 
             RuleFor(v => v.UserDto.Password)
                 .NotEmpty().WithMessage("Password is required")
-                .MinimumLength(6).WithMessage("Password must be at least 6 characters");
+                .MinimumLength(6).WithMessage("Password must be at least 6 characters")
+                .Matches("[A-Z]").WithMessage("Password must contain at least one uppercase letter")
+                .Matches("[0-9]").WithMessage("Password must contain at least one number")
+                .Matches("[^a-zA-Z0-9]").WithMessage("Password must contain at least one symbol");
 
             RuleFor(v => v.UserDto.FirstName)
                 .NotEmpty().WithMessage("First name is required")

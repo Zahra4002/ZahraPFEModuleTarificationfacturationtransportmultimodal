@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "XzMHupgq1Rk=",
+  "dgSpecHash": "oDenffSQn+E=",
   "success": true,
-  "projectFilePath": "C:\\Users\\riyem\\source\\repos\\backendzahratest1\\Persistance\\Persistance.csproj",
+  "projectFilePath": "C:\\Users\\riyem\\source\\repos\\backendzahratest1\\backendzahratest1\\Persistance\\Persistance.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\riyem\\.nuget\\packages\\automapper\\16.1.1\\automapper.16.1.1.nupkg.sha512",
     "C:\\Users\\riyem\\.nuget\\packages\\bcrypt.net-next\\4.1.0\\bcrypt.net-next.4.1.0.nupkg.sha512",
